@@ -1,134 +1,123 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>Biomedical Service Report</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    body{font-family:Arial,sans-serif;background:#f3f6fb;margin:0;color:#222}
-    .container{max-width:650px;margin:0 auto;padding:15px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
-    h1{color:#0b74de;font-size:22px;margin-bottom:10px;text-align:center}
-    .section{border:1px dashed #cfe4ff;padding:12px;border-radius:8px;margin-bottom:12px;background:#fbfdff}
-    .row{display:flex;flex-wrap:wrap;gap:10px}
-    .col{flex:1;min-width:200px;display:flex;flex-direction:column}
-    label{font-size:14px;color:#555;margin-bottom:4px}
-    input,textarea{width:100%;padding:10px;border:1px solid #ccd8e6;border-radius:8px;font-size:14px;box-sizing:border-box}
-    textarea{resize:vertical;min-height:60px}
-    .sig-wrap{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px}
-    .sig-box{flex:1;display:flex;flex-direction:column;align-items:center}
-    canvas{border:1px solid #ccd8e6;border-radius:8px;width:100%;height:150px;touch-action:none;background:#fff}
-    .btn{background:#0b74de;color:#fff;border:none;padding:12px;border-radius:8px;cursor:pointer;font-weight:bold;margin-top:15px;width:100%;font-size:16px}
-    .btn.clear{background:#ccc;color:#000;margin-top:10px}
-    input:focus,textarea:focus{outline:3px solid #b5d5ff}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>Biomedical Service Report - Compressed PDF</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f3f6fb;margin:0;color:#222}
+.container{max-width:650px;margin:0 auto;padding:15px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
+h1{color:#0b74de;font-size:22px;margin-bottom:10px;text-align:center}
+.section{border:1px dashed #cfe4ff;padding:12px;border-radius:8px;margin-bottom:12px;background:#fbfdff}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.col{flex:1;min-width:200px;display:flex;flex-direction:column}
+label{font-size:14px;color:#555;margin-bottom:4px}
+input,textarea{width:100%;padding:8px;border:1px solid #ccd8e6;border-radius:6px;font-size:13px;box-sizing:border-box}
+textarea{resize:vertical;min-height:50px}
+.sig-wrap{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px}
+.sig-box{flex:1;display:flex;flex-direction:column;align-items:center}
+canvas{border:1px solid #ccd8e6;border-radius:6px;width:100%;height:120px;touch-action:none;background:#fff}
+.btn{background:#0b74de;color:#fff;border:none;padding:10px;border-radius:6px;cursor:pointer;font-weight:bold;margin-top:12px;width:100%;font-size:14px}
+.btn.clear{background:#ccc;color:#000;margin-top:8px}
+#preview{margin-top:20px;border:1px solid #ccd8e6;padding:10px;border-radius:6px;background:#fff}
+input:focus,textarea:focus{outline:2px solid #b5d5ff}
+</style>
 </head>
 <body>
 <div class="container" id="report">
-  <h1>Biomedical Service Report</h1>
-
-  <div class="section">
-    <h3>Complaint Information</h3>
-    <div class="row">
-      <div class="col"><label>Date</label><input type="date" id="c_date"></div>
-      <div class="col"><label>Time</label><input type="time" id="c_time"></div>
-      <div class="col"><label>Department</label><input type="text" id="c_dept"></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <h3>Equipment Details</h3>
-    <div class="row">
-      <div class="col"><label>Equipment</label><input type="text" id="eq_name"></div>
-      <div class="col"><label>Model</label><input type="text" id="eq_model"></div>
-      <div class="col"><label>Make</label><input type="text" id="eq_make"></div>
-      <div class="col"><label>Serial Number</label><input type="text" id="eq_serial"></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <h3>Problem & Resolution</h3>
-    <div class="row">
-      <div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
-      <div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <h3>Completion Details</h3>
-    <div class="row">
-      <div class="col"><label>Finish Date</label><input type="date" id="f_date"></div>
-      <div class="col"><label>Finish Time</label><input type="time" id="f_time"></div>
-      <div class="col"><label>Down Time (auto-calculated hours)</label><input type="text" id="down_time" readonly></div>
-      <div class="col"><label>Repaired By</label><input type="text" id="repaired_by"></div>
-      <div class="col"><label>Spare Parts Used</label><textarea id="spares"></textarea></div>
-      <div class="col"><label>Cause of Failure</label><textarea id="cause"></textarea></div>
-    </div>
-  </div>
-
-  <div class="sig-wrap">
-    <div class="sig-box">
-      <label>User Signature</label>
-      <canvas id="user_sign"></canvas>
-      <button class="btn clear" onclick="clearCanvas('user_sign')">Clear</button>
-    </div>
-    <div class="sig-box">
-      <label>Engineer Signature</label>
-      <canvas id="eng_sign"></canvas>
-      <button class="btn clear" onclick="clearCanvas('eng_sign')">Clear</button>
-    </div>
-  </div>
-
-  <button class="btn" onclick="downloadPDF()">Download PDF</button>
+<h1>Biomedical Service Report</h1>
+<div class="section">
+<h3>Complaint Information</h3>
+<div class="row">
+<div class="col"><label>Date</label><input type="date" id="c_date"></div>
+<div class="col"><label>Time</label><input type="time" id="c_time"></div>
+<div class="col"><label>Department</label><input type="text" id="c_dept"></div>
 </div>
-
+</div>
+<div class="section">
+<h3>Equipment Details</h3>
+<div class="row">
+<div class="col"><label>Equipment</label><input type="text" id="eq_name"></div>
+<div class="col"><label>Model</label><input type="text" id="eq_model"></div>
+<div class="col"><label>Make</label><input type="text" id="eq_make"></div>
+<div class="col"><label>Serial Number</label><input type="text" id="eq_serial"></div>
+</div>
+</div>
+<div class="section">
+<h3>Problem & Resolution</h3>
+<div class="row">
+<div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
+<div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
+</div>
+</div>
+<div class="section">
+<h3>Completion Details</h3>
+<div class="row">
+<div class="col"><label>Finish Date</label><input type="date" id="f_date"></div>
+<div class="col"><label>Finish Time</label><input type="time" id="f_time"></div>
+<div class="col"><label>Down Time (auto-calculated)</label><input type="text" id="down_time" readonly></div>
+<div class="col"><label>Repaired By</label><input type="text" id="repaired_by"></div>
+<div class="col"><label>Spare Parts Used</label><textarea id="spares"></textarea></div>
+<div class="col"><label>Cause of Failure</label><textarea id="cause"></textarea></div>
+</div>
+</div>
+<div class="sig-wrap">
+<div class="sig-box">
+<label>User Signature</label>
+<canvas id="user_sign"></canvas>
+<button class="btn clear" onclick="clearCanvas('user_sign')">Clear</button>
+</div>
+<div class="sig-box">
+<label>Engineer Signature</label>
+<canvas id="eng_sign"></canvas>
+<button class="btn clear" onclick="clearCanvas('eng_sign')">Clear</button>
+</div>
+</div>
+<button class="btn" onclick="downloadPDF()">Download Compressed PDF</button>
+<div id="preview"></div>
+</div>
 <script>
 function clearCanvas(id){ const c=document.getElementById(id); c.getContext('2d').clearRect(0,0,c.width,c.height); }
-
 ['c_date','c_time','f_date','f_time'].forEach(id=>{
-  document.getElementById(id).addEventListener('change',()=>{
-    const startD=document.getElementById('c_date').value;
-    const startT=document.getElementById('c_time').value;
-    const endD=document.getElementById('f_date').value;
-    const endT=document.getElementById('f_time').value;
-    if(startD && startT && endD && endT){
-      const start=new Date(`${startD}T${startT}`);
-      const end=new Date(`${endD}T${endT}`);
-      const hours=((end-start)/36e5).toFixed(2);
-      document.getElementById('down_time').value = hours;
-    }
-  });
+document.getElementById(id).addEventListener('change',()=>{
+const startD=document.getElementById('c_date').value;
+const startT=document.getElementById('c_time').value;
+const endD=document.getElementById('f_date').value;
+const endT=document.getElementById('f_time').value;
+if(startD && startT && endD && endT){
+const start=new Date(`${startD}T${startT}`);
+const end=new Date(`${endD}T${endT}`);
+const hours=((end-start)/36e5).toFixed(2);
+document.getElementById('down_time').value = hours;
+}
 });
-
+});
 async function downloadPDF(){
-  const element = document.getElementById('report');
-  const canvas = await html2canvas(element, {scale:2, useCORS:true});
-  const imgData = canvas.toDataURL('image/png');
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF('p','mm','a4');
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  const imgProps = pdf.getImageProperties(imgData);
-  const pdfHeight = imgProps.height * pageWidth / imgProps.width;
-  pdf.addImage(imgData,'PNG',0,0,pageWidth,pdfHeight);
-  pdf.save('Biomedical_Service_Report.pdf');
+const element=document.getElementById('report');
+const canvas=await html2canvas(element,{scale:1,useCORS:true});
+const imgData=canvas.toDataURL('image/png');
+const {jsPDF}=window.jspdf;
+const pdf=new jsPDF('p','mm','a4');
+const pageWidth=pdf.internal.pageSize.getWidth();
+const imgProps=pdf.getImageProperties(imgData);
+const pdfHeight=imgProps.height*pageWidth/imgProps.width;
+pdf.addImage(imgData,'PNG',0,0,pageWidth,pdfHeight);
+pdf.save('Biomedical_Service_Report_Compressed.pdf');
 }
-
-// Initialize signature canvases
 function initSig(id){
-  const canvas=document.getElementById(id);
-  const ctx=canvas.getContext('2d'); ctx.strokeStyle='#222'; ctx.lineWidth=2; ctx.lineCap='round';
-  let drawing=false, last={x:0,y:0};
-  function pos(e){const r=canvas.getBoundingClientRect(); const t=e.touches?e.touches[0]:null; const x=(t?t.clientX:e.clientX)-r.left; const y=(t?t.clientY:e.clientY)-r.top; return {x,y};}
-  canvas.addEventListener('mousedown',e=>{drawing=true; last=pos(e);});
-  canvas.addEventListener('touchstart',e=>{drawing=true; last=pos(e);});
-  canvas.addEventListener('mousemove',e=>{ if(!drawing) return; const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p;});
-  canvas.addEventListener('touchmove',e=>{ if(!drawing) return; const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; e.preventDefault();});
-  window.addEventListener('mouseup',()=>drawing=false);
-  window.addEventListener('touchend',()=>drawing=false);
+const canvas=document.getElementById(id);
+const ctx=canvas.getContext('2d'); ctx.strokeStyle='#222'; ctx.lineWidth=2; ctx.lineCap='round';
+let drawing=false,last={x:0,y:0};
+function pos(e){const r=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:null;const x=(t?t.clientX:e.clientX)-r.left;const y=(t?t.clientY:e.clientY)-r.top;return{x,y};}
+canvas.addEventListener('mousedown',e=>{drawing=true; last=pos(e);});
+canvas.addEventListener('touchstart',e=>{drawing=true; last=pos(e);});
+canvas.addEventListener('mousemove',e=>{if(!drawing)return; const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p;});
+canvas.addEventListener('touchmove',e=>{if(!drawing)return; const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; e.preventDefault();});
+window.addEventListener('mouseup',()=>drawing=false);
+window.addEventListener('touchend',()=>drawing=false);
 }
-
 initSig('user_sign');
 initSig('eng_sign');
 </script>
