@@ -5,95 +5,37 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Service Report Form</title>
   <style>
-    body {
-      font-family:"Segoe UI",Arial,Helvetica,sans-serif;
-      margin:0;padding:10px;
-      background:#eef2f7;color:#111;
-    }
-    .container {
-      max-width:900px;margin:0 auto;
-      background:#fff;border-radius:10px;
-      padding:20px;
-      box-shadow:0 4px 14px rgba(0,0,0,0.12);
-    }
-    header { text-align:center;margin-bottom:12px; }
-    header h1 {
-      margin:4px 0;font-size:20px;
-      font-weight:600;color:#0b5ed7;
-    }
-    header h2 { margin:2px 0;font-size:14px;color:#444; }
-    .formNo {
-      margin-top:6px;font-size:12px;
-      font-weight:bold;
-      text-align:center;
-      padding-bottom:6px;
-      border-bottom:2px solid #0b5ed7;
-    }
-    /* main form box */
-    .formBox {
-      border:2px solid #0b5ed7;
-      border-radius:8px;
-      padding:12px;
-      margin-top:12px;
-    }
-    .section {
-      margin:12px 0;
-      padding:10px;
-      border:1px solid #ccc;
-      border-radius:6px;
-      background:#fafafa;
-    }
-    .section h3 {
-      margin:0 0 8px;font-size:14px;
-      color:#0b5ed7;
-      border-bottom:1px solid #ddd;
-      padding-bottom:3px;
-    }
-    .row { display:flex;flex-wrap:wrap;gap:12px }
-    .col { flex:1;min-width:180px }
-    label { display:block;font-size:12px;margin-bottom:4px;color:#333 }
-    input,textarea {
-      width:100%;padding:6px;font-size:13px;
-      border:1px solid #bbb;border-radius:4px
-    }
-    textarea { resize:vertical;min-height:60px }
-    .sig {
-      border:1px solid #999;border-radius:4px;
-      height:80px;background:#fff
-    }
-    .sig-controls { margin-top:6px }
-    .controls {
-      margin:15px 0;display:flex;gap:10px;flex-wrap:wrap
-    }
-    button {
-      padding:8px 14px;border:none;border-radius:5px;
-      background:#0b5ed7;color:#fff;font-size:13px;cursor:pointer
-    }
-    button.secondary { background:#555 }
-    /* A4 preview */
-    #previewArea {
-      width:210mm;min-height:297mm;max-height:297mm;
-      margin:0 auto;padding:12mm;box-sizing:border-box;
-      border:1px solid #ddd;background:#fff;overflow:hidden
-    }
-    #previewArea h1 {
-      font-size:16px;margin:0;text-align:center;color:#0b5ed7
-    }
-    #previewArea h2 {
-      font-size:13px;margin:2px 0;text-align:center;color:#444
-    }
-    #previewArea .formNo {
-      margin:6px 0 12px;text-align:center;
-      font-size:12px;font-weight:bold;
-      border-bottom:2px solid #0b5ed7;padding-bottom:4px;
-    }
-    #previewArea .formBox { border:2px solid #0b5ed7;padding:10px;border-radius:8px }
-    #previewArea h3 {
-      margin-top:8px;margin-bottom:4px;font-size:13px;
-      color:#0b5ed7;border-bottom:1px solid #ddd
-    }
-    #previewArea p { font-size:12px;margin:2px 0 }
-    @media(max-width:700px){ #previewArea{width:100%;min-height:auto;} }
+    body {font-family:"Segoe UI",Arial,Helvetica,sans-serif;margin:0;padding:10px;background:#eef2f7;color:#111}
+    .container {max-width:900px;margin:0 auto;background:#fff;border-radius:10px;padding:20px;box-shadow:0 4px 14px rgba(0,0,0,0.12)}
+    header{text-align:center;margin-bottom:12px}
+    header h1{margin:4px 0;font-size:20px;font-weight:600;color:#0b5ed7}
+    header h2{margin:2px 0;font-size:14px;color:#444}
+    .formNo{margin-top:6px;font-size:12px;font-weight:bold;text-align:center;padding-bottom:6px;border-bottom:2px solid #0b5ed7}
+    .formBox{border:2px solid #0b5ed7;border-radius:8px;padding:12px;margin-top:12px}
+    .section{margin:12px 0;padding:10px;border:1px solid #ccc;border-radius:6px;background:#fafafa}
+    .section h3{margin:0 0 8px;font-size:14px;color:#0b5ed7;border-bottom:1px solid #ddd;padding-bottom:3px}
+    .row{display:flex;flex-wrap:wrap;gap:12px}
+    .col{flex:1;min-width:180px}
+    label{display:block;font-size:12px;margin-bottom:4px;color:#333}
+    input,textarea{width:100%;padding:6px;font-size:13px;border:1px solid #bbb;border-radius:4px}
+    textarea{resize:vertical;min-height:60px}
+    .sigBox{border:1px dashed #999;height:80px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#fdfdfd}
+    .controls{margin:15px 0;display:flex;gap:10px;flex-wrap:wrap}
+    button{padding:8px 14px;border:none;border-radius:5px;background:#0b5ed7;color:#fff;font-size:13px;cursor:pointer}
+    button.secondary{background:#555}
+    #previewArea{width:210mm;min-height:297mm;max-height:297mm;margin:0 auto;padding:12mm;box-sizing:border-box;border:1px solid #ddd;background:#fff;overflow:hidden}
+    #previewArea h1{font-size:16px;margin:0;text-align:center;color:#0b5ed7}
+    #previewArea h2{font-size:13px;margin:2px 0;text-align:center;color:#444}
+    #previewArea .formNo{margin:6px 0 12px;text-align:center;font-size:12px;font-weight:bold;border-bottom:2px solid #0b5ed7;padding-bottom:4px}
+    #previewArea .formBox{border:2px solid #0b5ed7;padding:10px;border-radius:8px}
+    #previewArea h3{margin-top:8px;margin-bottom:4px;font-size:13px;color:#0b5ed7;border-bottom:1px solid #ddd}
+    #previewArea p{font-size:12px;margin:2px 0}
+    @media(max-width:700px){#previewArea{width:100%;min-height:auto}}
+    /* Fullscreen modal */
+    .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:1000}
+    .modalContent{background:#fff;padding:10px;border-radius:8px;width:95%;height:90%;display:flex;flex-direction:column}
+    .modal canvas{flex:1;border:1px solid #333;border-radius:4px;background:#fff}
+    .modalBtns{margin-top:8px;display:flex;gap:10px;justify-content:flex-end}
   </style>
 </head>
 <body>
@@ -154,11 +96,8 @@
             <div class="col"><label>Name</label><input type="text" id="userDept"/></div>
             <div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
             <div class="col">
-              <label>Signature</label>
-              <canvas id="userSig" class="sig" width="250" height="80"></canvas>
-              <div class="sig-controls">
-                <button type="button" class="secondary" onclick="userPad.clear()">Clear</button>
-              </div>
+              <label>Signature (Click to Sign)</label>
+              <div class="sigBox" id="userSigBox">Click to Sign</div>
             </div>
           </div>
         </div>
@@ -169,11 +108,8 @@
             <div class="col"><label>Name</label><input type="text" id="engName"/></div>
             <div class="col"><label>Code</label><input type="text" id="engCode"/></div>
             <div class="col">
-              <label>Signature</label>
-              <canvas id="engSig" class="sig" width="250" height="80"></canvas>
-              <div class="sig-controls">
-                <button type="button" class="secondary" onclick="engPad.clear()">Clear</button>
-              </div>
+              <label>Signature (Click to Sign)</label>
+              <div class="sigBox" id="engSigBox">Click to Sign</div>
             </div>
           </div>
         </div>
@@ -192,6 +128,17 @@
     </div>
   </div>
 
+  <!-- Signature Modal -->
+  <div id="sigModal" class="modal">
+    <div class="modalContent">
+      <canvas id="sigCanvas"></canvas>
+      <div class="modalBtns">
+        <button class="secondary" onclick="clearModal()">Clear</button>
+        <button onclick="saveSignature()">Save</button>
+      </div>
+    </div>
+  </div>
+
   <!-- LIBS -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -201,11 +148,30 @@
     // Auto Form Number
     document.getElementById("formNo").innerText = "JIMSH-NK-" + Date.now();
 
-    // Signature pads
-    const userPad = new SignaturePad(document.getElementById("userSig"));
-    const engPad = new SignaturePad(document.getElementById("engSig"));
+    // Signature Modal
+    const sigModal = document.getElementById("sigModal");
+    const sigCanvas = document.getElementById("sigCanvas");
+    let sigPad, activeTarget;
 
-    // Auto downtime calculation
+    function openModal(target){
+      sigModal.style.display="flex";
+      sigCanvas.width = sigModal.offsetWidth*0.9;
+      sigCanvas.height = sigModal.offsetHeight*0.7;
+      sigPad = new SignaturePad(sigCanvas);
+      activeTarget = target;
+    }
+    function clearModal(){sigPad.clear();}
+    function saveSignature(){
+      if(sigPad.isEmpty()){alert("Please sign before saving.");return;}
+      const dataUrl = sigPad.toDataURL();
+      activeTarget.innerHTML = `<img src="${dataUrl}" width="120"/>`;
+      activeTarget.dataset.sig = dataUrl;
+      sigModal.style.display="none";
+    }
+    document.getElementById("userSigBox").onclick=()=>openModal(document.getElementById("userSigBox"));
+    document.getElementById("engSigBox").onclick=()=>openModal(document.getElementById("engSigBox"));
+
+    // Downtime
     function calcDowntime(){
       const startDate = complaintDate.value;
       const startTime = complaintTime.value;
@@ -217,16 +183,18 @@
         if(end > start){
           let diffMs = end - start;
           let hours = Math.floor(diffMs/1000/60/60);
-          let mins = Math.floor((diffMs/1000/60) % 60);
+          let mins = Math.floor((diffMs/1000/60)%60);
           downtime.value = hours+"h "+mins+"m";
         }
       }
     }
 
-    // Render preview with all design
+    // Render preview
     function renderPreview(){
-      const prev = document.getElementById("previewArea");
-      prev.innerHTML = `
+      const prev=document.getElementById("previewArea");
+      const userSig=document.getElementById("userSigBox").dataset.sig;
+      const engSig=document.getElementById("engSigBox").dataset.sig;
+      prev.innerHTML=`
         <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
         <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
         <div class="formNo">Form No: ${formNo.innerText}</div>
@@ -243,25 +211,24 @@
           <p>Repaired by: ${repairedBy.value} | Spares: ${spares.value} | Cause: ${cause.value}</p>
           <h3>User Department</h3>
           <p>${userDept.value} (${userCode.value})</p>
-          ${!userPad.isEmpty()?'<img src="'+userPad.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
+          ${userSig?'<img src="'+userSig+'" width="120"/>':'<i>No Signature</i>'}
           <h3>Engineer</h3>
           <p>${engName.value} (${engCode.value})</p>
-          ${!engPad.isEmpty()?'<img src="'+engPad.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
-        </div>
-      `;
+          ${engSig?'<img src="'+engSig+'" width="120"/>':'<i>No Signature</i>'}
+        </div>`;
       return prev;
     }
 
-    // Download PDF
+    // PDF
     async function downloadPDF(){
-      const preview = renderPreview();
+      const preview=renderPreview();
       await new Promise(r=>setTimeout(r,150));
-      const canvas = await html2canvas(preview,{scale:2});
-      const imgData = canvas.toDataURL("image/png");
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF("p","mm","a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
+      const canvas=await html2canvas(preview,{scale:2});
+      const imgData=canvas.toDataURL("image/png");
+      const {jsPDF}=window.jspdf;
+      const pdf=new jsPDF("p","mm","a4");
+      const pageWidth=pdf.internal.pageSize.getWidth();
+      const pageHeight=pdf.internal.pageSize.getHeight();
       pdf.addImage(imgData,"PNG",0,0,pageWidth,pageHeight);
       pdf.save(formNo.innerText+".pdf");
     }
