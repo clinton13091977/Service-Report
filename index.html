@@ -21,8 +21,11 @@
     button.secondary{background:#666}
     /* force preview to A4 ratio */
     #previewArea{width:210mm;min-height:297mm;max-height:297mm;margin:0 auto;padding:10mm;box-sizing:border-box;border:1px solid #ddd;overflow:hidden;background:#fff}
+    #previewArea h1{font-size:16px;margin:0;text-align:center}
+    #previewArea h2{font-size:13px;margin:2px 0 10px;text-align:center}
     #previewArea h3{margin-top:8px;margin-bottom:4px;font-size:13px;border-bottom:1px solid #ddd}
     #previewArea p{font-size:12px;margin:2px 0}
+    #previewArea .formNo{text-align:center;margin-bottom:10px;font-size:12px}
     @media(max-width:700px){#previewArea{width:100%;min-height:auto;}}
   </style>
 </head>
@@ -112,13 +115,16 @@
     function renderPreview(){
       const prev = document.getElementById("previewArea");
       prev.innerHTML = `
+        <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
+        <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+        <div class="formNo"><strong>Form No:</strong> ${document.getElementById("formNo").innerText}</div>
         <h3>Complaint Info</h3>
         <p>Date: ${complaintDate.value} | Time: ${complaintTime.value} | Dept: ${department.value}</p>
         <h3>Equipment</h3>
         <p>${equipment.value} | Model: ${model.value} | Make: ${make.value} | SN: ${serial.value}</p>
         <h3>Problem & Resolution</h3>
-        <p>Problem: ${problem.value}</p>
-        <p>Action: ${action.value}</p>
+        <p><b>Problem:</b> ${problem.value}</p>
+        <p><b>Action:</b> ${action.value}</p>
         <h3>Completion</h3>
         <p>Finish: ${finishDate.value} ${finishTime.value} | Downtime: ${downtime.value}</p>
         <p>Repaired by: ${repairedBy.value} | Spares: ${spares.value} | Cause: ${cause.value}</p>
