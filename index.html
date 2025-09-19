@@ -192,7 +192,7 @@
       </div>
     </div>
 
-    <p class="muted" style="margin-top:10px;font-size:13px">Tip: On mobile the signature canvases accept touch. Fill fields, sign, then press Download PDF.</p>
+    <p class="muted" style="margin-top:10px;font-size:13px">Tip: On mobile the signature canvases accept touch. Fill fields, sign, then press Download PDF to open the PDF viewer on your device.</p>
   </div>
 
   <!-- Libraries -->
@@ -325,25 +325,68 @@
     }
 
     // Download PDF using html2canvas + jsPDF
+    // This version splits a tall canvas into multiple A4 pages and opens the PDF in a new tab for viewing on mobile.
     async function downloadPDF(){
       const preview = renderPreview();
-      // wait a tick for images (signatures) to be ready
-      await new Promise(r=>setTimeout(r,150));
-      const scale = 2; // higher quality
-      const canvas = await html2canvas(preview, {scale, useCORS:true, logging:false});
-      const imgData = canvas.toDataURL('image/png');
+      // wait a tick for images (signatures) to render
+      await new Promise(r=>setTimeout(r,200));
+
+      // higher quality render for crisp text/signatures (adjust scale if needed)
+      const scale = Math.min(2, window.devicePixelRatio || 2);
+      const canvas = await html2canvas(preview, {scale, useCORS:true, logging:false, allowTaint: true});
+      const imgDataFull = canvas.toDataURL('image/png');
+
       const { jsPDF } = window.jspdf;
-      // A4 size in mm
       const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      // convert canvas size to mm
-      const imgProps = { width: canvas.width, height: canvas.height };
-      const mmPerPx = pageWidth / imgProps.width;
-      const imgHeightMM = imgProps.height * mmPerPx;
-      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeightMM);
-      const filename = document.getElementById('formNo').innerText + '.pdf';
-      pdf.save(filename);
+      const pageWidthMM = pdf.internal.pageSize.getWidth();
+      const pageHeightMM = pdf.internal.pageSize.getHeight();
+
+      // compute px per mm based on canvas width -> pageWidthMM
+      const pxToMm = pageWidthMM / canvas.width; // mm per px
+      // page height in canvas pixels
+      const pageHeightPx = Math.floor(pageHeightMM / pxToMm);
+
+      // If the canvas fits in one page, just add it
+      if (canvas.height <= pageHeightPx) {
+        pdf.addImage(imgDataFull, 'PNG', 0, 0, pageWidthMM, canvas.height * pxToMm);
+      } else {
+        // split into slices
+        let y = 0;
+        while (y < canvas.height) {
+          const sliceHeight = Math.min(pageHeightPx, canvas.height - y);
+          // create temporary canvas to hold the slice
+          const tmpCanvas = document.createElement('canvas');
+          tmpCanvas.width = canvas.width;
+          tmpCanvas.height = sliceHeight;
+          const ctx = tmpCanvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0,0,tmpCanvas.width,tmpCanvas.height);
+          // draw slice from original canvas
+          ctx.drawImage(canvas, 0, y, canvas.width, sliceHeight, 0, 0, canvas.width, sliceHeight);
+          const sliceData = tmpCanvas.toDataURL('image/png');
+          const sliceHeightMM = sliceHeight * pxToMm;
+
+          if (y > 0) pdf.addPage();
+          pdf.addImage(sliceData, 'PNG', 0, 0, pageWidthMM, sliceHeightMM);
+
+          y += sliceHeight;
+        }
+      }
+
+      // Create blob and open in new window/tab so mobile shows it in viewer (rather than forcing download)
+      try {
+        const pdfBlob = pdf.output('blob');
+        const url = URL.createObjectURL(pdfBlob);
+        // open in new tab; mobile browsers typically open PDF viewer when a PDF URL is opened
+        const newWin = window.open(url, '_blank');
+        if (!newWin) {
+          // popup blocked - fallback to save
+          pdf.save(document.getElementById('formNo').innerText + '.pdf');
+        }
+      } catch (err) {
+        // fallback
+        pdf.save(document.getElementById('formNo').innerText + '.pdf');
+      }
     }
 
     function resetForm(){
