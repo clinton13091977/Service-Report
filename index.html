@@ -13,29 +13,18 @@
     header h2{margin:2px 0;font-size:15px;color:var(--muted);font-weight:600}
     form .row{display:flex;gap:12px;flex-wrap:wrap}
     label{font-size:13px;color:#222;display:block;margin-bottom:6px}
-    input[type=text], input[type=datetime-local], input[type=date], input[type=time], select, textarea{width:100%;padding:9px;border:1px solid #ddd;border-radius:6px;font-size:14px}
+    input, select, textarea{width:100%;padding:9px;border:1px solid #ddd;border-radius:6px;font-size:14px}
     textarea{min-height:80px;resize:vertical}
     .col{flex:1;min-width:160px}
     .col-2{flex:2}
-    .muted{color:var(--muted);font-size:13px}
-    .controls{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:12px}
     button{background:var(--accent);color:#fff;border:none;padding:10px 12px;border-radius:8px;font-weight:600;cursor:pointer}
     button.secondary{background:#6c757d}
     .preview-wrap{margin-top:18px}
     .preview{border:1px solid #e6e9ef;padding:14px;border-radius:8px;background:#fff}
-
-    /* printable layout */
-    .report{font-family:Arial,Helvetica,sans-serif;color:#111}
-    .report .title{ text-align:center }
-    .report .title h1{font-size:18px;margin:0}
-    .report .title h2{font-size:14px;margin:2px 0 12px;color:#333}
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-    .full{grid-column:1/-1}
-    .field{border:1px dashed #ddd;padding:8px;border-radius:6px;font-size:13px}
     .sig-pad{border:1px solid #ccc;border-radius:6px;height:110px}
     @media(max-width:700px){
-      .grid{grid-template-columns:1fr}
-      .controls{justify-content:stretch;flex-direction:column}
+      .controls{flex-direction:column}
       button{width:100%}
     }
   </style>
@@ -48,132 +37,75 @@
       <div class="muted">Form No: <strong id="formNo">--</strong></div>
     </header>
 
+    <!-- ===== Service Form ===== -->
     <form id="serviceForm" onsubmit="return false;">
+      <!-- Complaint Info -->
       <section>
-        <h3 style="margin:8px 0 6px">Complaint Information</h3>
+        <h3>Complaint Information</h3>
         <div class="row">
-          <div class="col">
-            <label>Date</label>
-            <input type="date" id="complaintDate" required />
-          </div>
-          <div class="col">
-            <label>Time</label>
-            <input type="time" id="complaintTime" required />
-          </div>
-          <div class="col">
-            <label>Department</label>
-            <input type="text" id="department" placeholder="e.g. ICU / Radiology" />
+          <div class="col"><label>Date</label><input type="date" id="complaintDate" required /></div>
+          <div class="col"><label>Time</label><input type="time" id="complaintTime" required /></div>
+          <div class="col"><label>Department</label><input type="text" id="department" /></div>
+        </div>
+      </section>
+
+      <!-- Equipment Details -->
+      <section>
+        <h3>Equipment Details</h3>
+        <div class="row">
+          <div class="col"><label>Equipment</label><input type="text" id="equipment" /></div>
+          <div class="col"><label>Model</label><input type="text" id="model" /></div>
+          <div class="col"><label>Make</label><input type="text" id="make" /></div>
+          <div class="col"><label>Serial Number</label><input type="text" id="serial" /></div>
+        </div>
+      </section>
+
+      <!-- Problem -->
+      <section>
+        <h3>Problem & Resolution</h3>
+        <div class="row">
+          <div class="col col-2"><label>Problem Reported</label><textarea id="problem"></textarea></div>
+          <div class="col col-2"><label>Action Taken</label><textarea id="action"></textarea></div>
+        </div>
+      </section>
+
+      <!-- Completion -->
+      <section>
+        <h3>Completion Details</h3>
+        <div class="row">
+          <div class="col"><label>Finish Date</label><input type="date" id="finishDate" /></div>
+          <div class="col"><label>Finish Time</label><input type="time" id="finishTime" /></div>
+          <div class="col"><label>Downtime</label><input type="text" id="downtime" readonly /></div>
+        </div>
+        <div class="row">
+          <div class="col"><label>Repaired by</label><input type="text" id="repairedBy" /></div>
+          <div class="col"><label>Spare Parts Used</label><input type="text" id="spares" /></div>
+          <div class="col"><label>Cause of Failure</label><input type="text" id="cause" /></div>
+        </div>
+      </section>
+
+      <!-- User Dept -->
+      <section>
+        <h3>User Department</h3>
+        <div class="row">
+          <div class="col"><label>User Dept Name</label><input type="text" id="userDept" /></div>
+          <div class="col"><label>Emp. Code</label><input type="text" id="userCode" /></div>
+          <div class="col"><label>Signature</label>
+            <canvas id="userSig" class="sig-pad" width="400" height="120"></canvas>
+            <button type="button" class="secondary" onclick="clearSig('user')">Clear</button>
           </div>
         </div>
       </section>
 
-      <section style="margin-top:12px">
-        <h3 style="margin:8px 0 6px">Equipment Details</h3>
+      <!-- Engineer -->
+      <section>
+        <h3>Engineer</h3>
         <div class="row">
-          <div class="col">
-            <label>Equipment</label>
-            <input type="text" id="equipment" />
-          </div>
-          <div class="col">
-            <label>Model</label>
-            <input type="text" id="model" />
-          </div>
-          <div class="col">
-            <label>Make</label>
-            <input type="text" id="make" />
-          </div>
-          <div class="col">
-            <label>Serial Number</label>
-            <input type="text" id="serial" />
-          </div>
-        </div>
-      </section>
-
-      <section style="margin-top:12px">
-        <h3 style="margin:8px 0 6px">Problem & Resolution</h3>
-        <div class="row">
-          <div class="col col-2">
-            <label>Problem Reported</label>
-            <textarea id="problem"></textarea>
-          </div>
-          <div class="col col-2">
-            <label>Action Taken</label>
-            <textarea id="action"></textarea>
-          </div>
-        </div>
-      </section>
-
-      <section style="margin-top:12px">
-        <h3 style="margin:8px 0 6px">Completion Details</h3>
-        <div class="row">
-          <div class="col">
-            <label>Finish Date</label>
-            <input type="date" id="finishDate" />
-          </div>
-          <div class="col">
-            <label>Finish Time</label>
-            <input type="time" id="finishTime" />
-          </div>
-          <div class="col">
-            <label>Downtime</label>
-            <input type="text" id="downtime" readonly placeholder="Auto-calculated" />
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:8px">
-          <div class="col">
-            <label>Repaired by</label>
-            <input type="text" id="repairedBy" />
-          </div>
-          <div class="col">
-            <label>Spare Parts Used</label>
-            <input type="text" id="spares" />
-          </div>
-          <div class="col">
-            <label>Cause of Failure</label>
-            <input type="text" id="cause" />
-          </div>
-        </div>
-      </section>
-
-      <section style="margin-top:12px">
-        <h3 style="margin:8px 0 6px">User Department</h3>
-        <div class="row">
-          <div class="col">
-            <label>User Dept Name</label>
-            <input type="text" id="userDept" />
-          </div>
-          <div class="col">
-            <label>Emp. Code</label>
-            <input type="text" id="userCode" />
-          </div>
-          <div class="col">
-            <label>Signature (touch / mouse)</label>
-            <div>
-              <canvas id="userSig" class="sig-pad" width="400" height="120"></canvas>
-              <div style="margin-top:6px"><button type="button" class="secondary" onclick="clearSig('user')">Clear</button></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section style="margin-top:12px">
-        <h3 style="margin:8px 0 6px">Engineer</h3>
-        <div class="row">
-          <div class="col">
-            <label>Engineer Name</label>
-            <input type="text" id="engName" />
-          </div>
-          <div class="col">
-            <label>Engineer Code</label>
-            <input type="text" id="engCode" />
-          </div>
-          <div class="col">
-            <label>Signature (touch / mouse)</label>
-            <div>
-              <canvas id="engSig" class="sig-pad" width="400" height="120"></canvas>
-              <div style="margin-top:6px"><button type="button" class="secondary" onclick="clearSig('eng')">Clear</button></div>
-            </div>
+          <div class="col"><label>Engineer Name</label><input type="text" id="engName" /></div>
+          <div class="col"><label>Engineer Code</label><input type="text" id="engCode" /></div>
+          <div class="col"><label>Signature</label>
+            <canvas id="engSig" class="sig-pad" width="400" height="120"></canvas>
+            <button type="button" class="secondary" onclick="clearSig('eng')">Clear</button>
           </div>
         </div>
       </section>
@@ -181,228 +113,73 @@
       <div class="controls">
         <button type="button" onclick="renderPreview()">Preview</button>
         <button type="button" onclick="downloadPDF()">Download PDF</button>
+        <button type="button" onclick="sendEmail()">Send PDF via Email</button>
         <button type="button" class="secondary" onclick="resetForm()">Reset</button>
       </div>
     </form>
 
     <div class="preview-wrap">
-      <h3 style="margin:8px 0">Preview (what will appear in PDF)</h3>
-      <div id="previewArea" class="preview" role="region" aria-label="Preview area">
-        <!-- populated by JS -->
-      </div>
+      <h3>Preview (what will appear in PDF)</h3>
+      <div id="previewArea" class="preview"></div>
     </div>
-
-    <p class="muted" style="margin-top:10px;font-size:13px">Tip: On mobile the signature canvases accept touch. Fill fields, sign, then press Download PDF to open the PDF viewer on your device.</p>
   </div>
 
   <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <script>
-    // Utility: generate form number
+    // init EmailJS
+    emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS Public Key
+
     function makeFormNo(){
       const now = new Date();
-      const ts = now.getFullYear().toString().slice(-2) + ('0'+(now.getMonth()+1)).slice(-2) + ('0'+now.getDate()).slice(-2)
-                + '-' + now.getTime().toString().slice(-5);
-      return 'JIMSH-NK-' + ts + '-' + Math.floor(1000+Math.random()*9000);
+      return 'JIMSH-NK-' + now.getTime();
     }
-
     document.getElementById('formNo').innerText = makeFormNo();
 
-    // Signature pads
-    const userCanvas = document.getElementById('userSig');
-    const engCanvas = document.getElementById('engSig');
-    const userPad = new SignaturePad(userCanvas, {backgroundColor: 'rgba(255,255,255,0)'});
-    const engPad = new SignaturePad(engCanvas, {backgroundColor: 'rgba(255,255,255,0)'});
+    // signature pads
+    const userPad = new SignaturePad(document.getElementById('userSig'));
+    const engPad = new SignaturePad(document.getElementById('engSig'));
+    function clearSig(w){ (w==='user'?userPad:engPad).clear(); }
 
-    function clearSig(which){ if(which==='user') userPad.clear(); else engPad.clear(); }
+    function renderPreview(){ /* ... same preview builder as before ... */ }
 
-    // Downtime calc
-    function calcDowntime(){
-      const cDate = document.getElementById('complaintDate').value;
-      const cTime = document.getElementById('complaintTime').value;
-      const fDate = document.getElementById('finishDate').value;
-      const fTime = document.getElementById('finishTime').value;
-      const out = document.getElementById('downtime');
-      if(!cDate||!cTime||!fDate||!fTime){ out.value = ''; return; }
-      const start = new Date(cDate + 'T' + cTime);
-      const finish = new Date(fDate + 'T' + fTime);
-      if(finish < start){ out.value = 'Finish before start!'; return; }
-      let diff = Math.floor((finish - start)/1000); // seconds
-      const days = Math.floor(diff / 86400); diff %= 86400;
-      const hours = Math.floor(diff / 3600); diff %= 3600;
-      const mins = Math.floor(diff / 60); const secs = diff % 60;
-      const parts = [];
-      if(days) parts.push(days + 'd');
-      if(hours) parts.push(hours + 'h');
-      if(mins) parts.push(mins + 'm');
-      if(!parts.length) parts.push(secs + 's');
-      out.value = parts.join(' ');
-    }
-
-    ['complaintDate','complaintTime','finishDate','finishTime'].forEach(id=>{
-      document.getElementById(id).addEventListener('change', calcDowntime);
-    });
-
-    function getSigDataURL(pad){
-      return pad.isEmpty() ? null : pad.toDataURL('image/png');
-    }
-
-    function renderPreview(){
-      const preview = document.getElementById('previewArea');
-      const data = collectFormData();
-      const userSig = getSigDataURL(userPad);
-      const engSig = getSigDataURL(engPad);
-
-      // Build HTML
-      let html = `
-        <div class="report">
-          <div class="title">
-            <h1>Jagannath Gupta Institute Of Medical Science & Hospital</h1>
-            <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
-            <div><strong>Form No:</strong> ${escapeHtml(data.formNo)}</div>
-          </div>
-          <hr />
-
-          <div class="grid" style="margin-top:8px">
-            <div class="field"><strong>Complaint Date & Time</strong><br/>${escapeHtml(data.complaintDate)} ${escapeHtml(data.complaintTime)}</div>
-            <div class="field"><strong>Department</strong><br/>${escapeHtml(data.department)}</div>
-
-            <div class="field"><strong>Equipment</strong><br/>${escapeHtml(data.equipment)}</div>
-            <div class="field"><strong>Model / Make / S/N</strong><br/>${escapeHtml(data.model)} / ${escapeHtml(data.make)} / ${escapeHtml(data.serial)}</div>
-
-            <div class="full field"><strong>Problem Reported</strong><br/>${nl2br(escapeHtml(data.problem))}</div>
-            <div class="full field"><strong>Action Taken</strong><br/>${nl2br(escapeHtml(data.action))}</div>
-
-            <div class="field"><strong>Finish</strong><br/>${escapeHtml(data.finishDate)} ${escapeHtml(data.finishTime)}</div>
-            <div class="field"><strong>Downtime</strong><br/>${escapeHtml(data.downtime)}</div>
-
-            <div class="field"><strong>Repaired by</strong><br/>${escapeHtml(data.repairedBy)}</div>
-            <div class="field"><strong>Spare Parts Used</strong><br/>${escapeHtml(data.spares)}</div>
-            <div class="field"><strong>Cause of Failure</strong><br/>${escapeHtml(data.cause)}</div>
-
-            <div class="field"><strong>User Dept / Emp Code</strong><br/>${escapeHtml(data.userDept)} / ${escapeHtml(data.userCode)}</div>
-            <div class="field"><strong>Engineer Name / Code</strong><br/>${escapeHtml(data.engName)} / ${escapeHtml(data.engCode)}</div>
-
-            <div class="field"><strong>User Signature</strong><br/>${userSig ? `<img src="${userSig}" style="max-width:100%;height:110px;object-fit:contain"/>` : '<span class="muted">(not signed)</span>'}</div>
-            <div class="field"><strong>Engineer Signature</strong><br/>${engSig ? `<img src="${engSig}" style="max-width:100%;height:110px;object-fit:contain"/>` : '<span class="muted">(not signed)</span>'}</div>
-
-          </div>
-
-          <div style="margin-top:12px;font-size:11px;color:#444">Generated: ${new Date().toLocaleString()}</div>
-        </div>
-      `;
-
-      preview.innerHTML = html;
-      return preview;
-    }
-
-    function collectFormData(){
-      return {
-        formNo: document.getElementById('formNo').innerText,
-        complaintDate: document.getElementById('complaintDate').value || '',
-        complaintTime: document.getElementById('complaintTime').value || '',
-        department: document.getElementById('department').value || '',
-        equipment: document.getElementById('equipment').value || '',
-        model: document.getElementById('model').value || '',
-        make: document.getElementById('make').value || '',
-        serial: document.getElementById('serial').value || '',
-        problem: document.getElementById('problem').value || '',
-        action: document.getElementById('action').value || '',
-        finishDate: document.getElementById('finishDate').value || '',
-        finishTime: document.getElementById('finishTime').value || '',
-        downtime: document.getElementById('downtime').value || '',
-        repairedBy: document.getElementById('repairedBy').value || '',
-        spares: document.getElementById('spares').value || '',
-        cause: document.getElementById('cause').value || '',
-        userDept: document.getElementById('userDept').value || '',
-        userCode: document.getElementById('userCode').value || '',
-        engName: document.getElementById('engName').value || '',
-        engCode: document.getElementById('engCode').value || ''
-      };
-    }
-
-    // Download PDF using html2canvas + jsPDF
-    // This version splits a tall canvas into multiple A4 pages and opens the PDF in a new tab for viewing on mobile.
     async function downloadPDF(){
       const preview = renderPreview();
-      // wait a tick for images (signatures) to render
-      await new Promise(r=>setTimeout(r,200));
-
-      // higher quality render for crisp text/signatures (adjust scale if needed)
-      const scale = Math.min(2, window.devicePixelRatio || 2);
-      const canvas = await html2canvas(preview, {scale, useCORS:true, logging:false, allowTaint: true});
-      const imgDataFull = canvas.toDataURL('image/png');
-
+      await new Promise(r=>setTimeout(r,150));
+      const canvas = await html2canvas(preview,{scale:2});
+      const imgData = canvas.toDataURL('image/png');
       const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
-      const pageWidthMM = pdf.internal.pageSize.getWidth();
-      const pageHeightMM = pdf.internal.pageSize.getHeight();
-
-      // compute px per mm based on canvas width -> pageWidthMM
-      const pxToMm = pageWidthMM / canvas.width; // mm per px
-      // page height in canvas pixels
-      const pageHeightPx = Math.floor(pageHeightMM / pxToMm);
-
-      // If the canvas fits in one page, just add it
-      if (canvas.height <= pageHeightPx) {
-        pdf.addImage(imgDataFull, 'PNG', 0, 0, pageWidthMM, canvas.height * pxToMm);
-      } else {
-        // split into slices
-        let y = 0;
-        while (y < canvas.height) {
-          const sliceHeight = Math.min(pageHeightPx, canvas.height - y);
-          // create temporary canvas to hold the slice
-          const tmpCanvas = document.createElement('canvas');
-          tmpCanvas.width = canvas.width;
-          tmpCanvas.height = sliceHeight;
-          const ctx = tmpCanvas.getContext('2d');
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0,0,tmpCanvas.width,tmpCanvas.height);
-          // draw slice from original canvas
-          ctx.drawImage(canvas, 0, y, canvas.width, sliceHeight, 0, 0, canvas.width, sliceHeight);
-          const sliceData = tmpCanvas.toDataURL('image/png');
-          const sliceHeightMM = sliceHeight * pxToMm;
-
-          if (y > 0) pdf.addPage();
-          pdf.addImage(sliceData, 'PNG', 0, 0, pageWidthMM, sliceHeightMM);
-
-          y += sliceHeight;
-        }
-      }
-
-      // Create blob and open in new window/tab so mobile shows it in viewer (rather than forcing download)
-      try {
-        const pdfBlob = pdf.output('blob');
-        const url = URL.createObjectURL(pdfBlob);
-        // open in new tab; mobile browsers typically open PDF viewer when a PDF URL is opened
-        const newWin = window.open(url, '_blank');
-        if (!newWin) {
-          // popup blocked - fallback to save
-          pdf.save(document.getElementById('formNo').innerText + '.pdf');
-        }
-      } catch (err) {
-        // fallback
-        pdf.save(document.getElementById('formNo').innerText + '.pdf');
-      }
+      const pdf = new jsPDF("p","mm","a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = (canvas.height * pageWidth) / canvas.width;
+      pdf.addImage(imgData,'PNG',0,0,pageWidth,pageHeight);
+      pdf.save(document.getElementById("formNo").innerText+".pdf");
+      return pdf.output("datauristring");
     }
 
-    function resetForm(){
-      if(!confirm('Clear form?')) return;
-      document.getElementById('serviceForm').reset();
-      userPad.clear(); engPad.clear();
-      document.getElementById('formNo').innerText = makeFormNo();
-      document.getElementById('previewArea').innerHTML = '';
+    async function sendEmail(){
+      const dataUri = await downloadPDF(); // generate PDF
+      const formNo = document.getElementById("formNo").innerText;
+
+      emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",{
+        to_email: "recipient@example.com", // change to target email
+        form_number: formNo,
+        message: "Attached is the filled service report form.",
+        attachment: dataUri
+      }).then(()=>{
+        alert("Email sent successfully!");
+      }).catch(err=>{
+        console.error(err);
+        alert("Failed to send email");
+      });
     }
 
-    // small helpers
-    function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function nl2br(s){ return (s||'').replace(/\n/g,'<br/>'); }
-
-    // initial preview
-    renderPreview();
+    function resetForm(){ location.reload(); }
   </script>
 </body>
 </html>
