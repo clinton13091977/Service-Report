@@ -64,7 +64,7 @@
     textarea { resize:vertical;min-height:60px }
     .sig {
       border:1px solid #999;border-radius:4px;
-      height:80px;background:#fff
+      height:80px;background:#fff;cursor:pointer;
     }
     .sig-controls { margin-top:6px }
     .controls {
@@ -75,7 +75,7 @@
       background:#0b5ed7;color:#fff;font-size:13px;cursor:pointer
     }
     button.secondary { background:#555 }
-    /* Preview area styled like form */
+    /* A4 preview */
     #previewArea {
       width:210mm;min-height:297mm;
       margin:0 auto;padding:12mm;box-sizing:border-box;
@@ -95,14 +95,23 @@
       border-bottom:2px solid #0b5ed7;padding-bottom:4px;
     }
     #previewArea .formBox { border:2px solid #0b5ed7;padding:10px;border-radius:8px }
-    #previewArea .section { margin:12px 0; padding:10px; border:1px solid #ccc; border-radius:6px; background:#fafafa; }
     #previewArea h3 {
       font-size:13px;margin-top:8px;margin-bottom:4px;
       color:#fff;background:#0b5ed7;padding:4px;border-radius:4px;
     }
-    #previewArea p { font-size:12px;margin:2px 0 }
+    #previewArea p { font-size:12px;margin:2px 0;line-height:1.4 }
     img.sig-img { border:1px solid #000; margin-top:4px }
-    @media(max-width:700px){ #previewArea{width:100%;min-height:auto;} }
+    /* Fullscreen signature modal */
+    #sigModal {
+      display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center;
+    }
+    #sigModalContent {
+      background:#fff;padding:20px;border-radius:10px;max-width:95%;max-height:90%;
+      display:flex;flex-direction:column;align-items:center;
+    }
+    #sigModal canvas { border:1px solid #000;width:100%;height:300px }
+    #sigModal .modal-controls { margin-top:10px;display:flex;gap:10px }
   </style>
 </head>
 <body>
@@ -163,8 +172,8 @@
             <div class="col"><label>Name</label><input type="text" id="userDept"/></div>
             <div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
             <div class="col">
-              <label>Signature</label>
-              <canvas id="userSig" class="sig" width="250" height="80"></canvas>
+              <label>Signature (Click to sign)</label>
+              <canvas id="userSig" class="sig" width="250" height="80" onclick="openSigModal('user')"></canvas>
               <div class="sig-controls">
                 <button type="button" class="secondary" onclick="userPad.clear()">Clear</button>
               </div>
@@ -178,8 +187,8 @@
             <div class="col"><label>Name</label><input type="text" id="engName"/></div>
             <div class="col"><label>Code</label><input type="text" id="engCode"/></div>
             <div class="col">
-              <label>Signature</label>
-              <canvas id="engSig" class="sig" width="250" height="80"></canvas>
+              <label>Signature (Click to sign)</label>
+              <canvas id="engSig" class="sig" width="250" height="80" onclick="openSigModal('eng')"></canvas>
               <div class="sig-controls">
                 <button type="button" class="secondary" onclick="engPad.clear()">Clear</button>
               </div>
@@ -201,20 +210,65 @@
     </div>
   </div>
 
+  <!-- Signature Modal -->
+  <div id="sigModal">
+    <div id="sigModalContent">
+      <canvas id="modalSig"></canvas>
+      <div class="modal-controls">
+        <button type="button" onclick="modalPad.clear()">Clear</button>
+        <button type="button" onclick="saveModalSig()">Save</button>
+        <button type="button" class="secondary" onclick="closeSigModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- LIBS -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
-    // Auto Form Number
     document.getElementById("formNo").innerText = "JIMSH-NK-" + Date.now();
 
-    // Signature pads
     const userPad = new SignaturePad(document.getElementById("userSig"));
     const engPad = new SignaturePad(document.getElementById("engSig"));
 
-    // Auto downtime calculation
+    // Modal signature pad
+    let currentSig = null;
+    const modalCanvas = document.getElementById("modalSig");
+    const modalPad = new SignaturePad(modalCanvas);
+
+    function openSigModal(who){
+      currentSig = who;
+      modalPad.clear();
+      document.getElementById("sigModal").style.display="flex";
+      resizeModalCanvas();
+    }
+    function closeSigModal(){
+      document.getElementById("sigModal").style.display="none";
+    }
+    function saveModalSig(){
+      if(currentSig==="user"){
+        const ctx = userSig.getContext("2d");
+        ctx.clearRect(0,0,userSig.width,userSig.height);
+        const img = new Image();
+        img.onload = ()=>ctx.drawImage(img,0,0,userSig.width,userSig.height);
+        img.src = modalPad.toDataURL();
+      } else if(currentSig==="eng"){
+        const ctx = engSig.getContext("2d");
+        ctx.clearRect(0,0,engSig.width,engSig.height);
+        const img = new Image();
+        img.onload = ()=>ctx.drawImage(img,0,0,engSig.width,engSig.height);
+        img.src = modalPad.toDataURL();
+      }
+      closeSigModal();
+    }
+    function resizeModalCanvas(){
+      modalCanvas.width = modalCanvas.offsetWidth;
+      modalCanvas.height = 300;
+      modalPad.clear();
+    }
+
     function calcDowntime(){
       const startDate = complaintDate.value;
       const startTime = complaintTime.value;
@@ -232,7 +286,6 @@
       }
     }
 
-    // Render preview exactly like form
     function renderPreview(){
       const prev = document.getElementById("previewArea");
       prev.innerHTML = `
@@ -240,61 +293,41 @@
         <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
         <div class="formNo">Form No: ${formNo.innerText}</div>
         <div class="formBox">
-
-          <div class="section">
-            <h3>Complaint Information</h3>
-            <p><b>Date:</b> ${complaintDate.value}</p>
-            <p><b>Time:</b> ${complaintTime.value}</p>
-            <p><b>Department:</b> ${department.value}</p>
-          </div>
-
-          <div class="section">
-            <h3>Equipment Details</h3>
-            <p><b>Equipment:</b> ${equipment.value}</p>
-            <p><b>Model:</b> ${model.value}</p>
-            <p><b>Make:</b> ${make.value}</p>
-            <p><b>Serial No:</b> ${serial.value}</p>
-          </div>
-
-          <div class="section">
-            <h3>Problem & Resolution</h3>
-            <p><b>Problem Reported:</b> ${problem.value}</p>
-            <p><b>Action Taken:</b> ${action.value}</p>
-          </div>
-
-          <div class="section">
-            <h3>Completion Details</h3>
-            <p><b>Finish Date:</b> ${finishDate.value}</p>
-            <p><b>Finish Time:</b> ${finishTime.value}</p>
-            <p><b>Downtime:</b> ${downtime.value}</p>
-            <p><b>Repaired by:</b> ${repairedBy.value}</p>
-            <p><b>Spare Parts Used:</b> ${spares.value}</p>
-            <p><b>Cause of Failure:</b> ${cause.value}</p>
-          </div>
-
-          <div class="section">
-            <h3>User Department</h3>
-            <p><b>Name:</b> ${userDept.value}</p>
-            <p><b>Emp Code:</b> ${userCode.value}</p>
-            ${!userPad.isEmpty()?'<img class="sig-img" src="'+userPad.toDataURL()+'" width="150"/>':'<i>No Signature</i>'}
-          </div>
-
-          <div class="section">
-            <h3>Engineer</h3>
-            <p><b>Name:</b> ${engName.value}</p>
-            <p><b>Code:</b> ${engCode.value}</p>
-            ${!engPad.isEmpty()?'<img class="sig-img" src="'+engPad.toDataURL()+'" width="150"/>':'<i>No Signature</i>'}
-          </div>
-
+          <h3>Complaint Information</h3>
+          <p>Date: ${complaintDate.value}</p>
+          <p>Time: ${complaintTime.value}</p>
+          <p>Department: ${department.value}</p>
+          <h3>Equipment Details</h3>
+          <p>Equipment: ${equipment.value}</p>
+          <p>Model: ${model.value}</p>
+          <p>Make: ${make.value}</p>
+          <p>Serial No: ${serial.value}</p>
+          <h3>Problem & Resolution</h3>
+          <p>Problem Reported: ${problem.value}</p>
+          <p>Action Taken: ${action.value}</p>
+          <h3>Completion Details</h3>
+          <p>Finish Date: ${finishDate.value}</p>
+          <p>Finish Time: ${finishTime.value}</p>
+          <p>Downtime: ${downtime.value}</p>
+          <p>Repaired by: ${repairedBy.value}</p>
+          <p>Spare Parts Used: ${spares.value}</p>
+          <p>Cause of Failure: ${cause.value}</p>
+          <h3>User Department</h3>
+          <p>Name: ${userDept.value}</p>
+          <p>Emp Code: ${userCode.value}</p>
+          ${!userPad.isEmpty()?'<img class="sig-img" src="'+userSig.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
+          <h3>Engineer</h3>
+          <p>Name: ${engName.value}</p>
+          <p>Code: ${engCode.value}</p>
+          ${!engPad.isEmpty()?'<img class="sig-img" src="'+engSig.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
         </div>
       `;
       return prev;
     }
 
-    // Download PDF with multipage support
     async function downloadPDF(){
       const preview = renderPreview();
-      await new Promise(r=>setTimeout(r,200));
+      await new Promise(r=>setTimeout(r,150));
       const canvas = await html2canvas(preview,{scale:2});
       const imgData = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
@@ -306,12 +339,11 @@
 
       let heightLeft = imgHeight;
       let position = 0;
-
-      while (heightLeft > 0) {
+      while(heightLeft > 0){
         pdf.addImage(imgData,"PNG",0,position,pageWidth,imgHeight);
         heightLeft -= pageHeight;
         position -= pageHeight;
-        if(heightLeft > 0){ pdf.addPage(); }
+        if(heightLeft > 0) pdf.addPage();
       }
       pdf.save(formNo.innerText+".pdf");
     }
