@@ -1,32 +1,29 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Biomedical Equipment Maintenance Cum Breakdown Service Report</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Service Report Form</title>
   <style>
-    :root{--accent:#0b5ed7;--muted:#666}
-    body{font-family:Inter,Segoe UI,Arial,Helvetica,sans-serif;margin:0;padding:16px;background:#f4f6fb;color:#111}
-    .container{max-width:920px;margin:0 auto;background:#fff;border-radius:10px;padding:18px;box-shadow:0 6px 18px rgba(10,20,40,0.06)}
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:10px;background:#f5f6fa;color:#111}
+    .container{max-width:900px;margin:0 auto;background:#fff;border-radius:10px;padding:15px;box-shadow:0 4px 14px rgba(0,0,0,0.08)}
     header{text-align:center;margin-bottom:12px}
-    header h1{margin:6px 0;font-size:20px}
-    header h2{margin:2px 0;font-size:15px;color:var(--muted);font-weight:600}
-    form .row{display:flex;gap:12px;flex-wrap:wrap}
-    label{font-size:13px;color:#222;display:block;margin-bottom:6px}
-    input, select, textarea{width:100%;padding:9px;border:1px solid #ddd;border-radius:6px;font-size:14px}
-    textarea{min-height:80px;resize:vertical}
-    .col{flex:1;min-width:160px}
-    .col-2{flex:2}
-    .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:12px}
-    button{background:var(--accent);color:#fff;border:none;padding:10px 12px;border-radius:8px;font-weight:600;cursor:pointer}
-    button.secondary{background:#6c757d}
-    .preview-wrap{margin-top:18px}
-    .preview{border:1px solid #e6e9ef;padding:14px;border-radius:8px;background:#fff}
-    .sig-pad{border:1px solid #ccc;border-radius:6px;height:110px}
-    @media(max-width:700px){
-      .controls{flex-direction:column}
-      button{width:100%}
-    }
+    header h1{margin:4px 0;font-size:18px}
+    header h2{margin:2px 0;font-size:14px;color:#444}
+    .row{display:flex;flex-wrap:wrap;gap:10px}
+    .col{flex:1;min-width:150px}
+    label{display:block;font-size:12px;margin-bottom:4px}
+    input,textarea{width:100%;padding:6px;font-size:13px;border:1px solid #ccc;border-radius:4px}
+    textarea{resize:vertical;min-height:60px}
+    .sig{border:1px solid #ccc;border-radius:4px;height:80px}
+    .controls{margin:10px 0;display:flex;gap:8px;flex-wrap:wrap}
+    button{padding:8px 12px;border:none;border-radius:5px;background:#0b5ed7;color:#fff;font-size:13px;cursor:pointer}
+    button.secondary{background:#666}
+    /* force preview to A4 ratio */
+    #previewArea{width:210mm;min-height:297mm;max-height:297mm;margin:0 auto;padding:10mm;box-sizing:border-box;border:1px solid #ddd;overflow:hidden;background:#fff}
+    #previewArea h3{margin-top:8px;margin-bottom:4px;font-size:13px;border-bottom:1px solid #ddd}
+    #previewArea p{font-size:12px;margin:2px 0}
+    @media(max-width:700px){#previewArea{width:100%;min-height:auto;}}
   </style>
 </head>
 <body>
@@ -34,152 +31,119 @@
     <header>
       <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
       <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
-      <div class="muted">Form No: <strong id="formNo">--</strong></div>
+      <div>Form No: <b id="formNo"></b></div>
     </header>
 
-    <!-- ===== Service Form ===== -->
+    <!-- FORM -->
     <form id="serviceForm" onsubmit="return false;">
-      <!-- Complaint Info -->
-      <section>
-        <h3>Complaint Information</h3>
-        <div class="row">
-          <div class="col"><label>Date</label><input type="date" id="complaintDate" required /></div>
-          <div class="col"><label>Time</label><input type="time" id="complaintTime" required /></div>
-          <div class="col"><label>Department</label><input type="text" id="department" /></div>
-        </div>
-      </section>
+      <h3>Complaint Information</h3>
+      <div class="row">
+        <div class="col"><label>Date</label><input type="date" id="complaintDate"/></div>
+        <div class="col"><label>Time</label><input type="time" id="complaintTime"/></div>
+        <div class="col"><label>Department</label><input type="text" id="department"/></div>
+      </div>
 
-      <!-- Equipment Details -->
-      <section>
-        <h3>Equipment Details</h3>
-        <div class="row">
-          <div class="col"><label>Equipment</label><input type="text" id="equipment" /></div>
-          <div class="col"><label>Model</label><input type="text" id="model" /></div>
-          <div class="col"><label>Make</label><input type="text" id="make" /></div>
-          <div class="col"><label>Serial Number</label><input type="text" id="serial" /></div>
-        </div>
-      </section>
+      <h3>Equipment Details</h3>
+      <div class="row">
+        <div class="col"><label>Equipment</label><input type="text" id="equipment"/></div>
+        <div class="col"><label>Model</label><input type="text" id="model"/></div>
+        <div class="col"><label>Make</label><input type="text" id="make"/></div>
+        <div class="col"><label>Serial No</label><input type="text" id="serial"/></div>
+      </div>
 
-      <!-- Problem -->
-      <section>
-        <h3>Problem & Resolution</h3>
-        <div class="row">
-          <div class="col col-2"><label>Problem Reported</label><textarea id="problem"></textarea></div>
-          <div class="col col-2"><label>Action Taken</label><textarea id="action"></textarea></div>
-        </div>
-      </section>
+      <h3>Problem & Resolution</h3>
+      <div class="row">
+        <div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
+        <div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
+      </div>
 
-      <!-- Completion -->
-      <section>
-        <h3>Completion Details</h3>
-        <div class="row">
-          <div class="col"><label>Finish Date</label><input type="date" id="finishDate" /></div>
-          <div class="col"><label>Finish Time</label><input type="time" id="finishTime" /></div>
-          <div class="col"><label>Downtime</label><input type="text" id="downtime" readonly /></div>
-        </div>
-        <div class="row">
-          <div class="col"><label>Repaired by</label><input type="text" id="repairedBy" /></div>
-          <div class="col"><label>Spare Parts Used</label><input type="text" id="spares" /></div>
-          <div class="col"><label>Cause of Failure</label><input type="text" id="cause" /></div>
-        </div>
-      </section>
+      <h3>Completion Details</h3>
+      <div class="row">
+        <div class="col"><label>Finish Date</label><input type="date" id="finishDate"/></div>
+        <div class="col"><label>Finish Time</label><input type="time" id="finishTime"/></div>
+        <div class="col"><label>Downtime</label><input type="text" id="downtime" readonly/></div>
+      </div>
+      <div class="row">
+        <div class="col"><label>Repaired by</label><input type="text" id="repairedBy"/></div>
+        <div class="col"><label>Spare Parts Used</label><input type="text" id="spares"/></div>
+        <div class="col"><label>Cause of Failure</label><input type="text" id="cause"/></div>
+      </div>
 
-      <!-- User Dept -->
-      <section>
-        <h3>User Department</h3>
-        <div class="row">
-          <div class="col"><label>User Dept Name</label><input type="text" id="userDept" /></div>
-          <div class="col"><label>Emp. Code</label><input type="text" id="userCode" /></div>
-          <div class="col"><label>Signature</label>
-            <canvas id="userSig" class="sig-pad" width="400" height="120"></canvas>
-            <button type="button" class="secondary" onclick="clearSig('user')">Clear</button>
-          </div>
-        </div>
-      </section>
+      <h3>User Department</h3>
+      <div class="row">
+        <div class="col"><label>Name</label><input type="text" id="userDept"/></div>
+        <div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
+        <div class="col"><label>Signature</label><canvas id="userSig" class="sig" width="250" height="80"></canvas></div>
+      </div>
 
-      <!-- Engineer -->
-      <section>
-        <h3>Engineer</h3>
-        <div class="row">
-          <div class="col"><label>Engineer Name</label><input type="text" id="engName" /></div>
-          <div class="col"><label>Engineer Code</label><input type="text" id="engCode" /></div>
-          <div class="col"><label>Signature</label>
-            <canvas id="engSig" class="sig-pad" width="400" height="120"></canvas>
-            <button type="button" class="secondary" onclick="clearSig('eng')">Clear</button>
-          </div>
-        </div>
-      </section>
+      <h3>Engineer</h3>
+      <div class="row">
+        <div class="col"><label>Name</label><input type="text" id="engName"/></div>
+        <div class="col"><label>Code</label><input type="text" id="engCode"/></div>
+        <div class="col"><label>Signature</label><canvas id="engSig" class="sig" width="250" height="80"></canvas></div>
+      </div>
 
       <div class="controls">
         <button type="button" onclick="renderPreview()">Preview</button>
         <button type="button" onclick="downloadPDF()">Download PDF</button>
-        <button type="button" onclick="sendEmail()">Send PDF via Email</button>
-        <button type="button" class="secondary" onclick="resetForm()">Reset</button>
+        <button type="button" class="secondary" onclick="location.reload()">Reset</button>
       </div>
     </form>
 
-    <div class="preview-wrap">
-      <h3>Preview (what will appear in PDF)</h3>
-      <div id="previewArea" class="preview"></div>
+    <div>
+      <h3>Preview (A4 size)</h3>
+      <div id="previewArea"></div>
     </div>
   </div>
 
-  <!-- Libraries -->
+  <!-- LIBS -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <!-- EmailJS -->
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
   <script>
-    // init EmailJS
-    emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS Public Key
+    // Auto Form Number
+    document.getElementById("formNo").innerText = "JIMSH-NK-" + Date.now();
 
-    function makeFormNo(){
-      const now = new Date();
-      return 'JIMSH-NK-' + now.getTime();
+    // Sig pads
+    const userPad = new SignaturePad(document.getElementById("userSig"));
+    const engPad = new SignaturePad(document.getElementById("engSig"));
+
+    function renderPreview(){
+      const prev = document.getElementById("previewArea");
+      prev.innerHTML = `
+        <h3>Complaint Info</h3>
+        <p>Date: ${complaintDate.value} | Time: ${complaintTime.value} | Dept: ${department.value}</p>
+        <h3>Equipment</h3>
+        <p>${equipment.value} | Model: ${model.value} | Make: ${make.value} | SN: ${serial.value}</p>
+        <h3>Problem & Resolution</h3>
+        <p>Problem: ${problem.value}</p>
+        <p>Action: ${action.value}</p>
+        <h3>Completion</h3>
+        <p>Finish: ${finishDate.value} ${finishTime.value} | Downtime: ${downtime.value}</p>
+        <p>Repaired by: ${repairedBy.value} | Spares: ${spares.value} | Cause: ${cause.value}</p>
+        <h3>User Department</h3>
+        <p>${userDept.value} (${userCode.value})</p>
+        ${!userPad.isEmpty()?'<img src="'+userPad.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
+        <h3>Engineer</h3>
+        <p>${engName.value} (${engCode.value})</p>
+        ${!engPad.isEmpty()?'<img src="'+engPad.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
+      `;
+      return prev;
     }
-    document.getElementById('formNo').innerText = makeFormNo();
-
-    // signature pads
-    const userPad = new SignaturePad(document.getElementById('userSig'));
-    const engPad = new SignaturePad(document.getElementById('engSig'));
-    function clearSig(w){ (w==='user'?userPad:engPad).clear(); }
-
-    function renderPreview(){ /* ... same preview builder as before ... */ }
 
     async function downloadPDF(){
       const preview = renderPreview();
       await new Promise(r=>setTimeout(r,150));
       const canvas = await html2canvas(preview,{scale:2});
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF("p","mm","a4");
       const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = (canvas.height * pageWidth) / canvas.width;
-      pdf.addImage(imgData,'PNG',0,0,pageWidth,pageHeight);
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData,"PNG",0,0,pageWidth,pageHeight);
       pdf.save(document.getElementById("formNo").innerText+".pdf");
-      return pdf.output("datauristring");
     }
-
-    async function sendEmail(){
-      const dataUri = await downloadPDF(); // generate PDF
-      const formNo = document.getElementById("formNo").innerText;
-
-      emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",{
-        to_email: "recipient@example.com", // change to target email
-        form_number: formNo,
-        message: "Attached is the filled service report form.",
-        attachment: dataUri
-      }).then(()=>{
-        alert("Email sent successfully!");
-      }).catch(err=>{
-        console.error(err);
-        alert("Failed to send email");
-      });
-    }
-
-    function resetForm(){ location.reload(); }
   </script>
 </body>
 </html>
