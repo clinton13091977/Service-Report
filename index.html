@@ -13,20 +13,28 @@
     .container {
       max-width:900px;margin:0 auto;
       background:#fff;border-radius:10px;
-      padding:20px;
+      padding:0;
       box-shadow:0 4px 14px rgba(0,0,0,0.12);
     }
-    header { text-align:center;margin-bottom:12px; }
-    header h1 {
-      margin:4px 0;font-size:20px;
-      font-weight:600;color:#0b5ed7;
+    header {
+      text-align:center;
+      background:#0b5ed7;
+      color:#fff;
+      padding:12px 8px;
+      border-radius:10px 10px 0 0;
     }
-    header h2 { margin:2px 0;font-size:14px;color:#444; }
+    header h1 {
+      margin:4px 0;font-size:18px;
+      font-weight:600;
+    }
+    header h2 { margin:2px 0;font-size:13px;font-weight:400; }
     .formNo {
       margin-top:6px;font-size:12px;
       font-weight:bold;
       text-align:center;
-      padding-bottom:6px;
+      padding:6px 0;
+      background:#f5f5f5;
+      color:#0b5ed7;
       border-bottom:2px solid #0b5ed7;
     }
     /* main form box */
@@ -34,26 +42,27 @@
       border:2px solid #0b5ed7;
       border-radius:8px;
       padding:12px;
-      margin-top:12px;
+      margin:12px;
+      font-size:13px;
     }
     .section {
-      margin:12px 0;
+      margin:10px 0;
       padding:10px;
       border:1px solid #ccc;
       border-radius:6px;
       background:#fafafa;
     }
     .section h3 {
-      margin:0 0 8px;font-size:14px;
+      margin:0 0 8px;font-size:13px;
       color:#0b5ed7;
       border-bottom:1px solid #ddd;
       padding-bottom:3px;
     }
     .row { display:flex;flex-wrap:wrap;gap:12px }
     .col { flex:1;min-width:180px }
-    label { display:block;font-size:12px;margin-bottom:4px;color:#333 }
+    label { display:block;font-size:11px;margin-bottom:4px;color:#333 }
     input,textarea {
-      width:100%;padding:6px;font-size:13px;
+      width:100%;padding:5px;font-size:12px;
       border:1px solid #bbb;border-radius:4px
     }
     textarea { resize:vertical;min-height:60px }
@@ -63,36 +72,40 @@
     }
     .sig-controls { margin-top:6px }
     .controls {
-      margin:15px 0;display:flex;gap:10px;flex-wrap:wrap
+      margin:15px 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center
     }
     button {
-      padding:8px 14px;border:none;border-radius:5px;
-      background:#0b5ed7;color:#fff;font-size:13px;cursor:pointer
+      padding:7px 12px;border:none;border-radius:5px;
+      background:#0b5ed7;color:#fff;font-size:12px;cursor:pointer
     }
     button.secondary { background:#555 }
     /* A4 preview */
     #previewArea {
       width:210mm;min-height:297mm;max-height:297mm;
-      margin:0 auto;padding:12mm;box-sizing:border-box;
+      margin:0 auto;padding:0;box-sizing:border-box;
       border:1px solid #ddd;background:#fff;overflow:hidden
     }
-    #previewArea h1 {
-      font-size:16px;margin:0;text-align:center;color:#0b5ed7
+    #previewArea header {
+      background:#0b5ed7;color:#fff;text-align:center;
+      padding:10px 6px;border-radius:0;
     }
-    #previewArea h2 {
-      font-size:13px;margin:2px 0;text-align:center;color:#444
-    }
+    #previewArea header h1 { font-size:16px;margin:0 }
+    #previewArea header h2 { font-size:12px;margin:2px 0 }
     #previewArea .formNo {
-      margin:6px 0 12px;text-align:center;
-      font-size:12px;font-weight:bold;
-      border-bottom:2px solid #0b5ed7;padding-bottom:4px;
+      margin:0;text-align:center;
+      font-size:11px;font-weight:bold;
+      border-bottom:2px solid #0b5ed7;
+      padding:4px 0;background:#f5f5f5;color:#0b5ed7;
     }
-    #previewArea .formBox { border:2px solid #0b5ed7;padding:10px;border-radius:8px }
+    #previewArea .formBox {
+      border:2px solid #0b5ed7;padding:10px;border-radius:8px;
+      margin:8px;font-size:11px
+    }
     #previewArea h3 {
-      margin-top:8px;margin-bottom:4px;font-size:13px;
+      margin-top:6px;margin-bottom:3px;font-size:12px;
       color:#0b5ed7;border-bottom:1px solid #ddd
     }
-    #previewArea p { font-size:12px;margin:2px 0 }
+    #previewArea p { font-size:11px;margin:2px 0 }
     @media(max-width:700px){ #previewArea{width:100%;min-height:auto;} }
   </style>
 </head>
@@ -101,8 +114,8 @@
     <header>
       <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
       <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
-      <div class="formNo">Form No: <span id="formNo"></span></div>
     </header>
+    <div class="formNo">Form No: <span id="formNo"></span></div>
 
     <!-- FORM -->
     <form id="serviceForm" onsubmit="return false;">
@@ -227,8 +240,10 @@
     function renderPreview(){
       const prev = document.getElementById("previewArea");
       prev.innerHTML = `
-        <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
-        <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+        <header>
+          <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
+          <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+        </header>
         <div class="formNo">Form No: ${formNo.innerText}</div>
         <div class="formBox">
           <h3>Complaint Info</h3>
