@@ -1,125 +1,365 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-<title>Biomedical Service Report - Compressed PDF</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-body{font-family:Arial,sans-serif;background:#f3f6fb;margin:0;color:#222}
-.container{max-width:650px;margin:0 auto;padding:15px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
-h1{color:#0b74de;font-size:22px;margin-bottom:10px;text-align:center}
-.section{border:1px dashed #cfe4ff;padding:12px;border-radius:8px;margin-bottom:12px;background:#fbfdff}
-.row{display:flex;flex-wrap:wrap;gap:10px}
-.col{flex:1;min-width:200px;display:flex;flex-direction:column}
-label{font-size:14px;color:#555;margin-bottom:4px}
-input,textarea{width:100%;padding:8px;border:1px solid #ccd8e6;border-radius:6px;font-size:13px;box-sizing:border-box}
-textarea{resize:vertical;min-height:50px}
-.sig-wrap{display:flex;flex-wrap:wrap;gap:15px;margin-top:15px}
-.sig-box{flex:1;display:flex;flex-direction:column;align-items:center}
-canvas{border:1px solid #ccd8e6;border-radius:6px;width:100%;height:120px;touch-action:none;background:#fff}
-.btn{background:#0b74de;color:#fff;border:none;padding:10px;border-radius:6px;cursor:pointer;font-weight:bold;margin-top:12px;width:100%;font-size:14px}
-.btn.clear{background:#ccc;color:#000;margin-top:8px}
-#preview{margin-top:20px;border:1px solid #ccd8e6;padding:10px;border-radius:6px;background:#fff}
-input:focus,textarea:focus{outline:2px solid #b5d5ff}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Biomedical Equipment Maintenance Cum Breakdown Service Report</title>
+  <style>
+    :root{--accent:#0b5ed7;--muted:#666}
+    body{font-family:Inter,Segoe UI,Arial,Helvetica,sans-serif;margin:0;padding:16px;background:#f4f6fb;color:#111}
+    .container{max-width:920px;margin:0 auto;background:#fff;border-radius:10px;padding:18px;box-shadow:0 6px 18px rgba(10,20,40,0.06)}
+    header{text-align:center;margin-bottom:12px}
+    header h1{margin:6px 0;font-size:20px}
+    header h2{margin:2px 0;font-size:15px;color:var(--muted);font-weight:600}
+    form .row{display:flex;gap:12px;flex-wrap:wrap}
+    label{font-size:13px;color:#222;display:block;margin-bottom:6px}
+    input[type=text], input[type=datetime-local], input[type=date], input[type=time], select, textarea{width:100%;padding:9px;border:1px solid #ddd;border-radius:6px;font-size:14px}
+    textarea{min-height:80px;resize:vertical}
+    .col{flex:1;min-width:160px}
+    .col-2{flex:2}
+    .muted{color:var(--muted);font-size:13px}
+    .controls{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+    button{background:var(--accent);color:#fff;border:none;padding:10px 12px;border-radius:8px;font-weight:600;cursor:pointer}
+    button.secondary{background:#6c757d}
+    .preview-wrap{margin-top:18px}
+    .preview{border:1px solid #e6e9ef;padding:14px;border-radius:8px;background:#fff}
+
+    /* printable layout */
+    .report{font-family:Arial,Helvetica,sans-serif;color:#111}
+    .report .title{ text-align:center }
+    .report .title h1{font-size:18px;margin:0}
+    .report .title h2{font-size:14px;margin:2px 0 12px;color:#333}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .full{grid-column:1/-1}
+    .field{border:1px dashed #ddd;padding:8px;border-radius:6px;font-size:13px}
+    .sig-pad{border:1px solid #ccc;border-radius:6px;height:110px}
+    @media(max-width:700px){
+      .grid{grid-template-columns:1fr}
+      .controls{justify-content:stretch;flex-direction:column}
+      button{width:100%}
+    }
+  </style>
 </head>
 <body>
-<div class="container" id="report">
-<h1>Biomedical Service Report</h1>
-<div class="section">
-<h3>Complaint Information</h3>
-<div class="row">
-<div class="col"><label>Date</label><input type="date" id="c_date"></div>
-<div class="col"><label>Time</label><input type="time" id="c_time"></div>
-<div class="col"><label>Department</label><input type="text" id="c_dept"></div>
-</div>
-</div>
-<div class="section">
-<h3>Equipment Details</h3>
-<div class="row">
-<div class="col"><label>Equipment</label><input type="text" id="eq_name"></div>
-<div class="col"><label>Model</label><input type="text" id="eq_model"></div>
-<div class="col"><label>Make</label><input type="text" id="eq_make"></div>
-<div class="col"><label>Serial Number</label><input type="text" id="eq_serial"></div>
-</div>
-</div>
-<div class="section">
-<h3>Problem & Resolution</h3>
-<div class="row">
-<div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
-<div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
-</div>
-</div>
-<div class="section">
-<h3>Completion Details</h3>
-<div class="row">
-<div class="col"><label>Finish Date</label><input type="date" id="f_date"></div>
-<div class="col"><label>Finish Time</label><input type="time" id="f_time"></div>
-<div class="col"><label>Down Time (auto-calculated)</label><input type="text" id="down_time" readonly></div>
-<div class="col"><label>Repaired By</label><input type="text" id="repaired_by"></div>
-<div class="col"><label>Spare Parts Used</label><textarea id="spares"></textarea></div>
-<div class="col"><label>Cause of Failure</label><textarea id="cause"></textarea></div>
-</div>
-</div>
-<div class="sig-wrap">
-<div class="sig-box">
-<label>User Signature</label>
-<canvas id="user_sign"></canvas>
-<button class="btn clear" onclick="clearCanvas('user_sign')">Clear</button>
-</div>
-<div class="sig-box">
-<label>Engineer Signature</label>
-<canvas id="eng_sign"></canvas>
-<button class="btn clear" onclick="clearCanvas('eng_sign')">Clear</button>
-</div>
-</div>
-<button class="btn" onclick="downloadPDF()">Download Compressed PDF</button>
-<div id="preview"></div>
-</div>
-<script>
-function clearCanvas(id){ const c=document.getElementById(id); c.getContext('2d').clearRect(0,0,c.width,c.height); }
-['c_date','c_time','f_date','f_time'].forEach(id=>{
-document.getElementById(id).addEventListener('change',()=>{
-const startD=document.getElementById('c_date').value;
-const startT=document.getElementById('c_time').value;
-const endD=document.getElementById('f_date').value;
-const endT=document.getElementById('f_time').value;
-if(startD && startT && endD && endT){
-const start=new Date(`${startD}T${startT}`);
-const end=new Date(`${endD}T${endT}`);
-const hours=((end-start)/36e5).toFixed(2);
-document.getElementById('down_time').value = hours;
-}
-});
-});
-async function downloadPDF(){
-const element=document.getElementById('report');
-const canvas=await html2canvas(element,{scale:1,useCORS:true});
-const imgData=canvas.toDataURL('image/png');
-const {jsPDF}=window.jspdf;
-const pdf=new jsPDF('p','mm','a4');
-const pageWidth=pdf.internal.pageSize.getWidth();
-const imgProps=pdf.getImageProperties(imgData);
-const pdfHeight=imgProps.height*pageWidth/imgProps.width;
-pdf.addImage(imgData,'PNG',0,0,pageWidth,pdfHeight);
-pdf.save('Biomedical_Service_Report_Compressed.pdf');
-}
-function initSig(id){
-const canvas=document.getElementById(id);
-const ctx=canvas.getContext('2d'); ctx.strokeStyle='#222'; ctx.lineWidth=2; ctx.lineCap='round';
-let drawing=false,last={x:0,y:0};
-function pos(e){const r=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:null;const x=(t?t.clientX:e.clientX)-r.left;const y=(t?t.clientY:e.clientY)-r.top;return{x,y};}
-canvas.addEventListener('mousedown',e=>{drawing=true; last=pos(e);});
-canvas.addEventListener('touchstart',e=>{drawing=true; last=pos(e);});
-canvas.addEventListener('mousemove',e=>{if(!drawing)return; const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p;});
-canvas.addEventListener('touchmove',e=>{if(!drawing)return; const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; e.preventDefault();});
-window.addEventListener('mouseup',()=>drawing=false);
-window.addEventListener('touchend',()=>drawing=false);
-}
-initSig('user_sign');
-initSig('eng_sign');
-</script>
+  <div class="container">
+    <header>
+      <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
+      <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+      <div class="muted">Form No: <strong id="formNo">--</strong></div>
+    </header>
+
+    <form id="serviceForm" onsubmit="return false;">
+      <section>
+        <h3 style="margin:8px 0 6px">Complaint Information</h3>
+        <div class="row">
+          <div class="col">
+            <label>Date</label>
+            <input type="date" id="complaintDate" required />
+          </div>
+          <div class="col">
+            <label>Time</label>
+            <input type="time" id="complaintTime" required />
+          </div>
+          <div class="col">
+            <label>Department</label>
+            <input type="text" id="department" placeholder="e.g. ICU / Radiology" />
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-top:12px">
+        <h3 style="margin:8px 0 6px">Equipment Details</h3>
+        <div class="row">
+          <div class="col">
+            <label>Equipment</label>
+            <input type="text" id="equipment" />
+          </div>
+          <div class="col">
+            <label>Model</label>
+            <input type="text" id="model" />
+          </div>
+          <div class="col">
+            <label>Make</label>
+            <input type="text" id="make" />
+          </div>
+          <div class="col">
+            <label>Serial Number</label>
+            <input type="text" id="serial" />
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-top:12px">
+        <h3 style="margin:8px 0 6px">Problem & Resolution</h3>
+        <div class="row">
+          <div class="col col-2">
+            <label>Problem Reported</label>
+            <textarea id="problem"></textarea>
+          </div>
+          <div class="col col-2">
+            <label>Action Taken</label>
+            <textarea id="action"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-top:12px">
+        <h3 style="margin:8px 0 6px">Completion Details</h3>
+        <div class="row">
+          <div class="col">
+            <label>Finish Date</label>
+            <input type="date" id="finishDate" />
+          </div>
+          <div class="col">
+            <label>Finish Time</label>
+            <input type="time" id="finishTime" />
+          </div>
+          <div class="col">
+            <label>Downtime</label>
+            <input type="text" id="downtime" readonly placeholder="Auto-calculated" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:8px">
+          <div class="col">
+            <label>Repaired by</label>
+            <input type="text" id="repairedBy" />
+          </div>
+          <div class="col">
+            <label>Spare Parts Used</label>
+            <input type="text" id="spares" />
+          </div>
+          <div class="col">
+            <label>Cause of Failure</label>
+            <input type="text" id="cause" />
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-top:12px">
+        <h3 style="margin:8px 0 6px">User Department</h3>
+        <div class="row">
+          <div class="col">
+            <label>User Dept Name</label>
+            <input type="text" id="userDept" />
+          </div>
+          <div class="col">
+            <label>Emp. Code</label>
+            <input type="text" id="userCode" />
+          </div>
+          <div class="col">
+            <label>Signature (touch / mouse)</label>
+            <div>
+              <canvas id="userSig" class="sig-pad" width="400" height="120"></canvas>
+              <div style="margin-top:6px"><button type="button" class="secondary" onclick="clearSig('user')">Clear</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-top:12px">
+        <h3 style="margin:8px 0 6px">Engineer</h3>
+        <div class="row">
+          <div class="col">
+            <label>Engineer Name</label>
+            <input type="text" id="engName" />
+          </div>
+          <div class="col">
+            <label>Engineer Code</label>
+            <input type="text" id="engCode" />
+          </div>
+          <div class="col">
+            <label>Signature (touch / mouse)</label>
+            <div>
+              <canvas id="engSig" class="sig-pad" width="400" height="120"></canvas>
+              <div style="margin-top:6px"><button type="button" class="secondary" onclick="clearSig('eng')">Clear</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="controls">
+        <button type="button" onclick="renderPreview()">Preview</button>
+        <button type="button" onclick="downloadPDF()">Download PDF</button>
+        <button type="button" class="secondary" onclick="resetForm()">Reset</button>
+      </div>
+    </form>
+
+    <div class="preview-wrap">
+      <h3 style="margin:8px 0">Preview (what will appear in PDF)</h3>
+      <div id="previewArea" class="preview" role="region" aria-label="Preview area">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <p class="muted" style="margin-top:10px;font-size:13px">Tip: On mobile the signature canvases accept touch. Fill fields, sign, then press Download PDF.</p>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    // Utility: generate form number
+    function makeFormNo(){
+      const now = new Date();
+      const ts = now.getFullYear().toString().slice(-2) + ('0'+(now.getMonth()+1)).slice(-2) + ('0'+now.getDate()).slice(-2)
+                + '-' + now.getTime().toString().slice(-5);
+      return 'JGIMS-' + ts + '-' + Math.floor(1000+Math.random()*9000);
+    }
+
+    document.getElementById('formNo').innerText = makeFormNo();
+
+    // Signature pads
+    const userCanvas = document.getElementById('userSig');
+    const engCanvas = document.getElementById('engSig');
+    const userPad = new SignaturePad(userCanvas, {backgroundColor: 'rgba(255,255,255,0)'});
+    const engPad = new SignaturePad(engCanvas, {backgroundColor: 'rgba(255,255,255,0)'});
+
+    function clearSig(which){ if(which==='user') userPad.clear(); else engPad.clear(); }
+
+    // Downtime calc
+    function calcDowntime(){
+      const cDate = document.getElementById('complaintDate').value;
+      const cTime = document.getElementById('complaintTime').value;
+      const fDate = document.getElementById('finishDate').value;
+      const fTime = document.getElementById('finishTime').value;
+      const out = document.getElementById('downtime');
+      if(!cDate||!cTime||!fDate||!fTime){ out.value = ''; return; }
+      const start = new Date(cDate + 'T' + cTime);
+      const finish = new Date(fDate + 'T' + fTime);
+      if(finish < start){ out.value = 'Finish before start!'; return; }
+      let diff = Math.floor((finish - start)/1000); // seconds
+      const days = Math.floor(diff / 86400); diff %= 86400;
+      const hours = Math.floor(diff / 3600); diff %= 3600;
+      const mins = Math.floor(diff / 60); const secs = diff % 60;
+      const parts = [];
+      if(days) parts.push(days + 'd');
+      if(hours) parts.push(hours + 'h');
+      if(mins) parts.push(mins + 'm');
+      if(!parts.length) parts.push(secs + 's');
+      out.value = parts.join(' ');
+    }
+
+    ['complaintDate','complaintTime','finishDate','finishTime'].forEach(id=>{
+      document.getElementById(id).addEventListener('change', calcDowntime);
+    });
+
+    function getSigDataURL(pad){
+      return pad.isEmpty() ? null : pad.toDataURL('image/png');
+    }
+
+    function renderPreview(){
+      const preview = document.getElementById('previewArea');
+      const data = collectFormData();
+      const userSig = getSigDataURL(userPad);
+      const engSig = getSigDataURL(engPad);
+
+      // Build HTML
+      let html = `
+        <div class="report">
+          <div class="title">
+            <h1>Jagannath Gupta Institute Of Medical Science & Hospital</h1>
+            <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+            <div><strong>Form No:</strong> ${escapeHtml(data.formNo)}</div>
+          </div>
+          <hr />
+
+          <div class="grid" style="margin-top:8px">
+            <div class="field"><strong>Complaint Date & Time</strong><br/>${escapeHtml(data.complaintDate)} ${escapeHtml(data.complaintTime)}</div>
+            <div class="field"><strong>Department</strong><br/>${escapeHtml(data.department)}</div>
+
+            <div class="field"><strong>Equipment</strong><br/>${escapeHtml(data.equipment)}</div>
+            <div class="field"><strong>Model / Make / S/N</strong><br/>${escapeHtml(data.model)} / ${escapeHtml(data.make)} / ${escapeHtml(data.serial)}</div>
+
+            <div class="full field"><strong>Problem Reported</strong><br/>${nl2br(escapeHtml(data.problem))}</div>
+            <div class="full field"><strong>Action Taken</strong><br/>${nl2br(escapeHtml(data.action))}</div>
+
+            <div class="field"><strong>Finish</strong><br/>${escapeHtml(data.finishDate)} ${escapeHtml(data.finishTime)}</div>
+            <div class="field"><strong>Downtime</strong><br/>${escapeHtml(data.downtime)}</div>
+
+            <div class="field"><strong>Repaired by</strong><br/>${escapeHtml(data.repairedBy)}</div>
+            <div class="field"><strong>Spare Parts Used</strong><br/>${escapeHtml(data.spares)}</div>
+            <div class="field"><strong>Cause of Failure</strong><br/>${escapeHtml(data.cause)}</div>
+
+            <div class="field"><strong>User Dept / Emp Code</strong><br/>${escapeHtml(data.userDept)} / ${escapeHtml(data.userCode)}</div>
+            <div class="field"><strong>Engineer Name / Code</strong><br/>${escapeHtml(data.engName)} / ${escapeHtml(data.engCode)}</div>
+
+            <div class="field"><strong>User Signature</strong><br/>${userSig ? `<img src="${userSig}" style="max-width:100%;height:110px;object-fit:contain"/>` : '<span class="muted">(not signed)</span>'}</div>
+            <div class="field"><strong>Engineer Signature</strong><br/>${engSig ? `<img src="${engSig}" style="max-width:100%;height:110px;object-fit:contain"/>` : '<span class="muted">(not signed)</span>'}</div>
+
+          </div>
+
+          <div style="margin-top:12px;font-size:11px;color:#444">Generated: ${new Date().toLocaleString()}</div>
+        </div>
+      `;
+
+      preview.innerHTML = html;
+      return preview;
+    }
+
+    function collectFormData(){
+      return {
+        formNo: document.getElementById('formNo').innerText,
+        complaintDate: document.getElementById('complaintDate').value || '',
+        complaintTime: document.getElementById('complaintTime').value || '',
+        department: document.getElementById('department').value || '',
+        equipment: document.getElementById('equipment').value || '',
+        model: document.getElementById('model').value || '',
+        make: document.getElementById('make').value || '',
+        serial: document.getElementById('serial').value || '',
+        problem: document.getElementById('problem').value || '',
+        action: document.getElementById('action').value || '',
+        finishDate: document.getElementById('finishDate').value || '',
+        finishTime: document.getElementById('finishTime').value || '',
+        downtime: document.getElementById('downtime').value || '',
+        repairedBy: document.getElementById('repairedBy').value || '',
+        spares: document.getElementById('spares').value || '',
+        cause: document.getElementById('cause').value || '',
+        userDept: document.getElementById('userDept').value || '',
+        userCode: document.getElementById('userCode').value || '',
+        engName: document.getElementById('engName').value || '',
+        engCode: document.getElementById('engCode').value || ''
+      };
+    }
+
+    // Download PDF using html2canvas + jsPDF
+    async function downloadPDF(){
+      const preview = renderPreview();
+      // wait a tick for images (signatures) to be ready
+      await new Promise(r=>setTimeout(r,150));
+      const scale = 2; // higher quality
+      const canvas = await html2canvas(preview, {scale, useCORS:true, logging:false});
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      // A4 size in mm
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      // convert canvas size to mm
+      const imgProps = { width: canvas.width, height: canvas.height };
+      const mmPerPx = pageWidth / imgProps.width;
+      const imgHeightMM = imgProps.height * mmPerPx;
+      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeightMM);
+      const filename = document.getElementById('formNo').innerText + '.pdf';
+      pdf.save(filename);
+    }
+
+    function resetForm(){
+      if(!confirm('Clear form?')) return;
+      document.getElementById('serviceForm').reset();
+      userPad.clear(); engPad.clear();
+      document.getElementById('formNo').innerText = makeFormNo();
+      document.getElementById('previewArea').innerHTML = '';
+    }
+
+    // small helpers
+    function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function nl2br(s){ return (s||'').replace(/\n/g,'<br/>'); }
+
+    // initial preview
+    renderPreview();
+  </script>
 </body>
 </html>
