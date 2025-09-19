@@ -5,108 +5,41 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Service Report Form</title>
   <style>
-    body {
-      font-family:"Segoe UI",Arial,Helvetica,sans-serif;
-      margin:0;padding:10px;
-      background:#eef2f7;color:#111;
-    }
-    .container {
-      max-width:900px;margin:0 auto;
-      background:#fff;border-radius:10px;
-      padding:0;
-      box-shadow:0 4px 14px rgba(0,0,0,0.12);
-    }
-    header {
-      text-align:center;
-      background:#0b5ed7;
-      color:#fff;
-      padding:12px 8px;
-      border-radius:10px 10px 0 0;
-    }
-    header h1 {
-      margin:4px 0;font-size:18px;
-      font-weight:600;
-    }
-    header h2 { margin:2px 0;font-size:13px;font-weight:400; }
-    .formNo {
-      margin-top:6px;font-size:12px;
-      font-weight:bold;
-      text-align:center;
-      padding:6px 0;
-      background:#f5f5f5;
-      color:#0b5ed7;
-      border-bottom:2px solid #0b5ed7;
-    }
-    /* main form box */
-    .formBox {
-      border:2px solid #0b5ed7;
-      border-radius:8px;
-      padding:12px;
-      margin:12px;
-      font-size:13px;
-    }
-    .section {
-      margin:10px 0;
-      padding:10px;
-      border:1px solid #ccc;
-      border-radius:6px;
-      background:#fafafa;
-    }
-    .section h3 {
-      margin:0 0 8px;font-size:13px;
-      color:#0b5ed7;
-      border-bottom:1px solid #ddd;
-      padding-bottom:3px;
-    }
-    .row { display:flex;flex-wrap:wrap;gap:12px }
-    .col { flex:1;min-width:180px }
-    label { display:block;font-size:11px;margin-bottom:4px;color:#333 }
-    input,textarea {
-      width:100%;padding:5px;font-size:12px;
-      border:1px solid #bbb;border-radius:4px
-    }
-    textarea { resize:vertical;min-height:60px }
-    .sig {
-      border:1px solid #999;border-radius:4px;
-      height:80px;background:#fff
-    }
-    .sig-controls { margin-top:6px }
-    .controls {
-      margin:15px 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center
-    }
-    button {
-      padding:7px 12px;border:none;border-radius:5px;
-      background:#0b5ed7;color:#fff;font-size:12px;cursor:pointer
-    }
-    button.secondary { background:#555 }
-    /* A4 preview */
-    #previewArea {
-      width:210mm;min-height:297mm;max-height:297mm;
-      margin:0 auto;padding:0;box-sizing:border-box;
-      border:1px solid #ddd;background:#fff;overflow:hidden
-    }
-    #previewArea header {
-      background:#0b5ed7;color:#fff;text-align:center;
-      padding:10px 6px;border-radius:0;
-    }
-    #previewArea header h1 { font-size:16px;margin:0 }
-    #previewArea header h2 { font-size:12px;margin:2px 0 }
-    #previewArea .formNo {
-      margin:0;text-align:center;
-      font-size:11px;font-weight:bold;
-      border-bottom:2px solid #0b5ed7;
-      padding:4px 0;background:#f5f5f5;color:#0b5ed7;
-    }
-    #previewArea .formBox {
-      border:2px solid #0b5ed7;padding:10px;border-radius:8px;
-      margin:8px;font-size:11px
-    }
-    #previewArea h3 {
-      margin-top:6px;margin-bottom:3px;font-size:12px;
-      color:#0b5ed7;border-bottom:1px solid #ddd
-    }
-    #previewArea p { font-size:11px;margin:2px 0 }
-    @media(max-width:700px){ #previewArea{width:100%;min-height:auto;} }
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:10px;background:#f2f4f8;color:#111}
+    .container{max-width:900px;margin:0 auto;background:#fff;border-radius:8px;padding:0;box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+    header{background:#004080;color:#fff;text-align:center;padding:15px;border-radius:8px 8px 0 0}
+    header h1{margin:4px 0;font-size:18px}
+    header h2{margin:2px 0;font-size:14px}
+    header .formno{margin-top:6px;font-size:13px;font-weight:bold;border-top:1px solid #eee;padding-top:5px}
+    form{padding:15px;border:2px solid #004080;border-top:none}
+    h3{margin:12px 0 6px;font-size:14px;color:#004080;border-bottom:1px solid #004080;padding-bottom:3px}
+    .row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+    .col{flex:1;min-width:160px}
+    label{display:block;font-size:12px;margin-bottom:4px;font-weight:bold;color:#333}
+    input,textarea{width:100%;padding:6px;font-size:13px;border:1px solid #ccc;border-radius:4px}
+    textarea{resize:vertical;min-height:60px}
+    .sig{border:1px solid #ccc;border-radius:4px;height:80px;width:100%;background:#fafafa;cursor:pointer}
+    .controls{margin:12px 0;display:flex;gap:10px;flex-wrap:wrap}
+    button{padding:8px 14px;border:none;border-radius:5px;font-size:13px;cursor:pointer}
+    button.primary{background:#004080;color:#fff}
+    button.secondary{background:#666;color:#fff}
+    button.danger{background:#c82333;color:#fff}
+
+    /* Signature full-screen modal */
+    #sigModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:9999}
+    #sigBox{background:#fff;padding:12px;border-radius:6px;max-width:95%;width:500px;text-align:center}
+    #sigBox h4{margin:4px 0 6px;font-size:14px;color:#004080}
+    #sigCanvas{border:1px solid #333;width:100%;height:300px;border-radius:4px}
+    #sigBtns{margin-top:8px;display:flex;gap:8px;justify-content:center}
+
+    /* Preview for PDF */
+    #previewArea{width:210mm;min-height:297mm;margin:0 auto;padding:10mm;box-sizing:border-box;background:#fff}
+    #previewArea h1,#previewArea h2{color:#fff;background:#004080;padding:5px;text-align:center;margin:0}
+    #previewArea h2{font-size:14px}
+    #previewArea .formno{border-top:1px solid #ccc;text-align:center;font-size:12px;margin:5px 0;padding-top:4px}
+    #previewArea h3{color:#004080;border-bottom:1px solid #004080;font-size:13px;margin-top:10px}
+    #previewArea p{font-size:12px;margin:2px 0}
+    #previewArea img{border:1px solid #ccc;border-radius:4px;margin-top:3px}
   </style>
 </head>
 <body>
@@ -114,170 +47,180 @@
     <header>
       <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
       <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+      <div class="formno">Form No: <span id="formNo"></span></div>
     </header>
-    <div class="formNo">Form No: <span id="formNo"></span></div>
 
-    <!-- FORM -->
     <form id="serviceForm" onsubmit="return false;">
-      <div class="formBox">
-        <div class="section">
-          <h3>Complaint Information</h3>
-          <div class="row">
-            <div class="col"><label>Date</label><input type="date" id="complaintDate"/></div>
-            <div class="col"><label>Time</label><input type="time" id="complaintTime"/></div>
-            <div class="col"><label>Department</label><input type="text" id="department"/></div>
-          </div>
-        </div>
+      <h3>Complaint Information</h3>
+      <div class="row">
+        <div class="col"><label>Date</label><input type="date" id="complaintDate"/></div>
+        <div class="col"><label>Time</label><input type="time" id="complaintTime"/></div>
+        <div class="col"><label>Department</label><input type="text" id="department"/></div>
+      </div>
 
-        <div class="section">
-          <h3>Equipment Details</h3>
-          <div class="row">
-            <div class="col"><label>Equipment</label><input type="text" id="equipment"/></div>
-            <div class="col"><label>Model</label><input type="text" id="model"/></div>
-            <div class="col"><label>Make</label><input type="text" id="make"/></div>
-            <div class="col"><label>Serial No</label><input type="text" id="serial"/></div>
-          </div>
-        </div>
+      <h3>Equipment Details</h3>
+      <div class="row">
+        <div class="col"><label>Equipment</label><input type="text" id="equipment"/></div>
+        <div class="col"><label>Model</label><input type="text" id="model"/></div>
+        <div class="col"><label>Make</label><input type="text" id="make"/></div>
+        <div class="col"><label>Serial No</label><input type="text" id="serial"/></div>
+      </div>
 
-        <div class="section">
-          <h3>Problem & Resolution</h3>
-          <div class="row">
-            <div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
-            <div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
-          </div>
-        </div>
+      <h3>Problem & Resolution</h3>
+      <div class="row">
+        <div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
+        <div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
+      </div>
 
-        <div class="section">
-          <h3>Completion Details</h3>
-          <div class="row">
-            <div class="col"><label>Finish Date</label><input type="date" id="finishDate" onchange="calcDowntime()"/></div>
-            <div class="col"><label>Finish Time</label><input type="time" id="finishTime" onchange="calcDowntime()"/></div>
-            <div class="col"><label>Downtime</label><input type="text" id="downtime" readonly/></div>
-          </div>
-          <div class="row">
-            <div class="col"><label>Repaired by</label><input type="text" id="repairedBy"/></div>
-            <div class="col"><label>Spare Parts Used</label><input type="text" id="spares"/></div>
-            <div class="col"><label>Cause of Failure</label><input type="text" id="cause"/></div>
-          </div>
-        </div>
+      <h3>Completion Details</h3>
+      <div class="row">
+        <div class="col"><label>Finish Date</label><input type="date" id="finishDate"/></div>
+        <div class="col"><label>Finish Time</label><input type="time" id="finishTime"/></div>
+        <div class="col"><label>Downtime</label><input type="text" id="downtime" readonly/></div>
+      </div>
+      <div class="row">
+        <div class="col"><label>Repaired by</label><input type="text" id="repairedBy"/></div>
+        <div class="col"><label>Spare Parts Used</label><input type="text" id="spares"/></div>
+        <div class="col"><label>Cause of Failure</label><input type="text" id="cause"/></div>
+      </div>
 
-        <div class="section">
-          <h3>User Department</h3>
-          <div class="row">
-            <div class="col"><label>Name</label><input type="text" id="userDept"/></div>
-            <div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
-            <div class="col">
-              <label>Signature</label>
-              <canvas id="userSig" class="sig" width="250" height="80"></canvas>
-              <div class="sig-controls">
-                <button type="button" class="secondary" onclick="userPad.clear()">Clear</button>
-              </div>
-            </div>
-          </div>
-        </div>
+      <h3>User Department</h3>
+      <div class="row">
+        <div class="col"><label>Name</label><input type="text" id="userDept"/></div>
+        <div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
+        <div class="col"><label>Signature</label><canvas id="userSig" class="sig"></canvas></div>
+      </div>
 
-        <div class="section">
-          <h3>Engineer</h3>
-          <div class="row">
-            <div class="col"><label>Name</label><input type="text" id="engName"/></div>
-            <div class="col"><label>Code</label><input type="text" id="engCode"/></div>
-            <div class="col">
-              <label>Signature</label>
-              <canvas id="engSig" class="sig" width="250" height="80"></canvas>
-              <div class="sig-controls">
-                <button type="button" class="secondary" onclick="engPad.clear()">Clear</button>
-              </div>
-            </div>
-          </div>
-        </div>
+      <h3>Engineer</h3>
+      <div class="row">
+        <div class="col"><label>Name</label><input type="text" id="engName"/></div>
+        <div class="col"><label>Code</label><input type="text" id="engCode"/></div>
+        <div class="col"><label>Signature</label><canvas id="engSig" class="sig"></canvas></div>
       </div>
 
       <div class="controls">
-        <button type="button" onclick="renderPreview()">Preview</button>
-        <button type="button" onclick="downloadPDF()">Download PDF</button>
+        <button type="button" class="primary" onclick="renderPreview()">Preview</button>
+        <button type="button" class="primary" onclick="downloadPDF()">Download PDF</button>
         <button type="button" class="secondary" onclick="location.reload()">Reset</button>
       </div>
     </form>
 
-    <div>
-      <h3>Preview (A4 size)</h3>
-      <div id="previewArea"></div>
+    <h3>Preview (A4)</h3>
+    <div id="previewArea"></div>
+  </div>
+
+  <!-- Signature Modal -->
+  <div id="sigModal">
+    <div id="sigBox">
+      <h4>Draw Signature</h4>
+      <canvas id="sigCanvas"></canvas>
+      <div id="sigBtns">
+        <button class="danger" onclick="clearModalSig()">Clear</button>
+        <button class="secondary" onclick="closeSig(false)">Cancel</button>
+        <button class="primary" onclick="closeSig(true)">Save</button>
+      </div>
     </div>
   </div>
 
-  <!-- LIBS -->
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
-    // Auto Form Number
     document.getElementById("formNo").innerText = "JIMSH-NK-" + Date.now();
 
-    // Signature pads
-    const userPad = new SignaturePad(document.getElementById("userSig"));
-    const engPad = new SignaturePad(document.getElementById("engSig"));
+    // signature pads
+    let currentSigTarget=null,sigPadModal;
+    const userSigCanvas=document.getElementById("userSig");
+    const engSigCanvas=document.getElementById("engSig");
+    const userPad=new SignaturePad(userSigCanvas);
+    const engPad=new SignaturePad(engSigCanvas);
 
-    // Auto downtime calculation
-    function calcDowntime(){
-      const startDate = complaintDate.value;
-      const startTime = complaintTime.value;
-      const endDate = finishDate.value;
-      const endTime = finishTime.value;
-      if(startDate && startTime && endDate && endTime){
-        const start = new Date(startDate+"T"+startTime);
-        const end = new Date(endDate+"T"+endTime);
-        if(end > start){
-          let diffMs = end - start;
-          let hours = Math.floor(diffMs/1000/60/60);
-          let mins = Math.floor((diffMs/1000/60) % 60);
-          downtime.value = hours+"h "+mins+"m";
-        }
+    // open modal on canvas click
+    [userSigCanvas,engSigCanvas].forEach(c=>{
+      c.addEventListener("click",()=>{openSig(c)});
+    });
+
+    function openSig(target){
+      currentSigTarget=target;
+      document.getElementById("sigModal").style.display="flex";
+      const modalCanvas=document.getElementById("sigCanvas");
+      modalCanvas.width=modalCanvas.offsetWidth;
+      modalCanvas.height=modalCanvas.offsetHeight;
+      sigPadModal=new SignaturePad(modalCanvas);
+    }
+    function closeSig(save){
+      if(save && currentSigTarget && !sigPadModal.isEmpty()){
+        const data=sigPadModal.toDataURL();
+        const ctx=currentSigTarget.getContext("2d");
+        ctx.clearRect(0,0,currentSigTarget.width,currentSigTarget.height);
+        const img=new Image();
+        img.onload=()=>ctx.drawImage(img,0,0,currentSigTarget.width,currentSigTarget.height);
+        img.src=data;
+      }
+      document.getElementById("sigModal").style.display="none";
+    }
+    function clearModalSig(){sigPadModal.clear();}
+
+    // downtime calc
+    document.getElementById("finishDate").addEventListener("change",calcDown);
+    document.getElementById("finishTime").addEventListener("change",calcDown);
+    function calcDown(){
+      let sd=new Date(complaintDate.value+"T"+complaintTime.value);
+      let ed=new Date(finishDate.value+"T"+finishTime.value);
+      if(sd && ed && ed>sd){
+        let ms=ed-sd;
+        let h=Math.floor(ms/1000/60/60);
+        let m=Math.floor((ms/1000/60)%60);
+        downtime.value=h+"h "+m+"m";
       }
     }
 
-    // Render preview with all design
     function renderPreview(){
-      const prev = document.getElementById("previewArea");
-      prev.innerHTML = `
-        <header>
-          <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
-          <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
-        </header>
-        <div class="formNo">Form No: ${formNo.innerText}</div>
-        <div class="formBox">
-          <h3>Complaint Info</h3>
-          <p>Date: ${complaintDate.value} | Time: ${complaintTime.value} | Dept: ${department.value}</p>
-          <h3>Equipment</h3>
-          <p>${equipment.value} | Model: ${model.value} | Make: ${make.value} | SN: ${serial.value}</p>
-          <h3>Problem & Resolution</h3>
-          <p><b>Problem:</b> ${problem.value}</p>
-          <p><b>Action:</b> ${action.value}</p>
-          <h3>Completion</h3>
-          <p>Finish: ${finishDate.value} ${finishTime.value} | Downtime: ${downtime.value}</p>
-          <p>Repaired by: ${repairedBy.value} | Spares: ${spares.value} | Cause: ${cause.value}</p>
-          <h3>User Department</h3>
-          <p>${userDept.value} (${userCode.value})</p>
-          ${!userPad.isEmpty()?'<img src="'+userPad.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
-          <h3>Engineer</h3>
-          <p>${engName.value} (${engCode.value})</p>
-          ${!engPad.isEmpty()?'<img src="'+engPad.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
-        </div>
+      const prev=document.getElementById("previewArea");
+      prev.innerHTML=`
+        <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
+        <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+        <div class="formno">Form No: ${formNo.innerText}</div>
+        <h3>Complaint Information</h3>
+        <p>Date: ${complaintDate.value} | Time: ${complaintTime.value} | Dept: ${department.value}</p>
+        <h3>Equipment Details</h3>
+        <p>${equipment.value} | Model: ${model.value} | Make: ${make.value} | SN: ${serial.value}</p>
+        <h3>Problem & Resolution</h3>
+        <p>Problem: ${problem.value}</p>
+        <p>Action: ${action.value}</p>
+        <h3>Completion</h3>
+        <p>Finish: ${finishDate.value} ${finishTime.value} | Downtime: ${downtime.value}</p>
+        <p>Repaired by: ${repairedBy.value} | Spares: ${spares.value} | Cause: ${cause.value}</p>
+        <h3>User Department</h3>
+        <p>${userDept.value} (${userCode.value})</p>
+        ${!userPad.isEmpty()?'<img src="'+userSigCanvas.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
+        <h3>Engineer</h3>
+        <p>${engName.value} (${engCode.value})</p>
+        ${!engPad.isEmpty()?'<img src="'+engSigCanvas.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
       `;
-      return prev;
     }
 
-    // Download PDF
     async function downloadPDF(){
-      const preview = renderPreview();
+      const prev=document.getElementById("previewArea");
+      renderPreview();
       await new Promise(r=>setTimeout(r,150));
-      const canvas = await html2canvas(preview,{scale:2});
-      const imgData = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF("p","mm","a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData,"PNG",0,0,pageWidth,pageHeight);
+      const pageHeight=pdf.internal.pageSize.getHeight();
+      const canvas=await html2canvas(prev,{scale:2});
+      const imgData=canvas.toDataURL("image/png");
+      const imgProps=pdf.getImageProperties(imgData);
+      const pdfWidth=pdf.internal.pageSize.getWidth();
+      const pdfHeight=(imgProps.height*pdfWidth)/imgProps.width;
+      let y=0;
+      pdf.addImage(imgData,"PNG",0,y,pdfWidth,pdfHeight);
+      // 2 pages if overflow
+      if(pdfHeight>pageHeight){
+        pdf.addPage();
+        pdf.addImage(imgData,"PNG",0,-pageHeight,pdfWidth,pdfHeight);
+      }
       pdf.save(formNo.innerText+".pdf");
     }
   </script>
