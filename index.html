@@ -16,41 +16,42 @@
       padding:20px;
       box-shadow:0 4px 14px rgba(0,0,0,0.12);
     }
-    header {
-      display:flex;align-items:center;gap:15px;
-      background:#0b5ed7;color:#fff;
-      padding:10px;border-radius:8px 8px 0 0;
+    header { text-align:center;margin-bottom:12px; }
+    header h1 {
+      margin:0;font-size:20px;
+      font-weight:600;color:#fff;
+      background:#0b5ed7;padding:6px;border-radius:6px 6px 0 0;
     }
-    .header-logo {
-      height:60px;width:60px;
-      border-radius:6px;
-      object-fit:contain;
-      background:#fff;padding:4px;
-    }
-    .header-text { flex:1;text-align:center }
-    .header-text h1 {
-      margin:2px 0;font-size:18px;font-weight:600;
-    }
-    .header-text h2 {
-      margin:2px 0;font-size:13px;font-weight:400;color:#f0f0f0;
+    header h2 {
+      margin:0;font-size:14px;color:#fff;
+      background:#0b5ed7;padding:4px;border-radius:0 0 6px 6px;
     }
     .formNo {
-      margin-top:6px;font-size:12px;font-weight:bold;
-      text-align:center;padding-bottom:6px;
+      margin-top:6px;font-size:12px;
+      font-weight:bold;
+      text-align:center;
+      padding-bottom:6px;
       border-bottom:2px solid #0b5ed7;
     }
     .formBox {
-      border:2px solid #0b5ed7;border-radius:8px;
-      padding:12px;margin-top:12px;
+      border:2px solid #0b5ed7;
+      border-radius:8px;
+      padding:12px;
+      margin-top:12px;
     }
     .section {
-      margin:12px 0;padding:10px;
-      border:1px solid #ccc;border-radius:6px;
+      margin:12px 0;
+      padding:10px;
+      border:1px solid #ccc;
+      border-radius:6px;
       background:#fafafa;
     }
     .section h3 {
-      margin:0 0 8px;font-size:14px;
-      color:#0b5ed7;border-bottom:1px solid #ddd;
+      margin:0 0 8px;
+      font-size:14px;
+      font-weight:600;
+      color:#0b5ed7;
+      border-bottom:2px solid #0b5ed7;
       padding-bottom:3px;
     }
     .row { display:flex;flex-wrap:wrap;gap:12px }
@@ -63,54 +64,66 @@
     textarea { resize:vertical;min-height:60px }
     .sig {
       border:1px solid #999;border-radius:4px;
-      height:80px;background:#fff;cursor:pointer
+      height:80px;background:#fff;cursor:pointer;
     }
     .sig-controls { margin-top:6px }
-    .controls { margin:15px 0;display:flex;gap:10px;flex-wrap:wrap }
+    .controls {
+      margin:15px 0;display:flex;gap:10px;flex-wrap:wrap
+    }
     button {
       padding:8px 14px;border:none;border-radius:5px;
       background:#0b5ed7;color:#fff;font-size:13px;cursor:pointer
     }
     button.secondary { background:#555 }
-    /* Fullscreen signature modal */
-    .sig-modal {
-      display:none;position:fixed;top:0;left:0;right:0;bottom:0;
-      background:rgba(0,0,0,0.8);z-index:1000;
-      align-items:center;justify-content:center;flex-direction:column;
+    #previewArea {
+      width:210mm;height:297mm;
+      margin:0 auto;padding:12mm;box-sizing:border-box;
+      border:1px solid #ddd;background:#fff;
+      overflow:hidden; /* force to fit one page */
     }
-    .sig-modal canvas {
-      background:#fff;border:2px solid #333;
-      width:90%;height:70%;border-radius:8px;
+    #previewArea h1 {
+      font-size:16px;margin:0;text-align:center;color:#fff;
+      background:#0b5ed7;padding:6px;border-radius:6px 6px 0 0;
     }
-    .sig-modal .modal-controls { margin-top:10px; }
-    /* PDF preview modal */
-    #pdfPreviewModal {
+    #previewArea h2 {
+      font-size:13px;margin:0;text-align:center;color:#fff;
+      background:#0b5ed7;padding:4px;border-radius:0 0 6px 6px;
+    }
+    #previewArea .formNo {
+      margin:6px 0 12px;text-align:center;
+      font-size:12px;font-weight:bold;
+      border-bottom:2px solid #0b5ed7;padding-bottom:4px;
+    }
+    #previewArea .formBox { border:2px solid #0b5ed7;padding:10px;border-radius:8px }
+    #previewArea h3 {
+      font-size:13px;margin-top:8px;margin-bottom:4px;
+      font-weight:600;color:#0b5ed7;
+      border-bottom:2px solid #0b5ed7;
+      padding-bottom:3px;
+    }
+    #previewArea p { font-size:12px;margin:2px 0;line-height:1.3 }
+    img.sig-img { border:1px solid #000; margin-top:4px }
+    #sigModal {
       display:none;position:fixed;top:0;left:0;width:100%;height:100%;
-      background:rgba(0,0,0,0.8);z-index:2000;
-      align-items:center;justify-content:center;flex-direction:column;
+      background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center;
     }
-    #pdfPreviewModal iframe {
-      width:80%;height:80%;border:none;background:#fff;
+    #sigModalContent {
+      background:#fff;padding:20px;border-radius:10px;max-width:95%;max-height:90%;
+      display:flex;flex-direction:column;align-items:center;
     }
-    #pdfPreviewModal button { margin-top:10px }
+    #sigModal canvas { border:1px solid #000;width:100%;height:300px }
+    #sigModal .modal-controls { margin-top:10px;display:flex;gap:10px }
   </style>
 </head>
 <body>
-  <div class="container" id="formContainer">
+  <div class="container">
     <header>
-      <img id="logoPreview" class="header-logo" src="" alt="Logo"/>
-      <div class="header-text">
-        <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
-        <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
-      </div>
+      <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
+      <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+      <div class="formNo">Form No: <span id="formNo"></span></div>
     </header>
-    <div style="text-align:center;margin:10px 0;">
-      <label style="font-size:12px;">Upload Logo: </label>
-      <input type="file" id="logoInput" accept="image/*"/>
-    </div>
-    <div class="formNo">Form No: <span id="formNo"></span></div>
 
-    <!-- FORM START -->
+    <!-- FORM -->
     <form id="serviceForm" onsubmit="return false;">
       <div class="formBox">
         <div class="section">
@@ -160,8 +173,8 @@
             <div class="col"><label>Name</label><input type="text" id="userDept"/></div>
             <div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
             <div class="col">
-              <label>Signature (click to enlarge)</label>
-              <canvas id="userSig" class="sig"></canvas>
+              <label>Signature (Click to sign)</label>
+              <canvas id="userSig" class="sig" width="250" height="80" onclick="openSigModal('user')"></canvas>
               <div class="sig-controls">
                 <button type="button" class="secondary" onclick="userPad.clear()">Clear</button>
               </div>
@@ -175,8 +188,8 @@
             <div class="col"><label>Name</label><input type="text" id="engName"/></div>
             <div class="col"><label>Code</label><input type="text" id="engCode"/></div>
             <div class="col">
-              <label>Signature (click to enlarge)</label>
-              <canvas id="engSig" class="sig"></canvas>
+              <label>Signature (Click to sign)</label>
+              <canvas id="engSig" class="sig" width="250" height="80" onclick="openSigModal('eng')"></canvas>
               <div class="sig-controls">
                 <button type="button" class="secondary" onclick="engPad.clear()">Clear</button>
               </div>
@@ -186,77 +199,76 @@
       </div>
 
       <div class="controls">
-        <button type="button" onclick="previewPDF()">Preview PDF</button>
+        <button type="button" onclick="renderPreview()">Preview</button>
         <button type="button" onclick="downloadPDF()">Download PDF</button>
         <button type="button" class="secondary" onclick="location.reload()">Reset</button>
       </div>
     </form>
-  </div>
 
-  <!-- Signature Modal -->
-  <div class="sig-modal" id="sigModal">
-    <canvas id="modalCanvas"></canvas>
-    <div class="modal-controls">
-      <button onclick="modalPad.clear()">Clear</button>
-      <button onclick="saveSignature()">Save</button>
-      <button class="secondary" onclick="closeModal()">Cancel</button>
+    <div>
+      <h3>Preview (A4 size)</h3>
+      <div id="previewArea"></div>
     </div>
   </div>
 
-  <!-- PDF Preview Modal -->
-  <div id="pdfPreviewModal">
-    <iframe id="pdfFrame"></iframe>
-    <button onclick="closePreview()">Close</button>
+  <!-- Signature Modal -->
+  <div id="sigModal">
+    <div id="sigModalContent">
+      <canvas id="modalSig"></canvas>
+      <div class="modal-controls">
+        <button type="button" onclick="modalPad.clear()">Clear</button>
+        <button type="button" onclick="saveModalSig()">Save</button>
+        <button type="button" class="secondary" onclick="closeSigModal()">Cancel</button>
+      </div>
+    </div>
   </div>
 
-  <!-- LIBRARIES -->
+  <!-- LIBS -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
-    // Auto form number
     document.getElementById("formNo").innerText = "JIMSH-NK-" + Date.now();
 
-    // Signature pads
     const userPad = new SignaturePad(document.getElementById("userSig"));
     const engPad = new SignaturePad(document.getElementById("engSig"));
-    let activePad = null;
 
-    const modalCanvas = document.getElementById("modalCanvas");
+    let currentSig = null;
+    const modalCanvas = document.getElementById("modalSig");
     const modalPad = new SignaturePad(modalCanvas);
-    const sigModal = document.getElementById("sigModal");
 
-    document.getElementById("userSig").addEventListener("click", ()=>openModal(userPad));
-    document.getElementById("engSig").addEventListener("click", ()=>openModal(engPad));
-
-    function openModal(targetPad){
-      activePad = targetPad;
-      sigModal.style.display="flex";
+    function openSigModal(who){
+      currentSig = who;
+      modalPad.clear();
+      document.getElementById("sigModal").style.display="flex";
+      resizeModalCanvas();
+    }
+    function closeSigModal(){
+      document.getElementById("sigModal").style.display="none";
+    }
+    function saveModalSig(){
+      if(currentSig==="user"){
+        const ctx = userSig.getContext("2d");
+        ctx.clearRect(0,0,userSig.width,userSig.height);
+        const img = new Image();
+        img.onload = ()=>ctx.drawImage(img,0,0,userSig.width,userSig.height);
+        img.src = modalPad.toDataURL();
+      } else if(currentSig==="eng"){
+        const ctx = engSig.getContext("2d");
+        ctx.clearRect(0,0,engSig.width,engSig.height);
+        const img = new Image();
+        img.onload = ()=>ctx.drawImage(img,0,0,engSig.width,engSig.height);
+        img.src = modalPad.toDataURL();
+      }
+      closeSigModal();
+    }
+    function resizeModalCanvas(){
+      modalCanvas.width = modalCanvas.offsetWidth;
+      modalCanvas.height = 300;
       modalPad.clear();
     }
-    function closeModal(){
-      sigModal.style.display="none";
-      activePad=null;
-    }
-    function saveSignature(){
-      if(activePad && !modalPad.isEmpty()){
-        activePad.fromData(modalPad.toData());
-      }
-      closeModal();
-    }
 
-    // Logo upload
-    document.getElementById("logoInput").addEventListener("change", function(e){
-      const file = e.target.files[0];
-      if(file){
-        const reader = new FileReader();
-        reader.onload = evt => document.getElementById("logoPreview").src = evt.target.result;
-        reader.readAsDataURL(file);
-      }
-    });
-
-    // Downtime calculation
     function calcDowntime(){
       const startDate = complaintDate.value;
       const startTime = complaintTime.value;
@@ -274,36 +286,56 @@
       }
     }
 
-    // PDF utils
-    async function generatePDF(){
-      const form = document.getElementById("formContainer");
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF("p","mm","a4");
-      const canvas = await html2canvas(form,{scale:2});
-      const imgData = canvas.toDataURL("image/png");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pageWidth;
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData,"PNG",0,0,pdfWidth,pdfHeight);
-      return pdf;
-    }
-
-    async function previewPDF(){
-      const pdf = await generatePDF();
-      const pdfBlob = pdf.output("bloburl");
-      document.getElementById("pdfFrame").src = pdfBlob;
-      document.getElementById("pdfPreviewModal").style.display="flex";
-    }
-
-    function closePreview(){
-      document.getElementById("pdfPreviewModal").style.display="none";
+    function renderPreview(){
+      const prev = document.getElementById("previewArea");
+      prev.innerHTML = `
+        <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
+        <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+        <div class="formNo">Form No: ${formNo.innerText}</div>
+        <div class="formBox">
+          <h3>Complaint Information</h3>
+          <p>Date: ${complaintDate.value}</p>
+          <p>Time: ${complaintTime.value}</p>
+          <p>Department: ${department.value}</p>
+          <h3>Equipment Details</h3>
+          <p>Equipment: ${equipment.value}</p>
+          <p>Model: ${model.value}</p>
+          <p>Make: ${make.value}</p>
+          <p>Serial No: ${serial.value}</p>
+          <h3>Problem & Resolution</h3>
+          <p>Problem Reported: ${problem.value}</p>
+          <p>Action Taken: ${action.value}</p>
+          <h3>Completion Details</h3>
+          <p>Finish Date: ${finishDate.value}</p>
+          <p>Finish Time: ${finishTime.value}</p>
+          <p>Downtime: ${downtime.value}</p>
+          <p>Repaired by: ${repairedBy.value}</p>
+          <p>Spare Parts Used: ${spares.value}</p>
+          <p>Cause of Failure: ${cause.value}</p>
+          <h3>User Department</h3>
+          <p>Name: ${userDept.value}</p>
+          <p>Emp Code: ${userCode.value}</p>
+          ${!userPad.isEmpty()?'<img class="sig-img" src="'+userSig.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
+          <h3>Engineer</h3>
+          <p>Name: ${engName.value}</p>
+          <p>Code: ${engCode.value}</p>
+          ${!engPad.isEmpty()?'<img class="sig-img" src="'+engSig.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
+        </div>
+      `;
+      return prev;
     }
 
     async function downloadPDF(){
-      const pdf = await generatePDF();
-      pdf.save(document.getElementById("formNo").innerText+".pdf");
+      const preview = renderPreview();
+      await new Promise(r=>setTimeout(r,150));
+      const canvas = await html2canvas(preview,{scale:2});
+      const imgData = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p","mm","a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData,"PNG",0,0,pageWidth,pageHeight);
+      pdf.save(formNo.innerText+".pdf");
     }
   </script>
 </body>
