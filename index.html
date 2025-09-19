@@ -5,30 +5,94 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Service Report Form</title>
   <style>
-    body{font-family:"Segoe UI",Arial,Helvetica,sans-serif;margin:0;padding:10px;background:#eef2f7;color:#111}
-    .container{max-width:900px;margin:0 auto;background:#fff;border-radius:10px;padding:20px;box-shadow:0 4px 14px rgba(0,0,0,0.12)}
-    header{text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:3px solid #0b5ed7}
-    header h1{margin:4px 0;font-size:20px;font-weight:600;color:#0b5ed7}
-    header h2{margin:2px 0;font-size:14px;color:#444}
-    .section{margin:15px 0;padding:10px;border:1px solid #ccc;border-radius:6px;background:#fafafa}
-    .section h3{margin:0 0 10px;font-size:14px;color:#0b5ed7;border-bottom:1px solid #ddd;padding-bottom:3px}
-    .row{display:flex;flex-wrap:wrap;gap:12px}
-    .col{flex:1;min-width:180px}
-    label{display:block;font-size:12px;margin-bottom:4px;color:#333}
-    input,textarea{width:100%;padding:6px;font-size:13px;border:1px solid #bbb;border-radius:4px}
-    textarea{resize:vertical;min-height:60px}
-    .sig{border:1px solid #999;border-radius:4px;height:80px;background:#fff}
-    .controls{margin:15px 0;display:flex;gap:10px;flex-wrap:wrap}
-    button{padding:8px 14px;border:none;border-radius:5px;background:#0b5ed7;color:#fff;font-size:13px;cursor:pointer}
-    button.secondary{background:#555}
+    body {
+      font-family:"Segoe UI",Arial,Helvetica,sans-serif;
+      margin:0;padding:10px;
+      background:#eef2f7;color:#111;
+    }
+    .container {
+      max-width:900px;margin:0 auto;
+      background:#fff;border-radius:10px;
+      padding:20px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.12);
+    }
+    header { text-align:center;margin-bottom:12px; }
+    header h1 {
+      margin:4px 0;font-size:20px;
+      font-weight:600;color:#0b5ed7;
+    }
+    header h2 { margin:2px 0;font-size:14px;color:#444; }
+    .formNo {
+      margin-top:6px;font-size:12px;
+      font-weight:bold;
+      text-align:center;
+      padding-bottom:6px;
+      border-bottom:2px solid #0b5ed7;
+    }
+    /* main form box */
+    .formBox {
+      border:2px solid #0b5ed7;
+      border-radius:8px;
+      padding:12px;
+      margin-top:12px;
+    }
+    .section {
+      margin:12px 0;
+      padding:10px;
+      border:1px solid #ccc;
+      border-radius:6px;
+      background:#fafafa;
+    }
+    .section h3 {
+      margin:0 0 8px;font-size:14px;
+      color:#0b5ed7;
+      border-bottom:1px solid #ddd;
+      padding-bottom:3px;
+    }
+    .row { display:flex;flex-wrap:wrap;gap:12px }
+    .col { flex:1;min-width:180px }
+    label { display:block;font-size:12px;margin-bottom:4px;color:#333 }
+    input,textarea {
+      width:100%;padding:6px;font-size:13px;
+      border:1px solid #bbb;border-radius:4px
+    }
+    textarea { resize:vertical;min-height:60px }
+    .sig {
+      border:1px solid #999;border-radius:4px;
+      height:80px;background:#fff
+    }
+    .controls {
+      margin:15px 0;display:flex;gap:10px;flex-wrap:wrap
+    }
+    button {
+      padding:8px 14px;border:none;border-radius:5px;
+      background:#0b5ed7;color:#fff;font-size:13px;cursor:pointer
+    }
+    button.secondary { background:#555 }
     /* A4 preview */
-    #previewArea{width:210mm;min-height:297mm;max-height:297mm;margin:0 auto;padding:12mm;box-sizing:border-box;border:1px solid #ddd;background:#fff;overflow:hidden}
-    #previewArea h1{font-size:16px;margin:0;text-align:center;color:#0b5ed7}
-    #previewArea h2{font-size:13px;margin:2px 0 10px;text-align:center;color:#444}
-    #previewArea h3{margin-top:8px;margin-bottom:4px;font-size:13px;color:#0b5ed7;border-bottom:1px solid #ddd}
-    #previewArea p{font-size:12px;margin:2px 0}
-    #previewArea .formNo{text-align:center;margin-bottom:10px;font-size:12px}
-    @media(max-width:700px){#previewArea{width:100%;min-height:auto;}}
+    #previewArea {
+      width:210mm;min-height:297mm;max-height:297mm;
+      margin:0 auto;padding:12mm;box-sizing:border-box;
+      border:1px solid #ddd;background:#fff;overflow:hidden
+    }
+    #previewArea h1 {
+      font-size:16px;margin:0;text-align:center;color:#0b5ed7
+    }
+    #previewArea h2 {
+      font-size:13px;margin:2px 0;text-align:center;color:#444
+    }
+    #previewArea .formNo {
+      margin:6px 0 12px;text-align:center;
+      font-size:12px;font-weight:bold;
+      border-bottom:2px solid #0b5ed7;padding-bottom:4px;
+    }
+    #previewArea .formBox { border:2px solid #0b5ed7;padding:10px;border-radius:8px }
+    #previewArea h3 {
+      margin-top:8px;margin-bottom:4px;font-size:13px;
+      color:#0b5ed7;border-bottom:1px solid #ddd
+    }
+    #previewArea p { font-size:12px;margin:2px 0 }
+    @media(max-width:700px){ #previewArea{width:100%;min-height:auto;} }
   </style>
 </head>
 <body>
@@ -36,67 +100,69 @@
     <header>
       <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
       <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
-      <div>Form No: <b id="formNo"></b></div>
+      <div class="formNo">Form No: <span id="formNo"></span></div>
     </header>
 
     <!-- FORM -->
     <form id="serviceForm" onsubmit="return false;">
-      <div class="section">
-        <h3>Complaint Information</h3>
-        <div class="row">
-          <div class="col"><label>Date</label><input type="date" id="complaintDate"/></div>
-          <div class="col"><label>Time</label><input type="time" id="complaintTime"/></div>
-          <div class="col"><label>Department</label><input type="text" id="department"/></div>
+      <div class="formBox">
+        <div class="section">
+          <h3>Complaint Information</h3>
+          <div class="row">
+            <div class="col"><label>Date</label><input type="date" id="complaintDate"/></div>
+            <div class="col"><label>Time</label><input type="time" id="complaintTime"/></div>
+            <div class="col"><label>Department</label><input type="text" id="department"/></div>
+          </div>
         </div>
-      </div>
 
-      <div class="section">
-        <h3>Equipment Details</h3>
-        <div class="row">
-          <div class="col"><label>Equipment</label><input type="text" id="equipment"/></div>
-          <div class="col"><label>Model</label><input type="text" id="model"/></div>
-          <div class="col"><label>Make</label><input type="text" id="make"/></div>
-          <div class="col"><label>Serial No</label><input type="text" id="serial"/></div>
+        <div class="section">
+          <h3>Equipment Details</h3>
+          <div class="row">
+            <div class="col"><label>Equipment</label><input type="text" id="equipment"/></div>
+            <div class="col"><label>Model</label><input type="text" id="model"/></div>
+            <div class="col"><label>Make</label><input type="text" id="make"/></div>
+            <div class="col"><label>Serial No</label><input type="text" id="serial"/></div>
+          </div>
         </div>
-      </div>
 
-      <div class="section">
-        <h3>Problem & Resolution</h3>
-        <div class="row">
-          <div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
-          <div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
+        <div class="section">
+          <h3>Problem & Resolution</h3>
+          <div class="row">
+            <div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
+            <div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
+          </div>
         </div>
-      </div>
 
-      <div class="section">
-        <h3>Completion Details</h3>
-        <div class="row">
-          <div class="col"><label>Finish Date</label><input type="date" id="finishDate" onchange="calcDowntime()"/></div>
-          <div class="col"><label>Finish Time</label><input type="time" id="finishTime" onchange="calcDowntime()"/></div>
-          <div class="col"><label>Downtime</label><input type="text" id="downtime" readonly/></div>
+        <div class="section">
+          <h3>Completion Details</h3>
+          <div class="row">
+            <div class="col"><label>Finish Date</label><input type="date" id="finishDate" onchange="calcDowntime()"/></div>
+            <div class="col"><label>Finish Time</label><input type="time" id="finishTime" onchange="calcDowntime()"/></div>
+            <div class="col"><label>Downtime</label><input type="text" id="downtime" readonly/></div>
+          </div>
+          <div class="row">
+            <div class="col"><label>Repaired by</label><input type="text" id="repairedBy"/></div>
+            <div class="col"><label>Spare Parts Used</label><input type="text" id="spares"/></div>
+            <div class="col"><label>Cause of Failure</label><input type="text" id="cause"/></div>
+          </div>
         </div>
-        <div class="row">
-          <div class="col"><label>Repaired by</label><input type="text" id="repairedBy"/></div>
-          <div class="col"><label>Spare Parts Used</label><input type="text" id="spares"/></div>
-          <div class="col"><label>Cause of Failure</label><input type="text" id="cause"/></div>
-        </div>
-      </div>
 
-      <div class="section">
-        <h3>User Department</h3>
-        <div class="row">
-          <div class="col"><label>Name</label><input type="text" id="userDept"/></div>
-          <div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
-          <div class="col"><label>Signature</label><canvas id="userSig" class="sig" width="250" height="80"></canvas></div>
+        <div class="section">
+          <h3>User Department</h3>
+          <div class="row">
+            <div class="col"><label>Name</label><input type="text" id="userDept"/></div>
+            <div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
+            <div class="col"><label>Signature</label><canvas id="userSig" class="sig" width="250" height="80"></canvas></div>
+          </div>
         </div>
-      </div>
 
-      <div class="section">
-        <h3>Engineer</h3>
-        <div class="row">
-          <div class="col"><label>Name</label><input type="text" id="engName"/></div>
-          <div class="col"><label>Code</label><input type="text" id="engCode"/></div>
-          <div class="col"><label>Signature</label><canvas id="engSig" class="sig" width="250" height="80"></canvas></div>
+        <div class="section">
+          <h3>Engineer</h3>
+          <div class="row">
+            <div class="col"><label>Name</label><input type="text" id="engName"/></div>
+            <div class="col"><label>Code</label><input type="text" id="engCode"/></div>
+            <div class="col"><label>Signature</label><canvas id="engSig" class="sig" width="250" height="80"></canvas></div>
+          </div>
         </div>
       </div>
 
@@ -126,13 +192,12 @@
     const userPad = new SignaturePad(document.getElementById("userSig"));
     const engPad = new SignaturePad(document.getElementById("engSig"));
 
-    // Auto-calc downtime
+    // Auto downtime calculation
     function calcDowntime(){
-      const startDate = document.getElementById("complaintDate").value;
-      const startTime = document.getElementById("complaintTime").value;
-      const endDate = document.getElementById("finishDate").value;
-      const endTime = document.getElementById("finishTime").value;
-
+      const startDate = complaintDate.value;
+      const startTime = complaintTime.value;
+      const endDate = finishDate.value;
+      const endTime = finishTime.value;
       if(startDate && startTime && endDate && endTime){
         const start = new Date(startDate+"T"+startTime);
         const end = new Date(endDate+"T"+endTime);
@@ -140,37 +205,41 @@
           let diffMs = end - start;
           let hours = Math.floor(diffMs/1000/60/60);
           let mins = Math.floor((diffMs/1000/60) % 60);
-          document.getElementById("downtime").value = hours+"h "+mins+"m";
+          downtime.value = hours+"h "+mins+"m";
         }
       }
     }
 
+    // Render preview
     function renderPreview(){
       const prev = document.getElementById("previewArea");
       prev.innerHTML = `
         <h1>Jagannath Gupta Institute Of Medical Science & Hospital. North - Kolkata</h1>
         <h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
-        <div class="formNo"><strong>Form No:</strong> ${formNo.innerText}</div>
-        <h3>Complaint Info</h3>
-        <p>Date: ${complaintDate.value} | Time: ${complaintTime.value} | Dept: ${department.value}</p>
-        <h3>Equipment</h3>
-        <p>${equipment.value} | Model: ${model.value} | Make: ${make.value} | SN: ${serial.value}</p>
-        <h3>Problem & Resolution</h3>
-        <p><b>Problem:</b> ${problem.value}</p>
-        <p><b>Action:</b> ${action.value}</p>
-        <h3>Completion</h3>
-        <p>Finish: ${finishDate.value} ${finishTime.value} | Downtime: ${downtime.value}</p>
-        <p>Repaired by: ${repairedBy.value} | Spares: ${spares.value} | Cause: ${cause.value}</p>
-        <h3>User Department</h3>
-        <p>${userDept.value} (${userCode.value})</p>
-        ${!userPad.isEmpty()?'<img src="'+userPad.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
-        <h3>Engineer</h3>
-        <p>${engName.value} (${engCode.value})</p>
-        ${!engPad.isEmpty()?'<img src="'+engPad.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
+        <div class="formNo">Form No: ${formNo.innerText}</div>
+        <div class="formBox">
+          <h3>Complaint Info</h3>
+          <p>Date: ${complaintDate.value} | Time: ${complaintTime.value} | Dept: ${department.value}</p>
+          <h3>Equipment</h3>
+          <p>${equipment.value} | Model: ${model.value} | Make: ${make.value} | SN: ${serial.value}</p>
+          <h3>Problem & Resolution</h3>
+          <p><b>Problem:</b> ${problem.value}</p>
+          <p><b>Action:</b> ${action.value}</p>
+          <h3>Completion</h3>
+          <p>Finish: ${finishDate.value} ${finishTime.value} | Downtime: ${downtime.value}</p>
+          <p>Repaired by: ${repairedBy.value} | Spares: ${spares.value} | Cause: ${cause.value}</p>
+          <h3>User Department</h3>
+          <p>${userDept.value} (${userCode.value})</p>
+          ${!userPad.isEmpty()?'<img src="'+userPad.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
+          <h3>Engineer</h3>
+          <p>${engName.value} (${engCode.value})</p>
+          ${!engPad.isEmpty()?'<img src="'+engPad.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
+        </div>
       `;
       return prev;
     }
 
+    // Download PDF
     async function downloadPDF(){
       const preview = renderPreview();
       await new Promise(r=>setTimeout(r,150));
