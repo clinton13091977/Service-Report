@@ -33,7 +33,7 @@
     #sigBtns{margin-top:8px;display:flex;gap:8px;justify-content:center}
 
     /* Preview for PDF */
-    #previewArea{width:210mm;min-height:297mm;margin:0 auto;padding:10mm;box-sizing:border-box;background:#fff}
+    #previewArea{width:210mm;min-height:297mm;margin:0 auto;padding:10mm;box-sizing:border-box;background:#fff;border:2px solid #004080}
     #previewArea h1,#previewArea h2{color:#fff;background:#004080;padding:5px;text-align:center;margin:0}
     #previewArea h2{font-size:14px}
     #previewArea .formno{border-top:1px solid #ccc;text-align:center;font-size:12px;margin:5px 0;padding-top:4px}
@@ -203,12 +203,12 @@
     }
 
     async function downloadPDF(){
-      const prev=document.getElementById("previewArea");
       renderPreview();
       await new Promise(r=>setTimeout(r,150));
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF("p","mm","a4");
       const pageHeight=pdf.internal.pageSize.getHeight();
+      const prev=document.getElementById("previewArea");
       const canvas=await html2canvas(prev,{scale:2});
       const imgData=canvas.toDataURL("image/png");
       const imgProps=pdf.getImageProperties(imgData);
@@ -216,8 +216,7 @@
       const pdfHeight=(imgProps.height*pdfWidth)/imgProps.width;
       let y=0;
       pdf.addImage(imgData,"PNG",0,y,pdfWidth,pdfHeight);
-      // 2 pages if overflow
-      if(pdfHeight>pageHeight){
+      if(pdfHeight>pageHeight){ // second page if needed
         pdf.addPage();
         pdf.addImage(imgData,"PNG",0,-pageHeight,pdfWidth,pdfHeight);
       }
