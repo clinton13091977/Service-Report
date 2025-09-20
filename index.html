@@ -173,6 +173,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
   <script>
     // ------------------ Your Original Form Script -------------------
@@ -252,8 +253,7 @@
       pdf.save(formNo.innerText+".pdf");
     }
 
-    // ------------------ Step 7: Firebase Setup -------------------
-    // Replace the values below with your own Firebase config
+    // ------------------ Firebase Setup -------------------
     var firebaseConfig = {
       apiKey: "AIzaSyAWPlgLt8OQPX6Gq6hzsp46VZxSxXIU5i0",
       authDomain: "digital-service-report.firebaseapp.com",
@@ -265,6 +265,7 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+    const storage = firebase.storage();
 
     const btnLogin = document.getElementById("btn-login");
     const btnLogout = document.getElementById("btn-logout");
@@ -275,9 +276,7 @@
     const adminBadge = document.getElementById("admin-badge");
     const btnSave = document.getElementById("btn-save-firestore");
 
-    function checkAdmin(uid){
-      return db.collection("admins").doc(uid).get().then(doc=>doc.exists);
-    }
+    function checkAdmin(uid){ return db.collection("admins").doc(uid).get().then(doc=>doc.exists); }
 
     auth.onAuthStateChanged(async user=>{
       if(user){
@@ -303,53 +302,71 @@
     btnLogin.addEventListener("click",()=>{
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-      auth.signInWithEmailAndPassword(email,password)
-      .then(()=>{ authMsg.textContent="Login successful"; })
-      .catch(err=>{ authMsg.textContent=err.message; });
+      auth.signInWithEmailAndPassword(email,password).then(()=>{ authMsg.textContent="Login successful"; }).catch(err=>{ authMsg.textContent=err.message; });
     });
 
     btnRegister.addEventListener("click",()=>{
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-      auth.createUserWithEmailAndPassword(email,password)
-      .then(()=>{ authMsg.textContent="Registered & logged in"; })
-      .catch(err=>{ authMsg.textContent=err.message; });
+      auth.createUserWithEmailAndPassword(email,password).then(()=>{ authMsg.textContent="Registered & logged in"; }).catch(err=>{ authMsg.textContent=err.message; });
     });
 
     btnLogout.addEventListener("click",()=>{ auth.signOut(); });
 
+    // ------------------ Step 3: Upload PDF to Firebase Storage -------------------
     btnSave.addEventListener("click",async ()=>{
       const user = auth.currentUser;
       if(!user){ alert("Login first"); return; }
-      const data = {
-        formNo: formNo.innerText,
-        complaintDate: complaintDate.value,
-        complaintTime: complaintTime.value,
-        department: department.value,
-        equipment: equipment.value,
-        model: model.value,
-        make: make.value,
-        serial: serial.value,
-        problem: problem.value,
-        action: action.value,
-        finishDate: finishDate.value,
-        finishTime: finishTime.value,
-        downtime: downtime.value,
-        repairedBy: repairedBy.value,
-        spares: spares.value,
-        cause: cause.value,
-        userDept: userDept.value,
-        userCode: userCode.value,
-        engName: engName.value,
-        engCode: engCode.value,
-        userSig: userPad.isEmpty()?null:userSig.toDataURL(),
-        engSig: engPad.isEmpty()?null:engSig.toDataURL(),
-        createdBy: user.uid,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      };
+
+      // Generate PDF
+      const preview = renderPreview(); 
+      await new Promise(r=>setTimeout(r,150));
+      const canvas = await html2canvas(preview,{scale:2});
+      const imgData = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p","mm","a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData,"PNG",0,0,pageWidth,pageHeight);
+      const pdfBlob = pdf.output("blob");
+
+      // Upload to Firebase Storage
+      const fileName = `submissions/${user.uid}_${Date.now()}.pdf`;
+      const storageRef = storage.ref(fileName);
       try{
+        const snapshot = await storageRef.put(pdfBlob);
+        const downloadURL = await snapshot.ref.getDownloadURL();
+
+        // Save form data + PDF URL to Firestore
+        const data = {
+          formNo: formNo.innerText,
+          complaintDate: complaintDate.value,
+          complaintTime: complaintTime.value,
+          department: department.value,
+          equipment: equipment.value,
+          model: model.value,
+          make: make.value,
+          serial: serial.value,
+          problem: problem.value,
+          action: action.value,
+          finishDate: finishDate.value,
+          finishTime: finishTime.value,
+          downtime: downtime.value,
+          repairedBy: repairedBy.value,
+          spares: spares.value,
+          cause: cause.value,
+          userDept: userDept.value,
+          userCode: userCode.value,
+          engName: engName.value,
+          engCode: engCode.value,
+          userSig: userPad.isEmpty()?null:userSig.toDataURL(),
+          engSig: engPad.isEmpty()?null:engSig.toDataURL(),
+          pdfURL: downloadURL,
+          createdBy: user.uid,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
         await db.collection("submissions").add(data);
-        alert("Form saved to cloud successfully!");
+        alert("Form + PDF uploaded successfully!");
       }catch(err){ alert("Error saving form: "+err.message); }
     });
   </script>
