@@ -162,8 +162,8 @@ function closeSigModal(){document.getElementById("sigModal").style.display="none
 function saveModalSig(){const ctx=currentSig==="user"?userSig.getContext("2d"):engSig.getContext("2d");ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);const img=new Image();img.onload=()=>ctx.drawImage(img,0,0,ctx.canvas.width,ctx.canvas.height);img.src=modalPad.toDataURL();closeSigModal();}
 function resizeModalCanvas(){modalCanvas.width=modalCanvas.offsetWidth;modalCanvas.height=180;modalPad.clear();}
 function calcDowntime(){const start=new Date(complaintDate.value+"T"+complaintTime.value);const end=new Date(finishDate.value+"T"+finishTime.value);if(end>start){let diff=end-start;let h=Math.floor(diff/3600000);let m=Math.floor((diff/60000)%60);downtime.value=h+"h "+m+"m";}}
-function renderPreview(){const prev=document.getElementById("previewArea");prev.innerHTML=`<img src="logo.jpg"><h1 style="font-size:12px">Jagannath Gupta Institute Of Medical Science & Hospital</h1>
-<h2 style="font-size:10px">Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+function renderPreview(){const prev=document.getElementById("previewArea");prev.innerHTML=`<img src="logo.jpg" alt="Company Logo">
+<h2 style="font-size:14px">Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
 <div class="formNo">Form No: ${formNo.innerText}</div>
 <div class="formBox">
 <h3>Complaint Info</h3><p>Date: ${complaintDate.value}</p><p>Time: ${complaintTime.value}</p><p>Dept: ${department.value}</p>
@@ -189,3 +189,4 @@ btnSave.addEventListener("click",async ()=>{const user=auth.currentUser;if(!user
 </script>
 </body>
 </html>
+
