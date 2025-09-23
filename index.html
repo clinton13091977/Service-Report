@@ -1,377 +1,191 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Service Report Form</title>
-  <style>
-    body { font-family:"Segoe UI",Arial,Helvetica,sans-serif; margin:0;padding:10px; background:#eef2f7;color:#111; }
-    .container { max-width:900px;margin:0 auto;background:#fff;border-radius:10px;padding:20px;box-shadow:0 4px 14px rgba(0,0,0,0.12); }
-    header { text-align:center;margin-bottom:12px; }
-    header h1 { margin:0;font-size:20px;font-weight:600;color:#fff;background:#0b5ed7;padding:6px;border-radius:6px 6px 0 0; }
-    header h2 { margin:0;font-size:14px;color:#fff;background:#0b5ed7;padding:4px;border-radius:0 0 6px 6px; }
-    .formNo { margin-top:6px;font-size:12px;font-weight:bold;text-align:center;padding-bottom:6px;border-bottom:2px solid #0b5ed7; }
-    .formBox { border:2px solid #0b5ed7;border-radius:8px;padding:12px;margin-top:12px; }
-    .section { margin:12px 0;padding:10px;border:1px solid #ccc;border-radius:6px;background:#fafafa; }
-    .section h3 { margin:0 0 8px;font-size:14px;font-weight:600;color:#0b5ed7;border-bottom:2px solid #0b5ed7;padding-bottom:3px; }
-    .row { display:flex;flex-wrap:wrap;gap:12px }
-    .col { flex:1;min-width:180px }
-    label { display:block;font-size:12px;margin-bottom:4px;color:#333 }
-    input,textarea { width:100%;padding:6px;font-size:13px;border:1px solid #bbb;border-radius:4px }
-    textarea { resize:vertical;min-height:60px }
-    .sig { border:1px solid #999;border-radius:4px;height:80px;background:#fff;cursor:pointer; }
-    .sig-controls { margin-top:6px }
-    .controls { margin:15px 0;display:flex;gap:10px;flex-wrap:wrap }
-    button { padding:8px 14px;border:none;border-radius:5px;background:#0b5ed7;color:#fff;font-size:13px;cursor:pointer }
-    button.secondary { background:#555 }
-    #previewArea { width:210mm;height:297mm;margin:0 auto;padding:12mm;box-sizing:border-box;border:1px solid #ddd;background:#fff;overflow:hidden; }
-    #previewArea h1 { font-size:16px;margin:0;text-align:center;color:#fff;background:#0b5ed7;padding:6px;border-radius:6px 6px 0 0; }
-    #previewArea h2 { font-size:13px;margin:0;text-align:center;color:#fff;background:#0b5ed7;padding:4px;border-radius:0 0 6px 6px; }
-    #previewArea .formNo { margin:6px 0 12px;text-align:center;font-size:12px;font-weight:bold;border-bottom:2px solid #0b5ed7;padding-bottom:4px; }
-    #previewArea .formBox { border:2px solid #0b5ed7;padding:10px;border-radius:8px }
-    #previewArea h3 { font-size:13px;margin-top:8px;margin-bottom:4px;font-weight:600;color:#0b5ed7;border-bottom:2px solid #0b5ed7;padding-bottom:3px; }
-    #previewArea p { font-size:12px;margin:2px 0;line-height:1.3 }
-    img.sig-img { border:1px solid #000; margin-top:4px }
-    #sigModal { display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center; }
-    #sigModalContent { background:#fff;padding:20px;border-radius:10px;max-width:95%;max-height:90%;display:flex;flex-direction:column;align-items:center; }
-    #sigModal canvas { border:1px solid #000;width:100%;height:300px }
-    #sigModal .modal-controls { margin-top:10px;display:flex;gap:10px }
-
-    /* Login styles */
-    #auth-ui { margin-bottom:20px; padding:10px; border:1px solid #ccc; border-radius:6px; background:#f5f5f5; }
-    #auth-ui input { margin-bottom:6px; }
-    #auth-ui button { margin-right:6px; }
-    #user-info { margin-bottom:12px; }
-    .hidden { display:none; }
-    .admin-badge { color:#fff; background:green; padding:2px 6px; border-radius:4px; font-size:0.8rem; }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Service Report Form</title>
+<style>
+body{font-family:"Segoe UI",Arial,sans-serif;margin:0;padding:5px;background:#eef2f7;color:#111;font-size:12px}
+.container{max-width:480px;margin:0 auto;background:#fff;border-radius:8px;padding:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+header{text-align:center;margin-bottom:5px}
+header img{max-height:40px;margin-bottom:3px}
+header h1{margin:0;font-size:12px;font-weight:600;color:#fff;background:#0b5ed7;padding:4px;border-radius:4px 4px 0 0}
+header h2{margin:0;font-size:10px;color:#fff;background:#0b5ed7;padding:3px;border-radius:0 0 4px 4px}
+.formNo{margin:4px 0 8px;text-align:center;font-size:10px;font-weight:bold;border-bottom:2px solid #0b5ed7;padding-bottom:2px}
+.formBox{border:1.5px solid #0b5ed7;border-radius:6px;padding:6px;margin-top:6px}
+.section{margin:6px 0;padding:6px;border:1px solid #ccc;border-radius:4px;background:#fafafa}
+.section h3{margin:0 0 4px;font-size:11px;font-weight:bold;color:#0b5ed7;border-bottom:1.5px solid #0b5ed7;padding-bottom:1px}
+.row{display:flex;flex-wrap:wrap;gap:4px}
+.col{flex:1;min-width:100px}
+label{display:block;font-size:10px;margin-bottom:2px;color:#333}
+input,textarea{width:100%;padding:4px;font-size:11px;border:1px solid #bbb;border-radius:3px}
+textarea{resize:vertical;min-height:40px}
+.sig{border:1px solid #999;border-radius:3px;height:50px;background:#fff;cursor:pointer}
+.sig-controls{margin-top:2px}
+.controls{margin:6px 0;display:flex;gap:4px;flex-wrap:wrap}
+button{padding:5px 8px;border:none;border-radius:4px;background:#0b5ed7;color:#fff;font-size:11px;cursor:pointer}
+button.secondary{background:#555}
+#previewArea{width:210mm;height:297mm;margin:0 auto;padding:6mm;box-sizing:border-box;border:1px solid #ddd;background:#fff;overflow:hidden;font-size:10px}
+#previewArea img{max-width:80%;height:auto;margin-bottom:2px}
+img.sig-img{border:1px solid #000;margin-top:2px;height:50px}
+#sigModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center}
+#sigModalContent{background:#fff;padding:8px;border-radius:8px;max-width:95%;max-height:90%;display:flex;flex-direction:column;align-items:center}
+#sigModal canvas{border:1px solid #000;width:100%;height:180px}
+#sigModal .modal-controls{margin-top:6px;display:flex;gap:4px;flex-wrap:wrap}
+#auth-ui{margin-bottom:8px;padding:6px;border:1px solid #ccc;border-radius:4px;background:#f5f5f5;text-align:center}
+#auth-ui img{max-height:30px;margin-bottom:3px}
+#auth-ui input{margin-bottom:4px;width:90%;padding:4px;font-size:11px}
+#user-info{margin-bottom:6px;font-size:11px}
+.hidden{display:none}
+.admin-badge{color:#fff;background:green;padding:2px 4px;border-radius:3px;font-size:0.6rem}
+</style>
 </head>
 <body>
-  <div class="container">
-    <!-- Firebase Login -->
-    <div id="auth-ui">
-      <h3>Login</h3>
-      <input id="email" placeholder="Email" /><br/>
-      <input id="password" type="password" placeholder="Password" /><br/>
-      <button id="btn-login">Login</button>
-      <button id="btn-logout" class="hidden">Logout</button>
-      <button id="btn-register">Register</button>
-      <p id="auth-msg"></p>
-    </div>
+<div class="container">
+<div id="auth-ui">
+<img src="logo.jpg" alt="Company Logo">
+<h3>Login</h3>
+<input id="email" placeholder="Email"/><br/>
+<input id="password" type="password" placeholder="Password"/><br/>
+<button id="btn-login">Login</button>
+<button id="btn-logout" class="hidden">Logout</button>
+<button id="btn-register">Register</button>
+<p id="auth-msg"></p>
+</div>
+<div id="user-info" class="hidden">
+Logged in as: <span id="user-email"></span> <span id="admin-badge" class="admin-badge hidden">ADMIN</span>
+</div>
+<div id="form-container" class="hidden">
+<header>
+<img src="logo.jpg" alt="Company Logo">
+<h1>Jagannath Gupta Institute Of Medical Science & Hospital</h1>
+<h2>Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+<div class="formNo">Form No: <span id="formNo"></span></div>
+</header>
+<form id="serviceForm" onsubmit="return false;">
+<div class="formBox">
+<div class="section">
+<h3>Complaint Information</h3>
+<div class="row">
+<div class="col"><label>Date</label><input type="date" id="complaintDate"/></div>
+<div class="col"><label>Time</label><input type="time" id="complaintTime"/></div>
+<div class="col"><label>Department</label><input type="text" id="department"/></div>
+</div></div>
+<div class="section">
+<h3>Equipment Details</h3>
+<div class="row">
+<div class="col"><label>Equipment</label><input type="text" id="equipment"/></div>
+<div class="col"><label>Model</label><input type="text" id="model"/></div>
+<div class="col"><label>Make</label><input type="text" id="make"/></div>
+<div class="col"><label>Serial No</label><input type="text" id="serial"/></div>
+</div></div>
+<div class="section">
+<h3>Problem & Resolution</h3>
+<div class="row">
+<div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
+<div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
+</div></div>
+<div class="section">
+<h3>Completion Details</h3>
+<div class="row">
+<div class="col"><label>Finish Date</label><input type="date" id="finishDate" onchange="calcDowntime()"/></div>
+<div class="col"><label>Finish Time</label><input type="time" id="finishTime" onchange="calcDowntime()"/></div>
+<div class="col"><label>Downtime</label><input type="text" id="downtime" readonly/></div>
+</div>
+<div class="row">
+<div class="col"><label>Repaired by</label><input type="text" id="repairedBy"/></div>
+<div class="col"><label>Spare Parts Used</label><input type="text" id="spares"/></div>
+<div class="col"><label>Cause of Failure</label><input type="text" id="cause"/></div>
+</div></div>
+<div class="section">
+<h3>User Department</h3>
+<div class="row">
+<div class="col"><label>Name</label><input type="text" id="userDept"/></div>
+<div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
+<div class="col">
+<label>Signature (Click to sign)</label>
+<canvas id="userSig" class="sig" onclick="openSigModal('user')"></canvas>
+<div class="sig-controls"><button type="button" class="secondary" onclick="userPad.clear()">Clear</button></div>
+</div>
+</div></div>
+<div class="section">
+<h3>Engineer</h3>
+<div class="row">
+<div class="col"><label>Name</label><input type="text" id="engName"/></div>
+<div class="col"><label>Code</label><input type="text" id="engCode"/></div>
+<div class="col">
+<label>Signature (Click to sign)</label>
+<canvas id="engSig" class="sig" onclick="openSigModal('eng')"></canvas>
+<div class="sig-controls"><button type="button" class="secondary" onclick="engPad.clear()">Clear</button></div>
+</div>
+</div></div>
+</div>
+<div class="controls">
+<button type="button" onclick="renderPreview()">Preview</button>
+<button type="button" onclick="downloadPDF()">Download PDF</button>
+<button type="button" class="secondary" onclick="location.reload()">Reset</button>
+<button type="button" id="btn-save-firestore">Save to Cloud</button>
+</div>
+</form>
+<div>
+<h3>Preview (A4 size)</h3>
+<div id="previewArea"></div>
+</div>
+</div></div>
 
-    <div id="user-info" class="hidden">
-      Logged in as: <span id="user-email"></span> <span id="admin-badge" class="admin-badge hidden">ADMIN</span>
-    </div>
+<div id="sigModal">
+<div id="sigModalContent">
+<canvas id="modalSig"></canvas>
+<div class="modal-controls">
+<button type="button" onclick="modalPad.clear()">Clear</button>
+<button type="button" onclick="saveModalSig()">Save</button>
+<button type="button" class="secondary" onclick="closeSigModal()">Cancel</button>
+</div>
+</div>
+</div>
 
-    <!-- FORM - hidden until login -->
-    <div id="form-container" class="hidden">
-      <header>
-        <h1>Jagannath Gupta Institute Of Medical Science & Hospital, North - Kolkata</h1>
-        <h2>"Biomedical Equipment Maintenance Cum Breakdown Service Report"</h2>
-        <div class="formNo">Form No: <span id="formNo"></span></div>
-      </header>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
-      <form id="serviceForm" onsubmit="return false;">
-        <div class="formBox">
-          <div class="section">
-            <h3>Complaint Information</h3>
-            <div class="row">
-              <div class="col"><label>Date</label><input type="date" id="complaintDate"/></div>
-              <div class="col"><label>Time</label><input type="time" id="complaintTime"/></div>
-              <div class="col"><label>Department</label><input type="text" id="department"/></div>
-            </div>
-          </div>
+<script>
+// Signature & Preview
+document.getElementById("formNo").innerText="JIMSH-NK-"+Date.now();
+const userPad=new SignaturePad(document.getElementById("userSig")),engPad=new SignaturePad(document.getElementById("engSig"));
+let currentSig=null;const modalCanvas=document.getElementById("modalSig");const modalPad=new SignaturePad(modalCanvas);
+function openSigModal(who){currentSig=who;modalPad.clear();document.getElementById("sigModal").style.display="flex";resizeModalCanvas();}
+function closeSigModal(){document.getElementById("sigModal").style.display="none";}
+function saveModalSig(){const ctx=currentSig==="user"?userSig.getContext("2d"):engSig.getContext("2d");ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);const img=new Image();img.onload=()=>ctx.drawImage(img,0,0,ctx.canvas.width,ctx.canvas.height);img.src=modalPad.toDataURL();closeSigModal();}
+function resizeModalCanvas(){modalCanvas.width=modalCanvas.offsetWidth;modalCanvas.height=180;modalPad.clear();}
+function calcDowntime(){const start=new Date(complaintDate.value+"T"+complaintTime.value);const end=new Date(finishDate.value+"T"+finishTime.value);if(end>start){let diff=end-start;let h=Math.floor(diff/3600000);let m=Math.floor((diff/60000)%60);downtime.value=h+"h "+m+"m";}}
+function renderPreview(){const prev=document.getElementById("previewArea");prev.innerHTML=`<img src="logo.jpg"><h1 style="font-size:12px">Jagannath Gupta Institute Of Medical Science & Hospital</h1>
+<h2 style="font-size:10px">Biomedical Equipment Maintenance Cum Breakdown Service Report</h2>
+<div class="formNo">Form No: ${formNo.innerText}</div>
+<div class="formBox">
+<h3>Complaint Info</h3><p>Date: ${complaintDate.value}</p><p>Time: ${complaintTime.value}</p><p>Dept: ${department.value}</p>
+<h3>Equipment Details</h3><p>Equipment: ${equipment.value}</p><p>Model: ${model.value}</p><p>Make: ${make.value}</p><p>Serial: ${serial.value}</p>
+<h3>Problem & Resolution</h3><p>${problem.value}</p><p>${action.value}</p>
+<h3>Completion Details</h3><p>Finish: ${finishDate.value} ${finishTime.value}</p><p>Downtime: ${downtime.value}</p><p>Repaired by: ${repairedBy.value}</p><p>Spares: ${spares.value}</p><p>Cause: ${cause.value}</p>
+<h3>User Dept</h3><p>Name: ${userDept.value}</p><p>Emp Code: ${userCode.value}</p>${!userPad.isEmpty()?'<img class="sig-img" src="'+userSig.toDataURL()+'">':'<i>No Signature</i>'}
+<h3>Engineer</h3><p>Name: ${engName.value}</p><p>Code: ${engCode.value}</p>${!engPad.isEmpty()?'<img class="sig-img" src="'+engSig.toDataURL()+'">':'<i>No Signature</i>'}
+</div>`;return prev;}
+async function downloadPDF(){const prev=renderPreview();await new Promise(r=>setTimeout(r,100));const canvas=await html2canvas(prev,{scale:2});const imgData=canvas.toDataURL("image/png");const {jsPDF}=window.jspdf;const pdf=new jsPDF("p","mm","a4");pdf.addImage(imgData,"PNG",0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());pdf.save(formNo.innerText+".pdf");}
 
-          <div class="section">
-            <h3>Equipment Details</h3>
-            <div class="row">
-              <div class="col"><label>Equipment</label><input type="text" id="equipment"/></div>
-              <div class="col"><label>Model</label><input type="text" id="model"/></div>
-              <div class="col"><label>Make</label><input type="text" id="make"/></div>
-              <div class="col"><label>Serial No</label><input type="text" id="serial"/></div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>Problem & Resolution</h3>
-            <div class="row">
-              <div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
-              <div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>Completion Details</h3>
-            <div class="row">
-              <div class="col"><label>Finish Date</label><input type="date" id="finishDate" onchange="calcDowntime()"/></div>
-              <div class="col"><label>Finish Time</label><input type="time" id="finishTime" onchange="calcDowntime()"/></div>
-              <div class="col"><label>Downtime</label><input type="text" id="downtime" readonly/></div>
-            </div>
-            <div class="row">
-              <div class="col"><label>Repaired by</label><input type="text" id="repairedBy"/></div>
-              <div class="col"><label>Spare Parts Used</label><input type="text" id="spares"/></div>
-              <div class="col"><label>Cause of Failure</label><input type="text" id="cause"/></div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>User Department</h3>
-            <div class="row">
-              <div class="col"><label>Name</label><input type="text" id="userDept"/></div>
-              <div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
-              <div class="col">
-                <label>Signature (Click to sign)</label>
-                <canvas id="userSig" class="sig" width="250" height="80" onclick="openSigModal('user')"></canvas>
-                <div class="sig-controls"><button type="button" class="secondary" onclick="userPad.clear()">Clear</button></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>Engineer</h3>
-            <div class="row">
-              <div class="col"><label>Name</label><input type="text" id="engName"/></div>
-              <div class="col"><label>Code</label><input type="text" id="engCode"/></div>
-              <div class="col">
-                <label>Signature (Click to sign)</label>
-                <canvas id="engSig" class="sig" width="250" height="80" onclick="openSigModal('eng')"></canvas>
-                <div class="sig-controls"><button type="button" class="secondary" onclick="engPad.clear()">Clear</button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="controls">
-          <button type="button" onclick="renderPreview()">Preview</button>
-          <button type="button" onclick="downloadPDF()">Download PDF</button>
-          <button type="button" class="secondary" onclick="location.reload()">Reset</button>
-          <button type="button" id="btn-save-firestore">Save to Cloud</button>
-        </div>
-      </form>
-
-      <div>
-        <h3>Preview (A4 size)</h3>
-        <div id="previewArea"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Signature Modal -->
-  <div id="sigModal">
-    <div id="sigModalContent">
-      <canvas id="modalSig"></canvas>
-      <div class="modal-controls">
-        <button type="button" onclick="modalPad.clear()">Clear</button>
-        <button type="button" onclick="saveModalSig()">Save</button>
-        <button type="button" class="secondary" onclick="closeSigModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LIBS -->
-  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-
-  <script>
-    // ------------------ Signature + Form Script -------------------
-    document.getElementById("formNo").innerText = "JIMSH-NK-" + Date.now();
-    const userPad = new SignaturePad(document.getElementById("userSig"));
-    const engPad = new SignaturePad(document.getElementById("engSig"));
-    let currentSig = null;
-    const modalCanvas = document.getElementById("modalSig");
-    const modalPad = new SignaturePad(modalCanvas);
-    function openSigModal(who){ currentSig=who; modalPad.clear(); document.getElementById("sigModal").style.display="flex"; resizeModalCanvas();}
-    function closeSigModal(){ document.getElementById("sigModal").style.display="none"; }
-    function saveModalSig(){
-      const ctx = currentSig==="user"?userSig.getContext("2d"):engSig.getContext("2d");
-      ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-      const img = new Image();
-      img.onload = ()=>ctx.drawImage(img,0,0,ctx.canvas.width,ctx.canvas.height);
-      img.src = modalPad.toDataURL();
-      closeSigModal();
-    }
-    function resizeModalCanvas(){ modalCanvas.width = modalCanvas.offsetWidth; modalCanvas.height = 300; modalPad.clear(); }
-    function calcDowntime(){
-      const startDate = complaintDate.value; const startTime = complaintTime.value;
-      const endDate = finishDate.value; const endTime = finishTime.value;
-      if(startDate && startTime && endDate && endTime){
-        const start = new Date(startDate+"T"+startTime);
-        const end = new Date(endDate+"T"+endTime);
-        if(end>start){ let diffMs=end-start; let hours=Math.floor(diffMs/1000/60/60); let mins=Math.floor((diffMs/1000/60)%60); downtime.value=hours+"h "+mins+"m"; }
-      }
-    }
-    function renderPreview(){
-      const prev=document.getElementById("previewArea");
-      prev.innerHTML=`
-        <h1>Jagannath Gupta Institute Of Medical Science & Hospital.</h1>
-        <h1>North - Kolkata</h1>
-        <h2>"Biomedical Equipment Maintenance Cum Breakdown Service Report"</h2>
-        <div class="formNo">Form No: ${formNo.innerText}</div>
-        <div class="formBox">
-          <h3>Complaint Information</h3>
-          <p>Date: ${complaintDate.value}</p>
-          <p>Time: ${complaintTime.value}</p>
-          <p>Department: ${department.value}</p>
-          <h3>Equipment Details</h3>
-          <p>Equipment: ${equipment.value}</p>
-          <p>Model: ${model.value}</p>
-          <p>Make: ${make.value}</p>
-          <p>Serial No: ${serial.value}</p>
-          <h3>Problem & Resolution</h3>
-          <p>Problem Reported: ${problem.value}</p>
-          <p>Action Taken: ${action.value}</p>
-          <h3>Completion Details</h3>
-          <p>Finish Date: ${finishDate.value}</p>
-          <p>Finish Time: ${finishTime.value}</p>
-          <p>Downtime: ${downtime.value}</p>
-          <p>Repaired by: ${repairedBy.value}</p>
-          <p>Spare Parts Used: ${spares.value}</p>
-          <p>Cause of Failure: ${cause.value}</p>
-          <h3>User Department</h3>
-          <p>Name: ${userDept.value}</p>
-          <p>Emp Code: ${userCode.value}</p>
-          ${!userPad.isEmpty()?'<img class="sig-img" src="'+userSig.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
-          <h3>Engineer</h3>
-          <p>Name: ${engName.value}</p>
-          <p>Code: ${engCode.value}</p>
-          ${!engPad.isEmpty()?'<img class="sig-img" src="'+engSig.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
-        </div>
-      `;
-      return prev;
-    }
-    async function downloadPDF(){
-      const preview=renderPreview(); await new Promise(r=>setTimeout(r,150));
-      const canvas=await html2canvas(preview,{scale:2});
-      const imgData=canvas.toDataURL("image/png");
-      const { jsPDF }=window.jspdf;
-      const pdf=new jsPDF("p","mm","a4");
-      const pageWidth=pdf.internal.pageSize.getWidth();
-      const pageHeight=pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData,"PNG",0,0,pageWidth,pageHeight);
-      pdf.save(formNo.innerText+".pdf");
-    }
-
-    // ------------------ Firebase Setup -------------------
-    var firebaseConfig = {
-      apiKey: "AIzaSyAWPlgLt8OQPX6Gq6hzsp46VZxSxXIU5i0",
-      authDomain: "digital-service-report.firebaseapp.com",
-      projectId: "digital-service-report",
-      storageBucket: "digital-service-report.appspot.com",
-      messagingSenderId: "783895149200",
-      appId: "1:783895149200:web:01c08a62d429bf1bf8f615"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-
-    const btnLogin = document.getElementById("btn-login");
-    const btnLogout = document.getElementById("btn-logout");
-    const btnRegister = document.getElementById("btn-register");
-    const authMsg = document.getElementById("auth-msg");
-    const userInfo = document.getElementById("user-info");
-    const userEmailSpan = document.getElementById("user-email");
-    const adminBadge = document.getElementById("admin-badge");
-    const btnSave = document.getElementById("btn-save-firestore");
-    const formContainer = document.getElementById("form-container");
-
-    function checkAdmin(uid){ return db.collection("admins").doc(uid).get().then(doc=>doc.exists); }
-
-    auth.onAuthStateChanged(async user=>{
-      if(user){
-        userInfo.classList.remove("hidden");
-        userEmailSpan.textContent = user.email;
-        btnLogin.classList.add("hidden");
-        btnRegister.classList.add("hidden");
-        btnLogout.classList.remove("hidden");
-        formContainer.classList.remove("hidden"); // Show form after login
-
-        const isAdmin = await checkAdmin(user.uid);
-        adminBadge.classList.toggle("hidden", !isAdmin);
-        btnSave.disabled = false;
-      }else{
-        userInfo.classList.add("hidden");
-        btnLogin.classList.remove("hidden");
-        btnRegister.classList.remove("hidden");
-        btnLogout.classList.add("hidden");
-        adminBadge.classList.add("hidden");
-        btnSave.disabled = true;
-        formContainer.classList.add("hidden"); // Hide form when logged out
-      }
-    });
-
-    btnLogin.addEventListener("click",()=>{
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      auth.signInWithEmailAndPassword(email,password).then(()=>{ authMsg.textContent="Login successful"; }).catch(err=>{ authMsg.textContent=err.message; });
-    });
-
-    btnRegister.addEventListener("click",()=>{
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      auth.createUserWithEmailAndPassword(email,password).then(()=>{ authMsg.textContent="Registered & logged in"; }).catch(err=>{ authMsg.textContent=err.message; });
-    });
-
-    btnLogout.addEventListener("click",()=>{ auth.signOut(); });
-
-    // ------------------ Save PDF + Data to Firebase -------------------
-    btnSave.addEventListener("click",async ()=>{
-      const user = auth.currentUser;
-      if(!user){ alert("Login first"); return; }
-
-      const preview = renderPreview(); 
-      await new Promise(r=>setTimeout(r,150));
-      const canvas = await html2canvas(preview,{scale:2});
-      const imgData = canvas.toDataURL("image/png");
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF("p","mm","a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData,"PNG",0,0,pageWidth,pageHeight);
-      const pdfBlob = pdf.output("blob");
-
-      const fileName = `submissions/${user.uid}_${Date.now()}.pdf`;
-      const storageRef = storage.ref(fileName);
-      try{
-        const snapshot = await storageRef.put(pdfBlob);
-        const downloadURL = await snapshot.ref.getDownloadURL();
-
-        const data = {
-          formNo: formNo.innerText,
-          complaintDate: complaintDate.value,
-          complaintTime: complaintTime.value,
-          department: department.value,
-          equipment: equipment.value,
-          model: model.value,
-          make: make.value,
-          serial: serial.value,
-          problem: problem.value,
-          action: action.value,
-          finishDate: finishDate.value,
-          finishTime: finishTime.value,
-          downtime: downtime.value,
-          repairedBy: repairedBy.value,
-          spares: spares.value,
-          cause: cause.value,
-          userDept: userDept.value,
-          userCode: userCode.value,
-          engName: engName.value,
-          engCode: engCode.value,
-          userSig: userPad.isEmpty()?null:userSig.toDataURL(),
-          engSig: engPad.isEmpty()?null:engSig.toDataURL(),
-          pdfURL: downloadURL,
-          createdBy: user.uid,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        };
-        await db.collection("submissions").add(data);
-        alert("Form + PDF uploaded successfully!");
-      }catch(err){ alert("Error saving form: "+err.message); }
-    });
-  </script>
+// Firebase (same as original)
+var firebaseConfig={apiKey:"AIzaSyAWPlgLt8OQPX6Gq6hzsp46VZxSxXIU5i0",authDomain:"digital-service-report.firebaseapp.com",projectId:"digital-service-report",storageBucket:"digital-service-report.appspot.com",messagingSenderId:"783895149200",appId:"1:783895149200:web:01c08a62d429bf1bf8f615"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(),db=firebase.firestore(),storage=firebase.storage();
+const btnLogin=document.getElementById("btn-login"),btnLogout=document.getElementById("btn-logout"),btnRegister=document.getElementById("btn-register"),authMsg=document.getElementById("auth-msg"),userInfo=document.getElementById("user-info"),userEmailSpan=document.getElementById("user-email"),adminBadge=document.getElementById("admin-badge"),btnSave=document.getElementById("btn-save-firestore"),formContainer=document.getElementById("form-container");
+function checkAdmin(uid){return db.collection("admins").doc(uid).get().then(doc=>doc.exists);}
+auth.onAuthStateChanged(async user=>{if(user){userInfo.classList.remove("hidden");userEmailSpan.textContent=user.email;btnLogin.classList.add("hidden");btnRegister.classList.add("hidden");btnLogout.classList.remove("hidden");formContainer.classList.remove("hidden");const isAdmin=await checkAdmin(user.uid);adminBadge.classList.toggle("hidden",!isAdmin);btnSave.disabled=false;}else{userInfo.classList.add("hidden");btnLogin.classList.remove("hidden");btnRegister.classList.remove("hidden");btnLogout.classList.add("hidden");adminBadge.classList.add("hidden");btnSave.disabled=true;formContainer.classList.add("hidden");}});
+btnLogin.addEventListener("click",()=>{auth.signInWithEmailAndPassword(email.value,password.value).then(()=>authMsg.textContent="Login successful").catch(err=>authMsg.textContent=err.message);});
+btnRegister.addEventListener("click",()=>{auth.createUserWithEmailAndPassword(email.value,password.value).then(()=>authMsg.textContent="Registered & logged in").catch(err=>authMsg.textContent=err.message);});
+btnLogout.addEventListener("click",()=>{auth.signOut();});
+btnSave.addEventListener("click",async ()=>{const user=auth.currentUser;if(!user){alert("Login first");return;}const prev=renderPreview();await new Promise(r=>setTimeout(r,100));const canvas=await html2canvas(prev,{scale:2});const imgData=canvas.toDataURL("image/png");const {jsPDF}=window.jspdf;const pdf=new jsPDF("p","mm","a4");pdf.addImage(imgData,"PNG",0,0,pdf.internal.pageSize.getWidth(),pdf.internal.pageSize.getHeight());const pdfBlob=pdf.output("blob");const fileName=`submissions/${user.uid}_${Date.now()}.pdf`;const storageRef=storage.ref(fileName);try{const snapshot=await storageRef.put(pdfBlob);const downloadURL=await snapshot.ref.getDownloadURL();const data={formNo:formNo.innerText,complaintDate:complaintDate.value,complaintTime:complaintTime.value,department:department.value,equipment:equipment.value,model:model.value,make:make.value,serial:serial.value,problem:problem.value,action:action.value,finishDate:finishDate.value,finishTime:finishTime.value,downtime:downtime.value,repairedBy:repairedBy.value,spares:spares.value,cause:cause.value,userDept:userDept.value,userCode:userCode.value,engName:engName.value,engCode:engCode.value,userSig:userPad.isEmpty()?null:userSig.toDataURL(),engSig:engPad.isEmpty()?null:engSig.toDataURL(),pdfURL:downloadURL,createdBy:user.uid,timestamp:firebase.firestore.FieldValue.serverTimestamp()};await db.collection("submissions").add(data);alert("Form + PDF uploaded successfully!");}catch(err){alert("Error saving form: "+err.message);}});
+</script>
 </body>
 </html>
