@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Digital Service Report</title>
+<title>Biomedical Equipment Maintenance Cum Digital Service Report</title>
 
 <!-- Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.7/signature_pad.umd.min.js"></script>
@@ -12,28 +12,28 @@
 
 <style>
 body { font-family: Arial,sans-serif; background:#f4f6fa; margin:0; padding:0;}
-.container { max-width:600px; margin:5px auto; background:#fff; padding:8px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+.container { max-width:650px; margin:5px auto; background:#fff; padding:10px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
 header { text-align:center; margin-bottom:8px; background:#0d4f8b; color:#fff; padding:6px; border-radius:6px;}
 header img { max-width:70px; display:block; margin:0 auto 4px;}
 header h2 { font-size:13px; margin:0; font-weight:bold;}
-header h3 { font-size:13px; margin:0; font-weight:bold;}
-.section { margin-top:6px; padding:6px; border:1px solid #dce3ef; border-radius:6px;}
-.section h3 { margin:0 0 3px 0; font-size:11px; color:#0d4f8b;}
-label { font-weight:bold; display:block; margin:3px 0 1px; font-size:11px;}
-input[type=text],input[type=date],input[type=time],input[type=number],select,textarea { width:95%; padding:3px; border:1px solid #ccc; border-radius:4px; font-size:11px;}
-textarea { resize:none; height:40px;}
-table { width:95%; border-collapse:collapse; margin-top:3px; font-size:9px;}
+.section { margin-top:8px; padding:8px; border:1px solid #dce3ef; border-radius:6px;}
+.section h3 { margin:0 0 6px 0; font-size:12px; color:#0d4f8b; border-bottom:1px solid #ddd; padding-bottom:3px;}
+.form-row { display:flex; align-items:center; margin-bottom:6px;}
+label { font-weight:bold; font-size:11px; display:inline-block; width:110px; }
+input[type=text],input[type=date],input[type=time],input[type=number],select { flex:1; padding:3px; border:1px solid #ccc; border-radius:4px; font-size:11px;}
+.edit-btn { margin-left:4px; padding:2px 6px; font-size:10px; border:none; border-radius:4px; background:#0d4f8b; color:#fff; cursor:pointer;}
+table { width:100%; border-collapse:collapse; margin-top:4px; font-size:9px;}
 th,td { border:1px solid #ccc; padding:2px; text-align:center;}
 th { background:#eef6ff;}
-.controls { margin-top:4px; display:flex; gap:4px; flex-wrap:wrap; justify-content:center;}
-button { padding:4px 6px; border:none; border-radius:4px; cursor:pointer; font-weight:bold; font-size:10px;}
+.controls { margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; justify-content:center;}
+button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-weight:bold; font-size:10px;}
 .btn-primary { background:#0d4f8b; color:#fff;}
 .btn-danger { background:#d62828; color:#fff;}
-.sig-preview { margin-top:2px; max-width:240px; border:1px solid #ccc; display:block; margin-left:auto; margin-right:auto;}
-.preview-container { margin-top:6px; padding:6px; border:2px dashed #0d4f8b; background:#fff; border-radius:6px;}
+.sig-preview { margin-top:4px; max-width:140px; border:1px solid #ccc; display:block; margin-left:auto; margin-right:auto;}
+.preview-container { margin-top:8px; padding:8px; border:2px dashed #0d4f8b; background:#fff; border-radius:6px;}
 .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;}
 .modal-inner { background:#fff; width:95%; height:85%; border-radius:6px; display:flex; flex-direction:column; padding:6px;}
-.modal-inner canvas { flex:1; border:1px solid #999; }
+.modal-inner canvas { flex:1; border:1px solid #999;}
 .modal-actions { margin-top:4px; text-align:center; font-size:11px;}
 .note { margin-top:4px; font-size:9px; font-style:italic; color:#333;}
 </style>
@@ -43,50 +43,88 @@ button { padding:4px 6px; border:none; border-radius:4px; cursor:pointer; font-w
 <div class="container">
   <header>
     <img src="logo.jpg" alt="Company Logo">
-    <h2>"Biomedical Equipment Maintenance Cum Breakdown/Installation/Upgrade/Handover" </h2>
-    <h3>"Digital Service Report" </h3>
+    <h2>Biomedical Equipment Maintenance Cum Breakdown/Installation/Upgrade/Handover Digital Service Report</h2>
   </header>
 
   <form id="form">
     <div class="section">
       <h3>Report Information</h3>
-      <label>Report No.</label>
-      <input id="reportNo" type="text" readonly>
-      <label>Date</label>
-      <input id="date" type="date">
-      <label>Time</label>
-      <input id="time" type="time">
-      <label>Type of Service</label>
-      <select id="serviceType">
-        <option value="Breakdown">Breakdown</option>
-        <option value="Installation">Installation</option>
-        <option value="Up-Gradation">Up-Gradation</option>
-        <option value="Preventive Maintenance">Preventive Maintenance</option>
-        <option value="Handover">Handover</option>
-      </select>
+      <div class="form-row">
+        <label>Report No.</label>
+        <input id="reportNo" type="text" readonly>
+      </div>
+      <div class="form-row">
+        <label>Date</label>
+        <input id="date" type="date">
+      </div>
+      <div class="form-row">
+        <label>Time</label>
+        <input id="time" type="time">
+      </div>
+      <div class="form-row">
+        <label>Type of Service</label>
+        <select id="serviceType">
+          <option value="Breakdown">Breakdown</option>
+          <option value="Installation">Installation</option>
+          <option value="Up-Gradation">Up-Gradation</option>
+          <option value="Preventive Maintenance">Preventive Maintenance</option>
+          <option value="Handover">Handover</option>
+        </select>
+      </div>
     </div>
 
     <div class="section">
       <h3>Equipment Information</h3>
-      <label>Department</label>
-      <input id="department" type="text">
-      <label>Equipment</label>
-      <input id="equipment" type="text">
-      <label>Model</label>
-      <input id="model" type="text">
-      <label>Make</label>
-      <input id="make" type="text">
-      <label>Serial Number</label>
-      <input id="serialNumber" type="text">
+      <div class="form-row">
+        <label>Department</label>
+        <input id="department" type="text">
+        <button type="button" class="edit-btn">Add/Edit</button>
+      </div>
+      <div class="form-row">
+        <label>Equipment</label>
+        <input id="equipment" type="text">
+        <button type="button" class="edit-btn">Add/Edit</button>
+      </div>
+      <div class="form-row">
+        <label>Model</label>
+        <input id="model" type="text">
+      </div>
+      <div class="form-row">
+        <label>Make</label>
+        <input id="make" type="text">
+        <button type="button" class="edit-btn">Add/Edit</button>
+      </div>
+      <div class="form-row">
+        <label>Serial Number</label>
+        <input id="serialNumber" type="text">
+      </div>
     </div>
 
     <div class="section">
-      <h3>Service Completion Details</h3>
-      <label>Problem Reported</label>
-      <textarea id="problemReported"></textarea>
-      <label>Action Taken</label>
-      <textarea id="actionTaken"></textarea>
+      <h3>Problem & Action</h3>
+      <div class="form-row">
+        <label>Problem Reported</label>
+        <input id="problemReported" type="text">
+      </div>
+      <div class="form-row">
+        <label>Action Taken</label>
+        <input id="actionTaken" type="text">
+      </div>
+      <div class="form-row">
+        <label>Finish Date</label>
+        <input id="finishDate" type="date">
+      </div>
+      <div class="form-row">
+        <label>Finish Time</label>
+        <input id="finishTime" type="time">
+      </div>
+      <div class="form-row">
+        <label>Down Time (hrs)</label>
+        <input id="downTime" type="text" readonly>
+      </div>
+    </div>
 
+    <div class="section">
       <h3>Accessories / Spare Parts Details</h3>
       <table id="accessTable">
         <thead>
@@ -100,21 +138,18 @@ button { padding:4px 6px; border:none; border-radius:4px; cursor:pointer; font-w
       <div class="controls">
         <button type="button" class="btn-primary" onclick="addAccessory()">+ Add Accessory</button>
       </div>
-
-      <label>Finish Date</label>
-      <input id="finishDate" type="date">
-      <label>Finish Time</label>
-      <input id="finishTime" type="time" onchange="calculateDowntime()">
-      <label>Down Time (hrs:min)</label>
-      <input id="downTime" type="text" readonly>
     </div>
 
     <div class="section">
       <h3>User Details</h3>
-      <label>User Name</label>
-      <input id="userName" type="text">
-      <label>Emp. Code</label>
-      <input id="userCode" type="text">
+      <div class="form-row">
+        <label>User Name</label>
+        <input id="userName" type="text">
+      </div>
+      <div class="form-row">
+        <label>Emp. Code</label>
+        <input id="userCode" type="text">
+      </div>
       <div class="controls">
         <button type="button" class="btn-primary" onclick="openSignature('user')">Sign (User)</button>
       </div>
@@ -123,10 +158,14 @@ button { padding:4px 6px; border:none; border-radius:4px; cursor:pointer; font-w
 
     <div class="section">
       <h3>BME Details</h3>
-      <label>BME Name</label>
-      <input id="bmeName" type="text">
-      <label>BME Code</label>
-      <input id="bmeCode" type="text">
+      <div class="form-row">
+        <label>BME Name</label>
+        <input id="bmeName" type="text">
+      </div>
+      <div class="form-row">
+        <label>BME Code</label>
+        <input id="bmeCode" type="text">
+      </div>
       <div class="controls">
         <button type="button" class="btn-primary" onclick="openSignature('bme')">Sign (BME)</button>
       </div>
@@ -170,9 +209,8 @@ function openSignature(who){
   signer=who;
   document.getElementById("sigModal").style.display="flex";
   const canvas=document.getElementById("sigCanvas");
-  canvas.width=canvas.offsetWidth*3; 
-  canvas.height=canvas.offsetHeight*3;
-  canvas.getContext("2d").scale(3,3);
+  canvas.width=canvas.offsetWidth*2; canvas.height=canvas.offsetHeight*2;
+  canvas.getContext("2d").scale(2,2);
   sigPad=new SignaturePad(canvas,{penColor:"black"});
 }
 function acceptSignature(){
@@ -185,27 +223,13 @@ function acceptSignature(){
 function clearSignature(){ sigPad.clear(); }
 function closeSignature(){ document.getElementById("sigModal").style.display="none"; }
 
-function calculateDowntime(){
-  const startTime=document.getElementById("time").value;
-  const finishTime=document.getElementById("finishTime").value;
-  if(startTime && finishTime){
-    const start=new Date("1970-01-01T"+startTime+":00");
-    const end=new Date("1970-01-01T"+finishTime+":00");
-    let diff=(end-start)/1000/60;
-    if(diff<0) diff+=24*60;
-    const hours=Math.floor(diff/60);
-    const minutes=Math.floor(diff%60);
-    document.getElementById("downTime").value=`${hours}h:${minutes}m`;
-  }
-}
-
 function buildPreview(){
   const accRows=[...document.querySelectorAll("#accessTable tbody tr")].map(r=>{
     const t=[...r.querySelectorAll("input")].map(i=>i.value);
     return `<tr><td>${t[0]}</td><td>${t[1]}</td><td>${t[2]}</td><td>${t[3]}</td></tr>`;
   }).join("");
   return `
-  <div style="font-size:9px; line-height:1.1; padding:5px;">
+  <div style="font-size:9px; line-height:1.1;">
     <div style="text-align:center; background:#0d4f8b; color:#fff; padding:4px; border-radius:4px;">
       <img src="logo.jpg" style="max-height:35px;">
       <h3>Biomedical Equipment Maintenance Cum Breakdown/Installation/Upgrade/Handover Digital Service Report</h3>
@@ -219,18 +243,20 @@ function buildPreview(){
     <p><b>Model:</b> ${form.model.value}</p>
     <p><b>Make:</b> ${form.make.value}</p>
     <p><b>Serial No.:</b> ${form.serialNumber.value}</p>
-    <h3>Service Completion Details</h3>
+    <h3>Problem & Action</h3>
     <p><b>Problem Reported:</b> ${form.problemReported.value}</p>
     <p><b>Action Taken:</b> ${form.actionTaken.value}</p>
+    <p><b>Finish Date:</b> ${form.finishDate.value} &nbsp; <b>Finish Time:</b> ${form.finishTime.value}</p>
+    <p><b>Down Time:</b> ${form.downTime.value}</p>
     <h3>Accessories / Spare Parts Details</h3>
     <table border="1" width="100%"><tr><th>S/N</th><th>Description</th><th>Qty</th><th>SN</th></tr>${accRows}</table>
-    <p><b>Finish Date:</b> ${form.finishDate.value} &nbsp; <b>Finish Time:</b> ${form.finishTime.value} &nbsp; <b>Down Time:</b> ${form.downTime.value}</p>
+    <div class="note">The above Equipment / Item Installed by Biomedical Engineer has / have been handed over in good working condition. Demonstration given.</div>
     <h3>User Details</h3>
     <p><b>Name:</b> ${form.userName.value} &nbsp; <b>Emp Code:</b> ${form.userCode.value}</p>
-    ${userSignImg.src?`<img src="${userSignImg.src}" width="240">`:""}
+    ${userSignImg.src?`<img src="${userSignImg.src}" width="140">`:""}
     <h3>BME Details</h3>
     <p><b>Name:</b> ${form.bmeName.value} &nbsp; <b>Code:</b> ${form.bmeCode.value}</p>
-    ${bmeSignImg.src?`<img src="${bmeSignImg.src}" width="240">`:""}
+    ${bmeSignImg.src?`<img src="${bmeSignImg.src}" width="140">`:""}
   </div>`;
 }
 
@@ -239,8 +265,8 @@ function generatePreview(){ document.getElementById("preview").innerHTML=buildPr
 async function downloadPDF(){
   generatePreview();
   const preview=document.getElementById("preview");
-  const canvas=await html2canvas(preview,{scale:3});
-  const img=canvas.toDataURL("image/jpeg",1.0);
+  const canvas=await html2canvas(preview,{scale:2});
+  const img=canvas.toDataURL("image/jpeg",0.98);
   const pdf=new jspdf.jsPDF("p","mm","a4");
   const pageWidth=pdf.internal.pageSize.getWidth();
   const pageHeight=pdf.internal.pageSize.getHeight();
@@ -248,7 +274,7 @@ async function downloadPDF(){
   const pdfHeight=(imgProps.height*pageWidth)/imgProps.width;
   const scaleFactor = pageHeight / pdfHeight;
   pdf.addImage(img,"JPEG",0,0,pageWidth, pdfHeight*scaleFactor);
-  pdf.save("Installation_Service_Report.pdf");
+  pdf.save("Digital_Service_Report.pdf");
 }
 </script>
 
