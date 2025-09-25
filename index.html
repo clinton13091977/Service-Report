@@ -15,11 +15,12 @@ body { font-family: Arial,sans-serif; background:#f4f6fa; margin:0; padding:0;}
 .container { max-width:650px; margin:5px auto; background:#fff; padding:10px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
 header { text-align:center; margin-bottom:8px; background:#0d4f8b; color:#fff; padding:6px; border-radius:6px;}
 header img { max-width:70px; display:block; margin:0 auto 4px;}
+header h1 { font-size:13px; margin:0; font-weight:bold;}
 header h2 { font-size:13px; margin:0; font-weight:bold;}
 .section { margin-top:8px; padding:8px; border:1px solid #dce3ef; border-radius:6px;}
 .section h3 { margin:0 0 6px 0; font-size:12px; color:#0d4f8b; border-bottom:1px solid #ddd; padding-bottom:3px;}
 .form-row { display:flex; align-items:center; margin-bottom:6px;}
-label { font-weight:bold; font-size:11px; display:inline-block; width:110px; }
+label { font-weight:bold; font-size:11px; display:inline-block; width:110px;}
 input[type=text],input[type=date],input[type=time],input[type=number],select { flex:1; padding:3px; border:1px solid #ccc; border-radius:4px; font-size:11px;}
 .edit-btn { margin-left:4px; padding:2px 6px; font-size:10px; border:none; border-radius:4px; background:#0d4f8b; color:#fff; cursor:pointer;}
 table { width:100%; border-collapse:collapse; margin-top:4px; font-size:9px;}
@@ -29,12 +30,12 @@ th { background:#eef6ff;}
 button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-weight:bold; font-size:10px;}
 .btn-primary { background:#0d4f8b; color:#fff;}
 .btn-danger { background:#d62828; color:#fff;}
-.sig-preview { margin-top:4px; max-width:140px; border:1px solid #ccc; display:block; margin-left:auto; margin-right:auto;}
+.sig-preview { margin-top:4px; max-width:180px; border:1px solid #ccc; display:block; margin-left:auto; margin-right:auto;}
 .preview-container { margin-top:8px; padding:8px; border:2px dashed #0d4f8b; background:#fff; border-radius:6px;}
 .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;}
-.modal-inner { background:#fff; width:95%; height:85%; border-radius:6px; display:flex; flex-direction:column; padding:6px;}
-.modal-inner canvas { flex:1; border:1px solid #999;}
-.modal-actions { margin-top:4px; text-align:center; font-size:11px;}
+.modal-inner { background:#fff; width:300px; border-radius:6px; display:flex; flex-direction:column; padding:10px; }
+.modal-inner input { margin-bottom:8px; padding:4px; border:1px solid #ccc; border-radius:4px;}
+.modal-inner button { margin-top:4px;}
 .note { margin-top:4px; font-size:9px; font-style:italic; color:#333;}
 </style>
 </head>
@@ -43,7 +44,8 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
 <div class="container">
   <header>
     <img src="logo.jpg" alt="Company Logo">
-    <h2>Biomedical Equipment Maintenance Cum Breakdown/Installation/Upgrade/Handover Digital Service Report</h2>
+    <h1>"Biomedical Equipment Maintenance Cum Breakdown/Installation/Upgrade/Handover"</h1>
+    <h2> "Digital Service Report"</h2>
   </header>
 
   <form id="form">
@@ -55,11 +57,11 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
       </div>
       <div class="form-row">
         <label>Date</label>
-        <input id="date" type="date">
+        <input id="date" type="date" onchange="calculateDownTime()">
       </div>
       <div class="form-row">
         <label>Time</label>
-        <input id="time" type="time">
+        <input id="time" type="time" onchange="calculateDownTime()">
       </div>
       <div class="form-row">
         <label>Type of Service</label>
@@ -77,13 +79,27 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
       <h3>Equipment Information</h3>
       <div class="form-row">
         <label>Department</label>
-        <input id="department" type="text">
-        <button type="button" class="edit-btn">Add/Edit</button>
+        <select id="department">
+          <option value="">-- Select Department --</option>
+          <option>Radiology</option>
+          <option>Cardiology</option>
+          <option>ICU</option>
+          <option>OT</option>
+          <option>Dialysis</option>
+        </select>
+        <button type="button" class="edit-btn" onclick="openDropdownModal('department')">Add/Edit</button>
       </div>
       <div class="form-row">
         <label>Equipment</label>
-        <input id="equipment" type="text">
-        <button type="button" class="edit-btn">Add/Edit</button>
+        <select id="equipment">
+          <option value="">-- Select Equipment --</option>
+          <option>MRI</option>
+          <option>CT Scanner</option>
+          <option>Ventilator</option>
+          <option>Ultrasound</option>
+          <option>Defibrillator</option>
+        </select>
+        <button type="button" class="edit-btn" onclick="openDropdownModal('equipment')">Add/Edit</button>
       </div>
       <div class="form-row">
         <label>Model</label>
@@ -91,8 +107,15 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
       </div>
       <div class="form-row">
         <label>Make</label>
-        <input id="make" type="text">
-        <button type="button" class="edit-btn">Add/Edit</button>
+        <select id="make">
+          <option value="">-- Select Make --</option>
+          <option>GE</option>
+          <option>Philips</option>
+          <option>Siemens</option>
+          <option>Mindray</option>
+          <option>Fresenius</option>
+        </select>
+        <button type="button" class="edit-btn" onclick="openDropdownModal('make')">Add/Edit</button>
       </div>
       <div class="form-row">
         <label>Serial Number</label>
@@ -112,11 +135,11 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
       </div>
       <div class="form-row">
         <label>Finish Date</label>
-        <input id="finishDate" type="date">
+        <input id="finishDate" type="date" onchange="calculateDownTime()">
       </div>
       <div class="form-row">
         <label>Finish Time</label>
-        <input id="finishTime" type="time">
+        <input id="finishTime" type="time" onchange="calculateDownTime()">
       </div>
       <div class="form-row">
         <label>Down Time (hrs)</label>
@@ -181,6 +204,7 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
   <div id="preview" class="preview-container"></div>
 </div>
 
+<!-- Signature Modal -->
 <div id="sigModal" class="modal">
   <div class="modal-inner">
     <canvas id="sigCanvas"></canvas>
@@ -192,9 +216,22 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
   </div>
 </div>
 
+<!-- Dropdown Add/Edit Modal -->
+<div id="dropdownModal" class="modal">
+  <div class="modal-inner">
+    <h4 id="dropdownTitle"></h4>
+    <input type="text" id="newOption" placeholder="Enter new option">
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="addDropdownOption()">Add</button>
+      <button class="btn-danger" onclick="closeDropdownModal()">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 document.getElementById('reportNo').value = "REP-" + Date.now();
 
+// Accessories
 function addAccessory(){
   const tbody=document.querySelector("#accessTable tbody");
   const tr=document.createElement("tr");
@@ -204,6 +241,7 @@ function addAccessory(){
   tbody.appendChild(tr);
 }
 
+// Signature
 let sigPad, signer;
 function openSignature(who){
   signer=who;
@@ -223,6 +261,47 @@ function acceptSignature(){
 function clearSignature(){ sigPad.clear(); }
 function closeSignature(){ document.getElementById("sigModal").style.display="none"; }
 
+// Dropdown
+let currentDropdown = null;
+function openDropdownModal(dropdownId){
+  currentDropdown = document.getElementById(dropdownId);
+  document.getElementById("dropdownTitle").textContent = "Add/Edit " + dropdownId.charAt(0).toUpperCase() + dropdownId.slice(1);
+  document.getElementById("newOption").value = "";
+  document.getElementById("dropdownModal").style.display = "flex";
+}
+function addDropdownOption(){
+  const value = document.getElementById("newOption").value.trim();
+  if(value && currentDropdown){
+    const option = document.createElement("option");
+    option.text = value;
+    option.value = value;
+    currentDropdown.add(option);
+    currentDropdown.value = value;
+    closeDropdownModal();
+  }
+}
+function closeDropdownModal(){ document.getElementById("dropdownModal").style.display="none"; }
+
+// Accurate Down Time
+function calculateDownTime(){
+  const startDate = document.getElementById("date").value;
+  const startTime = document.getElementById("time").value;
+  const finishDate = document.getElementById("finishDate").value;
+  const finishTime = document.getElementById("finishTime").value;
+  if(startDate && startTime && finishDate && finishTime){
+    const start = new Date(startDate + "T" + startTime);
+    const finish = new Date(finishDate + "T" + finishTime);
+    if(finish>=start){
+      const diffMs = finish - start;
+      const diffHrs = diffMs / (1000*60*60); // total hours
+      document.getElementById("downTime").value = diffHrs.toFixed(2);
+    } else {
+      document.getElementById("downTime").value = "0";
+    }
+  }
+}
+
+// Preview & PDF
 function buildPreview(){
   const accRows=[...document.querySelectorAll("#accessTable tbody tr")].map(r=>{
     const t=[...r.querySelectorAll("input")].map(i=>i.value);
@@ -247,16 +326,16 @@ function buildPreview(){
     <p><b>Problem Reported:</b> ${form.problemReported.value}</p>
     <p><b>Action Taken:</b> ${form.actionTaken.value}</p>
     <p><b>Finish Date:</b> ${form.finishDate.value} &nbsp; <b>Finish Time:</b> ${form.finishTime.value}</p>
-    <p><b>Down Time:</b> ${form.downTime.value}</p>
+    <p><b>Down Time (hrs):</b> ${form.downTime.value}</p>
     <h3>Accessories / Spare Parts Details</h3>
     <table border="1" width="100%"><tr><th>S/N</th><th>Description</th><th>Qty</th><th>SN</th></tr>${accRows}</table>
     <div class="note">The above Equipment / Item Installed by Biomedical Engineer has / have been handed over in good working condition. Demonstration given.</div>
     <h3>User Details</h3>
     <p><b>Name:</b> ${form.userName.value} &nbsp; <b>Emp Code:</b> ${form.userCode.value}</p>
-    ${userSignImg.src?`<img src="${userSignImg.src}" width="140">`:""}
+    ${userSignImg.src?`<img src="${userSignImg.src}" width="180">`:""}
     <h3>BME Details</h3>
     <p><b>Name:</b> ${form.bmeName.value} &nbsp; <b>Code:</b> ${form.bmeCode.value}</p>
-    ${bmeSignImg.src?`<img src="${bmeSignImg.src}" width="140">`:""}
+    ${bmeSignImg.src?`<img src="${bmeSignImg.src}" width="180">`:""}
   </div>`;
 }
 
