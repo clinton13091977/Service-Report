@@ -3,25 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Biomedical Equipment Maintenance Cum Digital Service Report</title>
+<title>Smart Bio - Login & Digital Service Report</title>
 
-<!-- Libraries -->
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<!-- Signature & PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.7/signature_pad.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 body { font-family: Arial,sans-serif; background:#f4f6fa; margin:0; padding:0;}
-.container { max-width:650px; margin:5px auto; background:#fff; padding:10px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+.container { max-width:650px; margin:20px auto; background:#fff; padding:10px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
 header { text-align:center; margin-bottom:8px; background:#0d4f8b; color:#fff; padding:6px; border-radius:6px;}
 header img { max-width:70px; display:block; margin:0 auto 4px;}
-header h1 { font-size:13px; margin:0; font-weight:bold;}
-header h2 { font-size:13px; margin:0; font-weight:bold;}
+header h1, header h2 { font-size:13px; margin:0; font-weight:bold;}
 .section { margin-top:8px; padding:8px; border:1px solid #dce3ef; border-radius:6px;}
 .section h3 { margin:0 0 6px 0; font-size:12px; color:#0d4f8b; border-bottom:1px solid #ddd; padding-bottom:3px;}
 .form-row { display:flex; align-items:center; margin-bottom:6px;}
 label { font-weight:bold; font-size:11px; display:inline-block; width:110px;}
-input[type=text],input[type=date],input[type=time],input[type=number],select { flex:1; padding:3px; border:1px solid #ccc; border-radius:4px; font-size:11px;}
+input[type=text],input[type=date],input[type=time],input[type=number],input[type=email],input[type=password],select { flex:1; padding:3px; border:1px solid #ccc; border-radius:4px; font-size:11px;}
 .edit-btn { margin-left:4px; padding:2px 6px; font-size:10px; border:none; border-radius:4px; background:#0d4f8b; color:#fff; cursor:pointer;}
 table { width:100%; border-collapse:collapse; margin-top:4px; font-size:9px;}
 th,td { border:1px solid #ccc; padding:2px; text-align:center;}
@@ -37,11 +40,36 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
 .modal-inner input { margin-bottom:8px; padding:4px; border:1px solid #ccc; border-radius:4px;}
 .modal-inner button { margin-top:4px;}
 .note { margin-top:4px; font-size:9px; font-style:italic; color:#333;}
+
+/* Login page styles */
+#loginPage { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; }
+#loginPage input { margin-bottom:8px; width:80%; padding:6px; }
+#loginPage button { width:50%; margin-top:8px; }
+#mainForm { display:none; }
+.toggle-login { font-size:10px; color:#0d4f8b; cursor:pointer; margin-top:4px; text-align:center;}
 </style>
 </head>
 <body>
 
-<div class="container">
+<div id="loginPage" class="container">
+  <img src="logo.jpg" alt="Company Logo" style="max-width:100px;margin-bottom:10px;">
+  <h2>Smart Bio Sign In</h2>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button class="btn-primary" onclick="login()">Sign In</button>
+  <div class="toggle-login" onclick="toggleSignUp()">Don't have an account? Sign Up</div>
+</div>
+
+<div id="signUpPage" class="container" style="display:none;">
+  <img src="logo.jpg" alt="Company Logo" style="max-width:100px;margin-bottom:10px;">
+  <h2>Smart Bio Sign Up</h2>
+  <input type="email" id="signUpEmail" placeholder="Email">
+  <input type="password" id="signUpPassword" placeholder="Password">
+  <button class="btn-primary" onclick="signUp()">Sign Up</button>
+  <div class="toggle-login" onclick="toggleSignUp()">Already have account? Sign In</div>
+</div>
+
+<div id="mainForm" class="container">
   <header>
     <img src="logo.jpg" alt="Company Logo">
     <h1>"Biomedical Equipment Maintenance Cum Breakdown/Installation/Upgrade/Handover"</h1>
@@ -49,22 +77,13 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
   </header>
 
   <form id="form">
+    <!-- Report Information -->
     <div class="section">
       <h3>Report Information</h3>
-      <div class="form-row">
-        <label>Report No.</label>
-        <input id="reportNo" type="text" readonly>
-      </div>
-      <div class="form-row">
-        <label>Date</label>
-        <input id="date" type="date" onchange="calculateDownTime()">
-      </div>
-      <div class="form-row">
-        <label>Time</label>
-        <input id="time" type="time" onchange="calculateDownTime()">
-      </div>
-      <div class="form-row">
-        <label>Type of Service</label>
+      <div class="form-row"><label>Report No.</label><input id="reportNo" type="text" readonly></div>
+      <div class="form-row"><label>Date</label><input id="date" type="date" onchange="calculateDownTime()"></div>
+      <div class="form-row"><label>Time</label><input id="time" type="time" onchange="calculateDownTime()"></div>
+      <div class="form-row"><label>Type of Service</label>
         <select id="serviceType">
           <option value="Breakdown">Breakdown</option>
           <option value="Installation">Installation</option>
@@ -75,123 +94,58 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
       </div>
     </div>
 
+    <!-- Equipment Information -->
     <div class="section">
       <h3>Equipment Information</h3>
-      <div class="form-row">
-        <label>Department</label>
-        <select id="department">
-          <option value="">-- Select Department --</option>
-          <option>Radiology</option>
-          <option>Cardiology</option>
-          <option>ICU</option>
-          <option>OT</option>
-          <option>Dialysis</option>
-        </select>
+      <div class="form-row"><label>Department</label>
+        <select id="department"><option value="">-- Select Department --</option><option>Radiology</option><option>Cardiology</option><option>ICU</option><option>OT</option><option>Dialysis</option></select>
         <button type="button" class="edit-btn" onclick="openDropdownModal('department')">Add/Edit</button>
       </div>
-      <div class="form-row">
-        <label>Equipment</label>
-        <select id="equipment">
-          <option value="">-- Select Equipment --</option>
-          <option>MRI</option>
-          <option>CT Scanner</option>
-          <option>Ventilator</option>
-          <option>Ultrasound</option>
-          <option>Defibrillator</option>
-        </select>
+      <div class="form-row"><label>Equipment</label>
+        <select id="equipment"><option value="">-- Select Equipment --</option><option>MRI</option><option>CT Scanner</option><option>Ventilator</option><option>Ultrasound</option><option>Defibrillator</option></select>
         <button type="button" class="edit-btn" onclick="openDropdownModal('equipment')">Add/Edit</button>
       </div>
-      <div class="form-row">
-        <label>Model</label>
-        <input id="model" type="text">
-      </div>
-      <div class="form-row">
-        <label>Make</label>
-        <select id="make">
-          <option value="">-- Select Make --</option>
-          <option>GE</option>
-          <option>Philips</option>
-          <option>Siemens</option>
-          <option>Mindray</option>
-          <option>Fresenius</option>
-        </select>
+      <div class="form-row"><label>Model</label><input id="model" type="text"></div>
+      <div class="form-row"><label>Make</label>
+        <select id="make"><option value="">-- Select Make --</option><option>GE</option><option>Philips</option><option>Siemens</option><option>Mindray</option><option>Fresenius</option></select>
         <button type="button" class="edit-btn" onclick="openDropdownModal('make')">Add/Edit</button>
       </div>
-      <div class="form-row">
-        <label>Serial Number</label>
-        <input id="serialNumber" type="text">
-      </div>
+      <div class="form-row"><label>Serial Number</label><input id="serialNumber" type="text"></div>
     </div>
 
+    <!-- Problem & Action -->
     <div class="section">
       <h3>Problem & Action</h3>
-      <div class="form-row">
-        <label>Problem Reported</label>
-        <input id="problemReported" type="text">
-      </div>
-      <div class="form-row">
-        <label>Action Taken</label>
-        <input id="actionTaken" type="text">
-      </div>
-      <div class="form-row">
-        <label>Finish Date</label>
-        <input id="finishDate" type="date" onchange="calculateDownTime()">
-      </div>
-      <div class="form-row">
-        <label>Finish Time</label>
-        <input id="finishTime" type="time" onchange="calculateDownTime()">
-      </div>
-      <div class="form-row">
-        <label>Down Time (hrs)</label>
-        <input id="downTime" type="text" readonly>
-      </div>
+      <div class="form-row"><label>Problem Reported</label><input id="problemReported" type="text"></div>
+      <div class="form-row"><label>Action Taken</label><input id="actionTaken" type="text"></div>
+      <div class="form-row"><label>Finish Date</label><input id="finishDate" type="date" onchange="calculateDownTime()"></div>
+      <div class="form-row"><label>Finish Time</label><input id="finishTime" type="time" onchange="calculateDownTime()"></div>
+      <div class="form-row"><label>Down Time (hrs)</label><input id="downTime" type="text" readonly></div>
     </div>
 
+    <!-- Accessories -->
     <div class="section">
       <h3>Accessories / Spare Parts Details</h3>
-      <table id="accessTable">
-        <thead>
-          <tr><th>S/N</th><th>Description</th><th>Qty</th><th>Serial No.</th><th>Action</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div class="note">
-        The above Equipment / Item Installed by Biomedical Engineer has / have been handed over in good working condition. Demonstration given.
-      </div>
-      <div class="controls">
-        <button type="button" class="btn-primary" onclick="addAccessory()">+ Add Accessory</button>
-      </div>
+      <table id="accessTable"><thead><tr><th>S/N</th><th>Description</th><th>Qty</th><th>Serial No.</th><th>Action</th></tr></thead><tbody></tbody></table>
+      <div class="note">The above Equipment / Item Installed by Biomedical Engineer has / have been handed over in good working condition. Demonstration given.</div>
+      <div class="controls"><button type="button" class="btn-primary" onclick="addAccessory()">+ Add Accessory</button></div>
     </div>
 
+    <!-- User Details -->
     <div class="section">
       <h3>User Details</h3>
-      <div class="form-row">
-        <label>User Name</label>
-        <input id="userName" type="text">
-      </div>
-      <div class="form-row">
-        <label>Emp. Code</label>
-        <input id="userCode" type="text">
-      </div>
-      <div class="controls">
-        <button type="button" class="btn-primary" onclick="openSignature('user')">Sign (User)</button>
-      </div>
+      <div class="form-row"><label>User Name</label><input id="userName" type="text"></div>
+      <div class="form-row"><label>Emp. Code</label><input id="userCode" type="text"></div>
+      <div class="controls"><button type="button" class="btn-primary" onclick="openSignature('user')">Sign (User)</button></div>
       <img id="userSignImg" class="sig-preview">
     </div>
 
+    <!-- BME Details -->
     <div class="section">
       <h3>BME Details</h3>
-      <div class="form-row">
-        <label>BME Name</label>
-        <input id="bmeName" type="text">
-      </div>
-      <div class="form-row">
-        <label>BME Code</label>
-        <input id="bmeCode" type="text">
-      </div>
-      <div class="controls">
-        <button type="button" class="btn-primary" onclick="openSignature('bme')">Sign (BME)</button>
-      </div>
+      <div class="form-row"><label>BME Name</label><input id="bmeName" type="text"></div>
+      <div class="form-row"><label>BME Code</label><input id="bmeCode" type="text"></div>
+      <div class="controls"><button type="button" class="btn-primary" onclick="openSignature('bme')">Sign (BME)</button></div>
       <img id="bmeSignImg" class="sig-preview">
     </div>
 
@@ -229,7 +183,46 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
 </div>
 
 <script>
-document.getElementById('reportNo').value = "REP-" + Date.now();
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyAWPlgLt8OQPX6Gq6hzsp46VZxSxXIU5i0",
+      authDomain: "digital-service-report.firebaseapp.com",
+      projectId: "digital-service-report",
+      storageBucket: "digital-service-report.appspot.com",
+      messagingSenderId: "783895149200",
+      appId: "1:783895149200:web:01c08a62d429bf1bf8f615"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// Toggle SignUp / SignIn
+function toggleSignUp(){
+  document.getElementById('loginPage').style.display = document.getElementById('loginPage').style.display==='none'?'flex':'none';
+  document.getElementById('signUpPage').style.display = document.getElementById('signUpPage').style.display==='none'?'flex':'none';
+}
+
+// Sign Up
+function signUp(){
+  const email = document.getElementById('signUpEmail').value;
+  const password = document.getElementById('signUpPassword').value;
+  auth.createUserWithEmailAndPassword(email,password)
+    .then(()=>{alert("SignUp Success! Please Sign In."); toggleSignUp();})
+    .catch(err=>alert(err.message));
+}
+
+// Sign In
+function login(){
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  auth.signInWithEmailAndPassword(email,password)
+    .then(()=>{document.getElementById('loginPage').style.display='none'; document.getElementById('mainForm').style.display='block'; initForm();})
+    .catch(err=>alert(err.message));
+}
+
+// Initialize form
+function initForm(){
+  document.getElementById('reportNo').value = "REP-" + Date.now();
+}
 
 // Accessories
 function addAccessory(){
@@ -251,8 +244,7 @@ function openSignature(who){
   canvas.getContext("2d").scale(2,2);
   sigPad=new SignaturePad(canvas,{penColor:"black"});
 }
-function acceptSignature(){
-  if(sigPad.isEmpty()){alert("Please sign first");return;}
+function acceptSignature(){if(sigPad.isEmpty()){alert("Please sign first");return;}
   const data=sigPad.toDataURL();
   if(signer==="user") document.getElementById("userSignImg").src=data;
   else document.getElementById("bmeSignImg").src=data;
@@ -293,7 +285,7 @@ function calculateDownTime(){
     const finish = new Date(finishDate + "T" + finishTime);
     if(finish>=start){
       const diffMs = finish - start;
-      const diffHrs = diffMs / (1000*60*60); // total hours
+      const diffHrs = diffMs / (1000*60*60);
       document.getElementById("downTime").value = diffHrs.toFixed(2);
     } else {
       document.getElementById("downTime").value = "0";
@@ -356,6 +348,5 @@ async function downloadPDF(){
   pdf.save("Digital_Service_Report.pdf");
 }
 </script>
-
 </body>
 </html>
