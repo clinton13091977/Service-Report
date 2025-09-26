@@ -43,8 +43,8 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
 .note { margin-top:4px; font-size:9px; font-style:italic; color:#333;}
 
 /* Login page styles */
-#loginPage, #signUpPage { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; }
-#loginPage input, #signUpPage input { margin-bottom:8px; width:80%; padding:6px; font-size:12px; }
+#loginPage, #signUpPage { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:60vh; }
+#loginPage input, #signUpPage input { margin-bottom:8px; width:70%; padding:6px; font-size:12px; }
 #loginPage button, #signUpPage button { width:50%; margin-top:8px; }
 .toggle-login { font-size:10px; color:#0d4f8b; cursor:pointer; margin-top:4px; text-align:center;}
 .logout-container { text-align:right; margin-bottom:8px;}
@@ -55,7 +55,7 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
 
 <!-- LOGIN PAGE -->
 <div id="loginPage" class="container">
-  <img src="logo.jpg" alt="Company Logo" style="max-width:100px;margin-bottom:10px;">
+  <img src="logo.jpg" alt="Company Logo" style="max-width:80px;margin-bottom:10px;">
   <h2>Sign In</h2>
   <input type="email" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Password">
@@ -408,3 +408,4 @@ async function uploadToCloud(){
 </script>
 </body>
 </html>
+
