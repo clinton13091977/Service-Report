@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Smart Bio - Login & Digital Service Report</title>
+<title>Login & Digital Service Report</title>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <!-- Signature & PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.7/signature_pad.umd.min.js"></script>
@@ -23,7 +24,7 @@ header h1, header h2 { font-size:13px; margin:0; font-weight:bold;}
 .section { margin-top:8px; padding:8px; border:1px solid #dce3ef; border-radius:6px;}
 .section h3 { margin:0 0 6px 0; font-size:12px; color:#0d4f8b; border-bottom:1px solid #ddd; padding-bottom:3px;}
 .form-row { display:flex; align-items:center; margin-bottom:6px;}
-label { font-weight:bold; font-size:11px; display:inline-block; width:110px;}
+label { font-weight:bold; font-size:11px; display:inline-block; width:90px;}
 input[type=text],input[type=date],input[type=time],input[type=number],input[type=email],input[type=password],select { flex:1; padding:3px; border:1px solid #ccc; border-radius:4px; font-size:11px;}
 .edit-btn { margin-left:4px; padding:2px 6px; font-size:10px; border:none; border-radius:4px; background:#0d4f8b; color:#fff; cursor:pointer;}
 table { width:100%; border-collapse:collapse; margin-top:4px; font-size:9px;}
@@ -42,38 +43,45 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
 .note { margin-top:4px; font-size:9px; font-style:italic; color:#333;}
 
 /* Login page styles */
-#loginPage { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; }
-#loginPage input { margin-bottom:8px; width:80%; padding:6px; }
-#loginPage button { width:50%; margin-top:8px; }
-#mainForm { display:none; }
+#loginPage, #signUpPage { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; }
+#loginPage input, #signUpPage input { margin-bottom:8px; width:80%; padding:6px; font-size:12px; }
+#loginPage button, #signUpPage button { width:50%; margin-top:8px; }
 .toggle-login { font-size:10px; color:#0d4f8b; cursor:pointer; margin-top:4px; text-align:center;}
+.logout-container { text-align:right; margin-bottom:8px;}
+.logout-container button { background:#d62828; color:#fff; font-size:11px;}
 </style>
 </head>
 <body>
 
+<!-- LOGIN PAGE -->
 <div id="loginPage" class="container">
   <img src="logo.jpg" alt="Company Logo" style="max-width:100px;margin-bottom:10px;">
-  <h2>Smart Bio Sign In</h2>
+  <h2>Sign In</h2>
   <input type="email" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Password">
   <button class="btn-primary" onclick="login()">Sign In</button>
   <div class="toggle-login" onclick="toggleSignUp()">Don't have an account? Sign Up</div>
 </div>
 
+<!-- SIGNUP PAGE -->
 <div id="signUpPage" class="container" style="display:none;">
   <img src="logo.jpg" alt="Company Logo" style="max-width:100px;margin-bottom:10px;">
-  <h2>Smart Bio Sign Up</h2>
+  <h2>Sign Up</h2>
   <input type="email" id="signUpEmail" placeholder="Email">
   <input type="password" id="signUpPassword" placeholder="Password">
   <button class="btn-primary" onclick="signUp()">Sign Up</button>
   <div class="toggle-login" onclick="toggleSignUp()">Already have account? Sign In</div>
 </div>
 
-<div id="mainForm" class="container">
+<!-- MAIN FORM -->
+<div id="mainForm" class="container" style="display:none;">
+  <div class="logout-container">
+    <button onclick="logout()">Logout</button>
+  </div>
   <header>
     <img src="logo.jpg" alt="Company Logo">
-    <h1>"Biomedical Equipment Maintenance Cum Breakdown/Installation/Upgrade/Handover"</h1>
-    <h2> "Digital Service Report"</h2>
+    <h1>Biomedical Equipment Maintenance Cum Breakdown/Installation/Upgrade/Handover</h1>
+    <h2>Digital Service Report</h2>
   </header>
 
   <form id="form">
@@ -83,7 +91,7 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
       <div class="form-row"><label>Report No.</label><input id="reportNo" type="text" readonly></div>
       <div class="form-row"><label>Date</label><input id="date" type="date" onchange="calculateDownTime()"></div>
       <div class="form-row"><label>Time</label><input id="time" type="time" onchange="calculateDownTime()"></div>
-      <div class="form-row"><label>Type of Service</label>
+      <div class="form-row"><label>Service</label>
         <select id="serviceType">
           <option value="Breakdown">Breakdown</option>
           <option value="Installation">Installation</option>
@@ -97,11 +105,11 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
     <!-- Equipment Information -->
     <div class="section">
       <h3>Equipment Information</h3>
-      <div class="form-row"><label>Department</label>
+      <div class="form-row"><label>Dept.</label>
         <select id="department"><option value="">-- Select Department --</option><option>Radiology</option><option>Cardiology</option><option>ICU</option><option>OT</option><option>Dialysis</option></select>
         <button type="button" class="edit-btn" onclick="openDropdownModal('department')">Add/Edit</button>
       </div>
-      <div class="form-row"><label>Equipment</label>
+      <div class="form-row"><label>Equip.</label>
         <select id="equipment"><option value="">-- Select Equipment --</option><option>MRI</option><option>CT Scanner</option><option>Ventilator</option><option>Ultrasound</option><option>Defibrillator</option></select>
         <button type="button" class="edit-btn" onclick="openDropdownModal('equipment')">Add/Edit</button>
       </div>
@@ -110,32 +118,32 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
         <select id="make"><option value="">-- Select Make --</option><option>GE</option><option>Philips</option><option>Siemens</option><option>Mindray</option><option>Fresenius</option></select>
         <button type="button" class="edit-btn" onclick="openDropdownModal('make')">Add/Edit</button>
       </div>
-      <div class="form-row"><label>Serial Number</label><input id="serialNumber" type="text"></div>
+      <div class="form-row"><label>Serial No.</label><input id="serialNumber" type="text"></div>
     </div>
 
     <!-- Problem & Action -->
     <div class="section">
       <h3>Problem & Action</h3>
-      <div class="form-row"><label>Problem Reported</label><input id="problemReported" type="text"></div>
-      <div class="form-row"><label>Action Taken</label><input id="actionTaken" type="text"></div>
-      <div class="form-row"><label>Finish Date</label><input id="finishDate" type="date" onchange="calculateDownTime()"></div>
+      <div class="form-row"><label>Problem</label><input id="problemReported" type="text"></div>
+      <div class="form-row"><label>Action</label><input id="actionTaken" type="text"></div>
+      <div class="form-row"><label>Finish Dt.</label><input id="finishDate" type="date" onchange="calculateDownTime()"></div>
       <div class="form-row"><label>Finish Time</label><input id="finishTime" type="time" onchange="calculateDownTime()"></div>
-      <div class="form-row"><label>Down Time (hrs)</label><input id="downTime" type="text" readonly></div>
+      <div class="form-row"><label>DownTime</label><input id="downTime" type="text" readonly></div>
     </div>
 
     <!-- Accessories -->
     <div class="section">
-      <h3>Accessories / Spare Parts Details</h3>
+      <h3>Accessories / Spare Parts</h3>
       <table id="accessTable"><thead><tr><th>S/N</th><th>Description</th><th>Qty</th><th>Serial No.</th><th>Action</th></tr></thead><tbody></tbody></table>
-      <div class="note">The above Equipment / Item Installed by Biomedical Engineer has / have been handed over in good working condition. Demonstration given.</div>
+      <div class="note">Items installed by Biomedical Engineer have been handed over in good condition. Demo given.</div>
       <div class="controls"><button type="button" class="btn-primary" onclick="addAccessory()">+ Add Accessory</button></div>
     </div>
 
     <!-- User Details -->
     <div class="section">
       <h3>User Details</h3>
-      <div class="form-row"><label>User Name</label><input id="userName" type="text"></div>
-      <div class="form-row"><label>Emp. Code</label><input id="userCode" type="text"></div>
+      <div class="form-row"><label>Name</label><input id="userName" type="text"></div>
+      <div class="form-row"><label>Code</label><input id="userCode" type="text"></div>
       <div class="controls"><button type="button" class="btn-primary" onclick="openSignature('user')">Sign (User)</button></div>
       <img id="userSignImg" class="sig-preview">
     </div>
@@ -143,8 +151,8 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
     <!-- BME Details -->
     <div class="section">
       <h3>BME Details</h3>
-      <div class="form-row"><label>BME Name</label><input id="bmeName" type="text"></div>
-      <div class="form-row"><label>BME Code</label><input id="bmeCode" type="text"></div>
+      <div class="form-row"><label>Name</label><input id="bmeName" type="text"></div>
+      <div class="form-row"><label>Code</label><input id="bmeCode" type="text"></div>
       <div class="controls"><button type="button" class="btn-primary" onclick="openSignature('bme')">Sign (BME)</button></div>
       <img id="bmeSignImg" class="sig-preview">
     </div>
@@ -152,6 +160,7 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
     <div class="controls">
       <button type="button" class="btn-primary" onclick="generatePreview()">Preview</button>
       <button type="button" class="btn-primary" onclick="downloadPDF()">Download PDF</button>
+      <button type="button" class="btn-primary" onclick="uploadToCloud()">Upload to Cloud</button>
     </div>
   </form>
 
@@ -186,14 +195,15 @@ button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-w
 // Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAWPlgLt8OQPX6Gq6hzsp46VZxSxXIU5i0",
-      authDomain: "digital-service-report.firebaseapp.com",
-      projectId: "digital-service-report",
-      storageBucket: "digital-service-report.appspot.com",
-      messagingSenderId: "783895149200",
-      appId: "1:783895149200:web:01c08a62d429bf1bf8f615"
+  authDomain: "digital-service-report.firebaseapp.com",
+  projectId: "digital-service-report",
+  storageBucket: "digital-service-report.appspot.com",
+  messagingSenderId: "783895149200",
+  appId: "1:783895149200:web:01c08a62d429bf1bf8f615"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 // Toggle SignUp / SignIn
 function toggleSignUp(){
@@ -219,9 +229,18 @@ function login(){
     .catch(err=>alert(err.message));
 }
 
+// Logout
+function logout(){
+  auth.signOut().then(()=>{
+    document.getElementById('mainForm').style.display='none';
+    document.getElementById('loginPage').style.display='flex';
+  });
+}
+
 // Initialize form
+let formCounter=1;
 function initForm(){
-  document.getElementById('reportNo').value = "REP-" + Date.now();
+  document.getElementById('reportNo').value = "JIMSH-NK/FM/OPS/08/Ver-1/" + formCounter++;
 }
 
 // Accessories
@@ -240,8 +259,9 @@ function openSignature(who){
   signer=who;
   document.getElementById("sigModal").style.display="flex";
   const canvas=document.getElementById("sigCanvas");
-  canvas.width=canvas.offsetWidth*2; canvas.height=canvas.offsetHeight*2;
-  canvas.getContext("2d").scale(2,2);
+  canvas.width=300; canvas.height=150;
+  const ctx=canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   sigPad=new SignaturePad(canvas,{penColor:"black"});
 }
 function acceptSignature(){if(sigPad.isEmpty()){alert("Please sign first");return;}
@@ -319,9 +339,9 @@ function buildPreview(){
     <p><b>Action Taken:</b> ${form.actionTaken.value}</p>
     <p><b>Finish Date:</b> ${form.finishDate.value} &nbsp; <b>Finish Time:</b> ${form.finishTime.value}</p>
     <p><b>Down Time (hrs):</b> ${form.downTime.value}</p>
-    <h3>Accessories / Spare Parts Details</h3>
+    <h3>Accessories / Spare Parts</h3>
     <table border="1" width="100%"><tr><th>S/N</th><th>Description</th><th>Qty</th><th>SN</th></tr>${accRows}</table>
-    <div class="note">The above Equipment / Item Installed by Biomedical Engineer has / have been handed over in good working condition. Demonstration given.</div>
+    <div class="note">Items installed by Biomedical Engineer have been handed over in good condition. Demo given.</div>
     <h3>User Details</h3>
     <p><b>Name:</b> ${form.userName.value} &nbsp; <b>Emp Code:</b> ${form.userCode.value}</p>
     ${userSignImg.src?`<img src="${userSignImg.src}" width="180">`:""}
@@ -346,6 +366,44 @@ async function downloadPDF(){
   const scaleFactor = pageHeight / pdfHeight;
   pdf.addImage(img,"JPEG",0,0,pageWidth, pdfHeight*scaleFactor);
   pdf.save("Digital_Service_Report.pdf");
+}
+
+// Upload to Cloud Firestore
+async function uploadToCloud(){
+  try {
+    const formData = {
+      reportNo: form.reportNo.value,
+      date: form.date.value,
+      time: form.time.value,
+      serviceType: form.serviceType.value,
+      department: form.department.value,
+      equipment: form.equipment.value,
+      model: form.model.value,
+      make: form.make.value,
+      serialNumber: form.serialNumber.value,
+      problemReported: form.problemReported.value,
+      actionTaken: form.actionTaken.value,
+      finishDate: form.finishDate.value,
+      finishTime: form.finishTime.value,
+      downTime: form.downTime.value,
+      userName: form.userName.value,
+      userCode: form.userCode.value,
+      bmeName: form.bmeName.value,
+      bmeCode: form.bmeCode.value,
+      userSign: userSignImg.src || "",
+      bmeSign: bmeSignImg.src || "",
+      accessories: [...document.querySelectorAll("#accessTable tbody tr")].map(r=>{
+        const t=[...r.querySelectorAll("input")].map(i=>i.value);
+        return {sn:t[0],desc:t[1],qty:t[2],serial:t[3]};
+      }),
+      createdAt: new Date()
+    };
+    await db.collection("reports").add(formData);
+    alert("Report uploaded successfully!");
+    initForm();
+  } catch(err){
+    alert("Upload failed: " + err.message);
+  }
 }
 </script>
 </body>
