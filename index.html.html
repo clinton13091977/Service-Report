@@ -1,380 +1,410 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Service Report Form</title>
-  <style>
-    body { font-family:"Segoe UI",Arial,Helvetica,sans-serif; margin:0;padding:10px; background:#eef2f7;color:#111; }
-    .container { max-width:900px;margin:0 auto;background:#fff;border-radius:10px;padding:20px;box-shadow:0 4px 14px rgba(0,0,0,0.12); }
-    header { text-align:center;margin-bottom:12px; }
-    header img { max-height:60px; margin-bottom:6px; }
-    header h1 { margin:0;font-size:20px;font-weight:600;color:#fff;background:#0b5ed7;padding:6px;border-radius:6px 6px 0 0; }
-    header h2 { margin:0;font-size:14px;color:#fff;background:#0b5ed7;padding:4px;border-radius:0 0 6px 6px; }
-    .formNo { margin-top:6px;font-size:12px;font-weight:bold;text-align:center;padding-bottom:6px;border-bottom:2px solid #0b5ed7; }
-    .formBox { border:2px solid #0b5ed7;border-radius:8px;padding:12px;margin-top:12px; }
-    .section { margin:12px 0;padding:10px;border:1px solid #ccc;border-radius:6px;background:#fafafa; }
-    .section h3 { margin:0 0 8px;font-size:14px;font-weight:600;color:#0b5ed7;border-bottom:2px solid #0b5ed7;padding-bottom:3px; }
-    .row { display:flex;flex-wrap:wrap;gap:12px }
-    .col { flex:1;min-width:180px }
-    label { display:block;font-size:12px;margin-bottom:4px;color:#333 }
-    input,textarea { width:100%;padding:6px;font-size:13px;border:1px solid #bbb;border-radius:4px }
-    textarea { resize:vertical;min-height:60px }
-    .sig { border:1px solid #999;border-radius:4px;height:80px;background:#fff;cursor:pointer; }
-    .sig-controls { margin-top:6px }
-    .controls { margin:15px 0;display:flex;gap:10px;flex-wrap:wrap }
-    button { padding:8px 14px;border:none;border-radius:5px;background:#0b5ed7;color:#fff;font-size:13px;cursor:pointer }
-    button.secondary { background:#555 }
-    #previewArea { width:210mm;height:297mm;margin:0 auto;padding:12mm;box-sizing:border-box;border:1px solid #ddd;background:#fff;overflow:hidden; }
-    #previewArea img { max-height:60px; display:block; margin:0 auto 6px; }
-    #previewArea h1 { font-size:16px;margin:0;text-align:center;color:#fff;background:#0b5ed7;padding:6px;border-radius:6px 6px 0 0; }
-    #previewArea h2 { font-size:13px;margin:0;text-align:center;color:#fff;background:#0b5ed7;padding:4px;border-radius:0 0 6px 6px; }
-    #previewArea .formNo { margin:6px 0 12px;text-align:center;font-size:12px;font-weight:bold;border-bottom:2px solid #0b5ed7;padding-bottom:4px; }
-    #previewArea .formBox { border:2px solid #0b5ed7;padding:10px;border-radius:8px }
-    #previewArea h3 { font-size:13px;margin-top:8px;margin-bottom:4px;font-weight:600;color:#0b5ed7;border-bottom:2px solid #0b5ed7;padding-bottom:3px; }
-    #previewArea p { font-size:12px;margin:2px 0;line-height:1.3 }
-    img.sig-img { border:1px solid #000; margin-top:4px }
-    #sigModal { display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;align-items:center;justify-content:center; }
-    #sigModalContent { background:#fff;padding:20px;border-radius:10px;max-width:95%;max-height:90%;display:flex;flex-direction:column;align-items:center; }
-    #sigModal canvas { border:1px solid #000;width:100%;height:300px }
-    #sigModal .modal-controls { margin-top:10px;display:flex;gap:10px }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login & Digital Service Report</title>
 
-    /* Login styles */
-    #auth-ui { margin-bottom:20px; padding:10px; border:1px solid #ccc; border-radius:6px; background:#f5f5f5; }
-    #auth-ui input { margin-bottom:6px; }
-    #auth-ui button { margin-right:6px; }
-    #user-info { margin-bottom:12px; }
-    .hidden { display:none; }
-    .admin-badge { color:#fff; background:green; padding:2px 6px; border-radius:4px; font-size:0.8rem; }
-  </style>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- Signature & PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.7/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body { font-family: Arial,sans-serif; background:#f4f6fa; margin:0; padding:0;}
+.container { max-width:650px; margin:20px auto; background:#fff; padding:10px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+header { text-align:center; margin-bottom:8px; background:#0d4f8b; color:#fff; padding:6px; border-radius:6px;}
+header img { max-width:70px; display:block; margin:0 auto 4px;}
+header h1, header h2 { font-size:13px; margin:0; font-weight:bold;}
+.section { margin-top:8px; padding:8px; border:1px solid #dce3ef; border-radius:6px;}
+.section h3 { margin:0 0 6px 0; font-size:12px; color:#0d4f8b; border-bottom:1px solid #ddd; padding-bottom:3px;}
+.form-row { display:flex; align-items:center; margin-bottom:6px;}
+label { font-weight:bold; font-size:11px; display:inline-block; width:90px;}
+input[type=text],input[type=date],input[type=time],input[type=number],input[type=email],input[type=password],select { flex:1; padding:3px; border:1px solid #ccc; border-radius:4px; font-size:11px;}
+.edit-btn { margin-left:4px; padding:2px 6px; font-size:10px; border:none; border-radius:4px; background:#0d4f8b; color:#fff; cursor:pointer;}
+table { width:100%; border-collapse:collapse; margin-top:4px; font-size:9px;}
+th,td { border:1px solid #ccc; padding:2px; text-align:center;}
+th { background:#eef6ff;}
+.controls { margin-top:6px; display:flex; gap:6px; flex-wrap:wrap; justify-content:center;}
+button { padding:5px 8px; border:none; border-radius:4px; cursor:pointer; font-weight:bold; font-size:10px;}
+.btn-primary { background:#0d4f8b; color:#fff;}
+.btn-danger { background:#d62828; color:#fff;}
+.sig-preview { margin-top:4px; max-width:180px; border:1px solid #ccc; display:block; margin-left:auto; margin-right:auto;}
+.preview-container { margin-top:8px; padding:8px; border:2px dashed #0d4f8b; background:#fff; border-radius:6px;}
+.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:1000;}
+.modal-inner { background:#fff; width:300px; border-radius:6px; display:flex; flex-direction:column; padding:10px; }
+.modal-inner input { margin-bottom:8px; padding:4px; border:1px solid #ccc; border-radius:4px;}
+.modal-inner button { margin-top:4px;}
+.note { margin-top:4px; font-size:9px; font-style:italic; color:#333;}
+
+/* Login page styles */
+#loginPage, #signUpPage { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; }
+#loginPage input, #signUpPage input { margin-bottom:8px; width:80%; padding:6px; font-size:12px; }
+#loginPage button, #signUpPage button { width:50%; margin-top:8px; }
+.toggle-login { font-size:10px; color:#0d4f8b; cursor:pointer; margin-top:4px; text-align:center;}
+.logout-container { text-align:right; margin-bottom:8px;}
+.logout-container button { background:#d62828; color:#fff; font-size:11px;}
+</style>
 </head>
 <body>
-  <div class="container">
-    <!-- Firebase Login -->
-    <div id="auth-ui">
-      <h3>Login</h3>
-      <input id="email" placeholder="Email" /><br/>
-      <input id="password" type="password" placeholder="Password" /><br/>
-      <button id="btn-login">Login</button>
-      <button id="btn-logout" class="hidden">Logout</button>
-      <button id="btn-register">Register</button>
-      <p id="auth-msg"></p>
-    </div>
 
-    <div id="user-info" class="hidden">
-      Logged in as: <span id="user-email"></span> <span id="admin-badge" class="admin-badge hidden">ADMIN</span>
-    </div>
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="container">
+  <img src="logo.jpg" alt="Company Logo" style="max-width:100px;margin-bottom:10px;">
+  <h2>Sign In</h2>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button class="btn-primary" onclick="login()">Sign In</button>
+  <div class="toggle-login" onclick="toggleSignUp()">Don't have an account? Sign Up</div>
+</div>
 
-    <!-- FORM - hidden until login -->
-    <div id="form-container" class="hidden">
-      <header>
-        <img src="logo.jpeg" alt="Hospital Logo"/>
-        <h1>Jagannath Gupta Institute Of Medical Science & Hospital, North - Kolkata</h1>
-        <h2>"Biomedical Equipment Maintenance Cum Breakdown Service Report"</h2>
-        <div class="formNo">Form No: <span id="formNo"></span></div>
-      </header>
+<!-- SIGNUP PAGE -->
+<div id="signUpPage" class="container" style="display:none;">
+  <img src="logo.jpg" alt="Company Logo" style="max-width:100px;margin-bottom:10px;">
+  <h2>Sign Up</h2>
+  <input type="email" id="signUpEmail" placeholder="Email">
+  <input type="password" id="signUpPassword" placeholder="Password">
+  <button class="btn-primary" onclick="signUp()">Sign Up</button>
+  <div class="toggle-login" onclick="toggleSignUp()">Already have account? Sign In</div>
+</div>
 
-      <form id="serviceForm" onsubmit="return false;">
-        <div class="formBox">
-          <div class="section">
-            <h3>Complaint Information</h3>
-            <div class="row">
-              <div class="col"><label>Date</label><input type="date" id="complaintDate"/></div>
-              <div class="col"><label>Time</label><input type="time" id="complaintTime"/></div>
-              <div class="col"><label>Department</label><input type="text" id="department"/></div>
-            </div>
-          </div>
+<!-- MAIN FORM -->
+<div id="mainForm" class="container" style="display:none;">
+  <div class="logout-container">
+    <button onclick="logout()">Logout</button>
+  </div>
+  <header>
+    <img src="logo.jpg" alt="Company Logo">
+    <h1>Biomedical Equipment Maintenance Cum Breakdown/Installation/Upgrade/Handover</h1>
+    <h2>Digital Service Report</h2>
+  </header>
 
-          <div class="section">
-            <h3>Equipment Details</h3>
-            <div class="row">
-              <div class="col"><label>Equipment</label><input type="text" id="equipment"/></div>
-              <div class="col"><label>Model</label><input type="text" id="model"/></div>
-              <div class="col"><label>Make</label><input type="text" id="make"/></div>
-              <div class="col"><label>Serial No</label><input type="text" id="serial"/></div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>Problem & Resolution</h3>
-            <div class="row">
-              <div class="col"><label>Problem Reported</label><textarea id="problem"></textarea></div>
-              <div class="col"><label>Action Taken</label><textarea id="action"></textarea></div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>Completion Details</h3>
-            <div class="row">
-              <div class="col"><label>Finish Date</label><input type="date" id="finishDate" onchange="calcDowntime()"/></div>
-              <div class="col"><label>Finish Time</label><input type="time" id="finishTime" onchange="calcDowntime()"/></div>
-              <div class="col"><label>Downtime</label><input type="text" id="downtime" readonly/></div>
-            </div>
-            <div class="row">
-              <div class="col"><label>Repaired by</label><input type="text" id="repairedBy"/></div>
-              <div class="col"><label>Spare Parts Used</label><input type="text" id="spares"/></div>
-              <div class="col"><label>Cause of Failure</label><input type="text" id="cause"/></div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>User Department</h3>
-            <div class="row">
-              <div class="col"><label>Name</label><input type="text" id="userDept"/></div>
-              <div class="col"><label>Emp Code</label><input type="text" id="userCode"/></div>
-              <div class="col">
-                <label>Signature (Click to sign)</label>
-                <canvas id="userSig" class="sig" width="250" height="80" onclick="openSigModal('user')"></canvas>
-                <div class="sig-controls"><button type="button" class="secondary" onclick="userPad.clear()">Clear</button></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>Engineer</h3>
-            <div class="row">
-              <div class="col"><label>Name</label><input type="text" id="engName"/></div>
-              <div class="col"><label>Code</label><input type="text" id="engCode"/></div>
-              <div class="col">
-                <label>Signature (Click to sign)</label>
-                <canvas id="engSig" class="sig" width="250" height="80" onclick="openSigModal('eng')"></canvas>
-                <div class="sig-controls"><button type="button" class="secondary" onclick="engPad.clear()">Clear</button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="controls">
-          <button type="button" onclick="renderPreview()">Preview</button>
-          <button type="button" onclick="downloadPDF()">Download PDF</button>
-          <button type="button" class="secondary" onclick="location.reload()">Reset</button>
-          <button type="button" id="btn-save-firestore">Save to Cloud</button>
-        </div>
-      </form>
-
-      <div>
-        <h3>Preview (A4 size)</h3>
-        <div id="previewArea"></div>
+  <form id="form">
+    <!-- Report Information -->
+    <div class="section">
+      <h3>Report Information</h3>
+      <div class="form-row"><label>Report No.</label><input id="reportNo" type="text" readonly></div>
+      <div class="form-row"><label>Date</label><input id="date" type="date" onchange="calculateDownTime()"></div>
+      <div class="form-row"><label>Time</label><input id="time" type="time" onchange="calculateDownTime()"></div>
+      <div class="form-row"><label>Service</label>
+        <select id="serviceType">
+          <option value="Breakdown">Breakdown</option>
+          <option value="Installation">Installation</option>
+          <option value="Up-Gradation">Up-Gradation</option>
+          <option value="Preventive Maintenance">Preventive Maintenance</option>
+          <option value="Handover">Handover</option>
+        </select>
       </div>
     </div>
-  </div>
 
-  <!-- Signature Modal -->
-  <div id="sigModal">
-    <div id="sigModalContent">
-      <canvas id="modalSig"></canvas>
-      <div class="modal-controls">
-        <button type="button" onclick="modalPad.clear()">Clear</button>
-        <button type="button" onclick="saveModalSig()">Save</button>
-        <button type="button" class="secondary" onclick="closeSigModal()">Cancel</button>
+    <!-- Equipment Information -->
+    <div class="section">
+      <h3>Equipment Information</h3>
+      <div class="form-row"><label>Dept.</label>
+        <select id="department"><option value="">-- Select Department --</option><option>Radiology</option><option>Cardiology</option><option>ICU</option><option>OT</option><option>Dialysis</option></select>
+        <button type="button" class="edit-btn" onclick="openDropdownModal('department')">Add/Edit</button>
       </div>
+      <div class="form-row"><label>Equip.</label>
+        <select id="equipment"><option value="">-- Select Equipment --</option><option>MRI</option><option>CT Scanner</option><option>Ventilator</option><option>Ultrasound</option><option>Defibrillator</option></select>
+        <button type="button" class="edit-btn" onclick="openDropdownModal('equipment')">Add/Edit</button>
+      </div>
+      <div class="form-row"><label>Model</label><input id="model" type="text"></div>
+      <div class="form-row"><label>Make</label>
+        <select id="make"><option value="">-- Select Make --</option><option>GE</option><option>Philips</option><option>Siemens</option><option>Mindray</option><option>Fresenius</option></select>
+        <button type="button" class="edit-btn" onclick="openDropdownModal('make')">Add/Edit</button>
+      </div>
+      <div class="form-row"><label>Serial No.</label><input id="serialNumber" type="text"></div>
+    </div>
+
+    <!-- Problem & Action -->
+    <div class="section">
+      <h3>Problem & Action</h3>
+      <div class="form-row"><label>Problem</label><input id="problemReported" type="text"></div>
+      <div class="form-row"><label>Action</label><input id="actionTaken" type="text"></div>
+      <div class="form-row"><label>Finish Dt.</label><input id="finishDate" type="date" onchange="calculateDownTime()"></div>
+      <div class="form-row"><label>Finish Time</label><input id="finishTime" type="time" onchange="calculateDownTime()"></div>
+      <div class="form-row"><label>DownTime</label><input id="downTime" type="text" readonly></div>
+    </div>
+
+    <!-- Accessories -->
+    <div class="section">
+      <h3>Accessories / Spare Parts</h3>
+      <table id="accessTable"><thead><tr><th>S/N</th><th>Description</th><th>Qty</th><th>Serial No.</th><th>Action</th></tr></thead><tbody></tbody></table>
+      <div class="note">Items installed by Biomedical Engineer have been handed over in good condition. Demo given.</div>
+      <div class="controls"><button type="button" class="btn-primary" onclick="addAccessory()">+ Add Accessory</button></div>
+    </div>
+
+    <!-- User Details -->
+    <div class="section">
+      <h3>User Details</h3>
+      <div class="form-row"><label>Name</label><input id="userName" type="text"></div>
+      <div class="form-row"><label>Code</label><input id="userCode" type="text"></div>
+      <div class="controls"><button type="button" class="btn-primary" onclick="openSignature('user')">Sign (User)</button></div>
+      <img id="userSignImg" class="sig-preview">
+    </div>
+
+    <!-- BME Details -->
+    <div class="section">
+      <h3>BME Details</h3>
+      <div class="form-row"><label>Name</label><input id="bmeName" type="text"></div>
+      <div class="form-row"><label>Code</label><input id="bmeCode" type="text"></div>
+      <div class="controls"><button type="button" class="btn-primary" onclick="openSignature('bme')">Sign (BME)</button></div>
+      <img id="bmeSignImg" class="sig-preview">
+    </div>
+
+    <div class="controls">
+      <button type="button" class="btn-primary" onclick="generatePreview()">Preview</button>
+      <button type="button" class="btn-primary" onclick="downloadPDF()">Download PDF</button>
+      <button type="button" class="btn-primary" onclick="uploadToCloud()">Upload to Cloud</button>
+    </div>
+  </form>
+
+  <div id="preview" class="preview-container"></div>
+</div>
+
+<!-- Signature Modal -->
+<div id="sigModal" class="modal">
+  <div class="modal-inner">
+    <canvas id="sigCanvas"></canvas>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="acceptSignature()">Accept</button>
+      <button class="btn-danger" onclick="clearSignature()">Clear</button>
+      <button onclick="closeSignature()">Close</button>
     </div>
   </div>
+</div>
 
-  <!-- LIBS -->
-  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+<!-- Dropdown Add/Edit Modal -->
+<div id="dropdownModal" class="modal">
+  <div class="modal-inner">
+    <h4 id="dropdownTitle"></h4>
+    <input type="text" id="newOption" placeholder="Enter new option">
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="addDropdownOption()">Add</button>
+      <button class="btn-danger" onclick="closeDropdownModal()">Close</button>
+    </div>
+  </div>
+</div>
 
-  <script>
-    // ------------------ Signature + Form Script -------------------
-    document.getElementById("formNo").innerText = "JIMSH-NK-" + Date.now();
-    const userPad = new SignaturePad(document.getElementById("userSig"));
-    const engPad = new SignaturePad(document.getElementById("engSig"));
-    let currentSig = null;
-    const modalCanvas = document.getElementById("modalSig");
-    const modalPad = new SignaturePad(modalCanvas);
-    function openSigModal(who){ currentSig=who; modalPad.clear(); document.getElementById("sigModal").style.display="flex"; resizeModalCanvas();}
-    function closeSigModal(){ document.getElementById("sigModal").style.display="none"; }
-    function saveModalSig(){
-      const ctx = currentSig==="user"?userSig.getContext("2d"):engSig.getContext("2d");
-      ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-      const img = new Image();
-      img.onload = ()=>ctx.drawImage(img,0,0,ctx.canvas.width,ctx.canvas.height);
-      img.src = modalPad.toDataURL();
-      closeSigModal();
-    }
-    function resizeModalCanvas(){ modalCanvas.width = modalCanvas.offsetWidth; modalCanvas.height = 300; modalPad.clear(); }
-    function calcDowntime(){
-      const startDate = complaintDate.value; const startTime = complaintTime.value;
-      const endDate = finishDate.value; const endTime = finishTime.value;
-      if(startDate && startTime && endDate && endTime){
-        const start = new Date(startDate+"T"+startTime);
-        const end = new Date(endDate+"T"+endTime);
-        if(end>start){ let diffMs=end-start; let hours=Math.floor(diffMs/1000/60/60); let mins=Math.floor((diffMs/1000/60)%60); downtime.value=hours+"h "+mins+"m"; }
-      }
-    }
-    function renderPreview(){
-      const prev=document.getElementById("previewArea");
-      prev.innerHTML=`
-        <img src="logo.jpeg" alt="Hospital Logo"/>
-        <h1>Jagannath Gupta Institute Of Medical Science & Hospital, North - Kolkata</h1>
-        <h2>"Biomedical Equipment Maintenance Cum Breakdown Service Report"</h2>
-        <div class="formNo">Form No: ${formNo.innerText}</div>
-        <div class="formBox">
-          <h3>Complaint Information</h3>
-          <p>Date: ${complaintDate.value}</p>
-          <p>Time: ${complaintTime.value}</p>
-          <p>Department: ${department.value}</p>
-          <h3>Equipment Details</h3>
-          <p>Equipment: ${equipment.value}</p>
-          <p>Model: ${model.value}</p>
-          <p>Make: ${make.value}</p>
-          <p>Serial No: ${serial.value}</p>
-          <h3>Problem & Resolution</h3>
-          <p>Problem Reported: ${problem.value}</p>
-          <p>Action Taken: ${action.value}</p>
-          <h3>Completion Details</h3>
-          <p>Finish Date: ${finishDate.value}</p>
-          <p>Finish Time: ${finishTime.value}</p>
-          <p>Downtime: ${downtime.value}</p>
-          <p>Repaired by: ${repairedBy.value}</p>
-          <p>Spare Parts Used: ${spares.value}</p>
-          <p>Cause of Failure: ${cause.value}</p>
-          <h3>User Department</h3>
-          <p>Name: ${userDept.value}</p>
-          <p>Emp Code: ${userCode.value}</p>
-          ${!userPad.isEmpty()?'<img class="sig-img" src="'+userSig.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
-          <h3>Engineer</h3>
-          <p>Name: ${engName.value}</p>
-          <p>Code: ${engCode.value}</p>
-          ${!engPad.isEmpty()?'<img class="sig-img" src="'+engSig.toDataURL()+'" width="120"/>':'<i>No Signature</i>'}
-        </div>
-      `;
-      return prev;
-    }
-    async function downloadPDF(){
-      const preview=renderPreview(); await new Promise(r=>setTimeout(r,150));
-      const canvas=await html2canvas(preview,{scale:2});
-      const imgData=canvas.toDataURL("image/png");
-      const { jsPDF}=window.jspdf;
-      const pdf=new jsPDF("p","mm","a4");
-      const pageWidth=pdf.internal.pageSize.getWidth();
-      const pageHeight=pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData,"PNG",0,0,pageWidth,pageHeight);
-      pdf.save(formNo.innerText+".pdf");
-    }
+<script>
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyAWPlgLt8OQPX6Gq6hzsp46VZxSxXIU5i0",
+  authDomain: "digital-service-report.firebaseapp.com",
+  projectId: "digital-service-report",
+  storageBucket: "digital-service-report.appspot.com",
+  messagingSenderId: "783895149200",
+  appId: "1:783895149200:web:01c08a62d429bf1bf8f615"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-    // ------------------ Firebase Setup -------------------
-    var firebaseConfig = {
-      apiKey: "AIzaSyAWPlgLt8OQPX6Gq6hzsp46VZxSxXIU5i0",
-      authDomain: "digital-service-report.firebaseapp.com",
-      projectId: "digital-service-report",
-      storageBucket: "digital-service-report.appspot.com",
-      messagingSenderId: "783895149200",
-      appId: "1:783895149200:web:01c08a62d429bf1bf8f615"
+// Toggle SignUp / SignIn
+function toggleSignUp(){
+  document.getElementById('loginPage').style.display = document.getElementById('loginPage').style.display==='none'?'flex':'none';
+  document.getElementById('signUpPage').style.display = document.getElementById('signUpPage').style.display==='none'?'flex':'none';
+}
+
+// Sign Up
+function signUp(){
+  const email = document.getElementById('signUpEmail').value;
+  const password = document.getElementById('signUpPassword').value;
+  auth.createUserWithEmailAndPassword(email,password)
+    .then(()=>{alert("SignUp Success! Please Sign In."); toggleSignUp();})
+    .catch(err=>alert(err.message));
+}
+
+// Sign In
+function login(){
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  auth.signInWithEmailAndPassword(email,password)
+    .then(()=>{document.getElementById('loginPage').style.display='none'; document.getElementById('mainForm').style.display='block'; initForm();})
+    .catch(err=>alert(err.message));
+}
+
+// Logout
+function logout(){
+  auth.signOut().then(()=>{
+    document.getElementById('mainForm').style.display='none';
+    document.getElementById('loginPage').style.display='flex';
+  });
+}
+
+// Initialize form
+let formCounter=1;
+function initForm(){
+  document.getElementById('reportNo').value = "JIMSH-NK/FM/OPS/08/Ver-1/" + formCounter++;
+}
+
+// Accessories
+function addAccessory(){
+  const tbody=document.querySelector("#accessTable tbody");
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td><input type="text" value="${tbody.rows.length+1}"></td>
+  <td><input type="text"></td><td><input type="number" value="1"></td>
+  <td><input type="text"></td><td><button type="button" onclick="this.closest('tr').remove()">Delete</button></td>`;
+  tbody.appendChild(tr);
+}
+
+// Signature
+let sigPad, signer;
+function openSignature(who){
+  signer=who;
+  document.getElementById("sigModal").style.display="flex";
+  const canvas=document.getElementById("sigCanvas");
+  canvas.width=300; canvas.height=150;
+  const ctx=canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  sigPad=new SignaturePad(canvas,{penColor:"black"});
+}
+function acceptSignature(){if(sigPad.isEmpty()){alert("Please sign first");return;}
+  const data=sigPad.toDataURL();
+  if(signer==="user") document.getElementById("userSignImg").src=data;
+  else document.getElementById("bmeSignImg").src=data;
+  closeSignature();
+}
+function clearSignature(){ sigPad.clear(); }
+function closeSignature(){ document.getElementById("sigModal").style.display="none"; }
+
+// Dropdown
+let currentDropdown = null;
+function openDropdownModal(dropdownId){
+  currentDropdown = document.getElementById(dropdownId);
+  document.getElementById("dropdownTitle").textContent = "Add/Edit " + dropdownId.charAt(0).toUpperCase() + dropdownId.slice(1);
+  document.getElementById("newOption").value = "";
+  document.getElementById("dropdownModal").style.display = "flex";
+}
+function addDropdownOption(){
+  const value = document.getElementById("newOption").value.trim();
+  if(value && currentDropdown){
+    const option = document.createElement("option");
+    option.text = value;
+    option.value = value;
+    currentDropdown.add(option);
+    currentDropdown.value = value;
+    closeDropdownModal();
+  }
+}
+function closeDropdownModal(){ document.getElementById("dropdownModal").style.display="none"; }
+
+// Accurate Down Time
+function calculateDownTime(){
+  const startDate = document.getElementById("date").value;
+  const startTime = document.getElementById("time").value;
+  const finishDate = document.getElementById("finishDate").value;
+  const finishTime = document.getElementById("finishTime").value;
+  if(startDate && startTime && finishDate && finishTime){
+    const start = new Date(startDate + "T" + startTime);
+    const finish = new Date(finishDate + "T" + finishTime);
+    if(finish>=start){
+      const diffMs = finish - start;
+      const diffHrs = diffMs / (1000*60*60);
+      document.getElementById("downTime").value = diffHrs.toFixed(2);
+    } else {
+      document.getElementById("downTime").value = "0";
+    }
+  }
+}
+
+// Preview & PDF
+function buildPreview(){
+  const accRows=[...document.querySelectorAll("#accessTable tbody tr")].map(r=>{
+    const t=[...r.querySelectorAll("input")].map(i=>i.value);
+    return `<tr><td>${t[0]}</td><td>${t[1]}</td><td>${t[2]}</td><td>${t[3]}</td></tr>`;
+  }).join("");
+  return `
+  <div style="font-size:9px; line-height:1.1;">
+    <div style="text-align:center; background:#0d4f8b; color:#fff; padding:4px; border-radius:4px;">
+      <img src="logo.jpg" style="max-height:35px;">
+      <h3>Biomedical Equipment Maintenance Cum Breakdown/Installation/Upgrade/Handover Digital Service Report</h3>
+    </div>
+    <p><b>Report No:</b> ${form.reportNo.value}</p>
+    <p><b>Date:</b> ${form.date.value} &nbsp; <b>Time:</b> ${form.time.value}</p>
+    <p><b>Type of Service:</b> ${form.serviceType.value}</p>
+    <h3>Equipment Information</h3>
+    <p><b>Department:</b> ${form.department.value}</p>
+    <p><b>Equipment:</b> ${form.equipment.value}</p>
+    <p><b>Model:</b> ${form.model.value}</p>
+    <p><b>Make:</b> ${form.make.value}</p>
+    <p><b>Serial No.:</b> ${form.serialNumber.value}</p>
+    <h3>Problem & Action</h3>
+    <p><b>Problem Reported:</b> ${form.problemReported.value}</p>
+    <p><b>Action Taken:</b> ${form.actionTaken.value}</p>
+    <p><b>Finish Date:</b> ${form.finishDate.value} &nbsp; <b>Finish Time:</b> ${form.finishTime.value}</p>
+    <p><b>Down Time (hrs):</b> ${form.downTime.value}</p>
+    <h3>Accessories / Spare Parts</h3>
+    <table border="1" width="100%"><tr><th>S/N</th><th>Description</th><th>Qty</th><th>SN</th></tr>${accRows}</table>
+    <div class="note">Items installed by Biomedical Engineer have been handed over in good condition. Demo given.</div>
+    <h3>User Details</h3>
+    <p><b>Name:</b> ${form.userName.value} &nbsp; <b>Emp Code:</b> ${form.userCode.value}</p>
+    ${userSignImg.src?`<img src="${userSignImg.src}" width="180">`:""}
+    <h3>BME Details</h3>
+    <p><b>Name:</b> ${form.bmeName.value} &nbsp; <b>Code:</b> ${form.bmeCode.value}</p>
+    ${bmeSignImg.src?`<img src="${bmeSignImg.src}" width="180">`:""}
+  </div>`;
+}
+
+function generatePreview(){ document.getElementById("preview").innerHTML=buildPreview(); }
+
+async function downloadPDF(){
+  generatePreview();
+  const preview=document.getElementById("preview");
+  const canvas=await html2canvas(preview,{scale:2});
+  const img=canvas.toDataURL("image/jpeg",0.98);
+  const pdf=new jspdf.jsPDF("p","mm","a4");
+  const pageWidth=pdf.internal.pageSize.getWidth();
+  const pageHeight=pdf.internal.pageSize.getHeight();
+  const imgProps=pdf.getImageProperties(img);
+  const pdfHeight=(imgProps.height*pageWidth)/imgProps.width;
+  const scaleFactor = pageHeight / pdfHeight;
+  pdf.addImage(img,"JPEG",0,0,pageWidth, pdfHeight*scaleFactor);
+  pdf.save("Digital_Service_Report.pdf");
+}
+
+// Upload to Cloud Firestore
+async function uploadToCloud(){
+  try {
+    const formData = {
+      reportNo: form.reportNo.value,
+      date: form.date.value,
+      time: form.time.value,
+      serviceType: form.serviceType.value,
+      department: form.department.value,
+      equipment: form.equipment.value,
+      model: form.model.value,
+      make: form.make.value,
+      serialNumber: form.serialNumber.value,
+      problemReported: form.problemReported.value,
+      actionTaken: form.actionTaken.value,
+      finishDate: form.finishDate.value,
+      finishTime: form.finishTime.value,
+      downTime: form.downTime.value,
+      userName: form.userName.value,
+      userCode: form.userCode.value,
+      bmeName: form.bmeName.value,
+      bmeCode: form.bmeCode.value,
+      userSign: userSignImg.src || "",
+      bmeSign: bmeSignImg.src || "",
+      accessories: [...document.querySelectorAll("#accessTable tbody tr")].map(r=>{
+        const t=[...r.querySelectorAll("input")].map(i=>i.value);
+        return {sn:t[0],desc:t[1],qty:t[2],serial:t[3]};
+      }),
+      createdAt: new Date()
     };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-
-    const btnLogin = document.getElementById("btn-login");
-    const btnLogout = document.getElementById("btn-logout");
-    const btnRegister = document.getElementById("btn-register");
-    const authMsg = document.getElementById("auth-msg");
-    const userInfo = document.getElementById("user-info");
-    const userEmailSpan = document.getElementById("user-email");
-    const adminBadge = document.getElementById("admin-badge");
-    const btnSave = document.getElementById("btn-save-firestore");
-    const formContainer = document.getElementById("form-container");
-
-    function checkAdmin(uid){ return db.collection("admins").doc(uid).get().then(doc=>doc.exists); }
-
-    auth.onAuthStateChanged(async user=>{
-      if(user){
-        userInfo.classList.remove("hidden");
-        userEmailSpan.textContent = user.email;
-        btnLogin.classList.add("hidden");
-        btnRegister.classList.add("hidden");
-        btnLogout.classList.remove("hidden");
-        formContainer.classList.remove("hidden"); // Show form after login
-
-        const isAdmin = await checkAdmin(user.uid);
-        adminBadge.classList.toggle("hidden", !isAdmin);
-        btnSave.disabled = false;
-      }else{
-        userInfo.classList.add("hidden");
-        btnLogin.classList.remove("hidden");
-        btnRegister.classList.remove("hidden");
-        btnLogout.classList.add("hidden");
-        adminBadge.classList.add("hidden");
-        btnSave.disabled = true;
-        formContainer.classList.add("hidden"); // Hide form when logged out
-      }
-    });
-
-    btnLogin.addEventListener("click",()=>{
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      auth.signInWithEmailAndPassword(email,password).then(()=>{ authMsg.textContent="Login successful"; }).catch(err=>{ authMsg.textContent=err.message; });
-    });
-
-    btnRegister.addEventListener("click",()=>{
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      auth.createUserWithEmailAndPassword(email,password).then(()=>{ authMsg.textContent="Registered & logged in"; }).catch(err=>{ authMsg.textContent=err.message; });
-    });
-
-    btnLogout.addEventListener("click",()=>{ auth.signOut(); });
-
-    // ------------------ Save PDF + Data to Firebase -------------------
-    btnSave.addEventListener("click",async ()=>{
-      const user = auth.currentUser;
-      if(!user){ alert("Login first"); return; }
-
-      const preview = renderPreview(); 
-      await new Promise(r=>setTimeout(r,150));
-      const canvas = await html2canvas(preview,{scale:2});
-      const imgData = canvas.toDataURL("image/png");
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF("p","mm","a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      pdf.addImage(imgData,"PNG",0,0,pageWidth,pageHeight);
-      const pdfBlob = pdf.output("blob");
-
-      const fileName = `submissions/${user.uid}_${Date.now()}.pdf`;
-      const storageRef = storage.ref(fileName);
-      try{
-        const snapshot = await storageRef.put(pdfBlob);
-        const downloadURL = await snapshot.ref.getDownloadURL();
-
-        const data = {
-          formNo: formNo.innerText,
-          complaintDate: complaintDate.value,
-          complaintTime: complaintTime.value,
-          department: department.value,
-          equipment: equipment.value,
-          model: model.value,
-          make: make.value,
-          serial: serial.value,
-          problem: problem.value,
-          action: action.value,
-          finishDate: finishDate.value,
-          finishTime: finishTime.value,
-          downtime: downtime.value,
-          repairedBy: repairedBy.value,
-          spares: spares.value,
-          cause: cause.value,
-          userDept: userDept.value,
-          userCode: userCode.value,
-          engName: engName.value,
-          engCode: engCode.value,
-          userSig: userPad.isEmpty()?null:userSig.toDataURL(),
-          engSig: engPad.isEmpty()?null:engSig.toDataURL(),
-          pdfURL: downloadURL,
-          createdBy: user.uid,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        };
-        await db.collection("submissions").add(data);
-        alert("Form + PDF uploaded successfully!");
-      }catch(err){ alert("Error saving form: "+err.message); }
-    });
-  </script>
+    await db.collection("reports").add(formData);
+    alert("Report uploaded successfully!");
+    initForm();
+  } catch(err){
+    alert("Upload failed: " + err.message);
+  }
+}
+</script>
 </body>
 </html>
